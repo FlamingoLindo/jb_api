@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views.brand import create_brand, get_brand, manage_brand
 from .views.product import create_product, get_product, manage_product, reajust_price, restore_price, get_product_by_brand
-from .views.item import create_item, get_item, manage_item, filter_items
+from .views.item import create_item, get_item, manage_item, filter_items, get_item_classes, get_item_types
 
 
 urlpatterns = [
@@ -24,4 +24,6 @@ urlpatterns = [
     path('get_item/', get_item, name='get_item'),
     path('manage_item/<int:pk>/', manage_item, name='manage_item'),
     path('filter_items/', filter_items, name='filter_items'),
+    path('get_item_classes/', get_item_classes, name='get_item_classes'),
+    path('get_item_types/', get_item_types, name='get_item_types'),
 ] 

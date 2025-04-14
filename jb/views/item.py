@@ -55,3 +55,22 @@ def filter_items(request):
         )
     serializer = ItemSerializer(items, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_item_classes(request):
+    item_class = Item._meta.get_field('item_class')
+    item_classes = item_class.choices
+
+    item_classes_data = [{"item_class": item_class} for item_class, _ in item_classes]
+
+    return Response(item_classes_data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_item_types(request):
+    item_type = Item._meta.get_field('item_type')
+    item_types = item_type.choices
+
+    item_types_data = [{"item_type": item_type} for item_type, _ in item_types] 
+
+    return Response(item_types_data, status=status.HTTP_200_OK)
