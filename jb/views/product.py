@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import Product, Brand
-from ..serializer import ProductSerializer
+from ..serializer import ProductSerializer, BrandSerializer
 
 @api_view(['POST'])
 def create_product(request):
@@ -22,12 +22,19 @@ def get_product(request):
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_product_by_brand(request, brand_id):
     brand = get_object_or_404(Brand, pk=brand_id)
+
     products = Product.objects.filter(brand=brand)
-    serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+
+    return Response(
+        {
+            "brand": BrandSerializer(brand).data,
+            "products": ProductSerializer(products, many=True).data,
+        },
+        status=status.HTTP_200_OK,
+    )
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def manage_product(request, pk):
