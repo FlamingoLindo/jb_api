@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views.brand import create_brand, get_brand, manage_brand
+from .views.brand import create_brand, get_brand, manage_brand, get_brand_by_id
 from .views.product import create_product, get_product, manage_product, reajust_price, restore_price, get_product_by_brand
 from .views.item import create_item, get_item, manage_item, filter_items, get_item_classes, get_item_types
 
@@ -10,6 +10,7 @@ urlpatterns = [
     path('create_brand/', create_brand, name='create_brand'),
     path('get_brand/', get_brand, name='get_brand'),
     path('manage_brand/<int:pk>/', manage_brand, name='manage_brand'),
+    path('get_brand_by_id/<int:pk>/', get_brand_by_id, name='get_brand_by_id'),
 
     # Product URLs
     path('create_product/', create_product, name='create_product'),

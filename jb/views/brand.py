@@ -20,6 +20,12 @@ def get_brand(request):
     serializer = BrandSerializer(brands, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def get_brand_by_id(request, pk):
+    brand = get_object_or_404(Brand, pk=pk)
+    serializer = BrandSerializer(brand)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 @api_view(['GET', 'PUT', 'DELETE'])
 def manage_brand(request, pk):
     brand = get_object_or_404(Brand, pk=pk)

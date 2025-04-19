@@ -66,7 +66,7 @@ def reajust_price(request, brand_id, reajust_value):
     
     # Update all prices at once using an expression.
     products.update(
-        price=ExpressionWrapper(F('original_price') * multiplier, output_field=DecimalField())
+        price=ExpressionWrapper(F('price') * multiplier, output_field=DecimalField())
     )
     
     # Refresh the products from the database so we have updated values.
