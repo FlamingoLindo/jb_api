@@ -1,11 +1,25 @@
 from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView
 
+from .views.auth import MyTokenObtainPairView, create_user, login
+from .views.users import get_users, user_detail
 from .views.brand import create_brand, get_brand, manage_brand, get_brand_by_id
 from .views.product import create_product, get_product, manage_product, reajust_price, restore_price, get_product_by_brand
 from .views.item import create_item, get_item, manage_item, filter_items, get_item_classes, get_item_types
 
 
 urlpatterns = [
+    # Auth URLs
+    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # User URLs
+    path('users/', get_users, name='get_users'),
+    path('users/create/', create_user, name='create_user'),
+    path('user/<int:pk>/', user_detail, name='user_detail'),
+    path('login/', login, name='login'),
+
+
     # Brand URLs
     path('create_brand/', create_brand, name='create_brand'),
     path('get_brand/', get_brand, name='get_brand'),

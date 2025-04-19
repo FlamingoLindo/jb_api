@@ -1,4 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core.validators import MinLengthValidator
+from django.contrib.auth.models import (
+    AbstractBaseUser, PermissionsMixin,
+    BaseUserManager, Group, Permission
+)
 
 # Create your models here.
 
@@ -222,3 +228,71 @@ class Item(models.Model):
         ordering = ['item_name']
         verbose_name = 'Item'
         verbose_name_plural = 'Items'
+
+class CustomUserManager(BaseUserManager):
+    def get_by_natural_key(self, email):
+        return self.get(email=email)
+
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('The Email field must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email, password, **extra_fields)
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    name = models.CharField(
+        max_length=100,
+        validators=[MinLengthValidator(3)]
+    )
+    email = models.EmailField(unique=True)
+
+    password = models.CharField(max_length=128)
+
+    is_staff  = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now=True)
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["name"]
+
+    # ** Override the clashes here: **
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=("groups"),
+        blank=True,
+        related_name="customuser_groups",      # ← unique name
+        related_query_name="customuser_group", # optional
+        help_text=(
+            "The groups this user belongs to. Permissions are "
+            "inherited from each of their groups."
+        ),
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=("user permissions"),
+        blank=True,
+        related_name="customuser_permissions",      # ← unique name
+        related_query_name="customuser_permission", # optional
+        help_text=(
+            "Specific permissions for this user."
+        ),
+    )
+
+    class Meta:
+        ordering = ["-createdAt"]
+        verbose_name = "User"
+        verbose_name_plural = "Users"
+
+    def __str__(self):
+        return self.name
