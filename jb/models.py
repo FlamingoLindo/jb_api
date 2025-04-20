@@ -157,8 +157,8 @@ class Item(models.Model):
     weight_kg_no_cut = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        null=False,
-        blank=False
+        null=True,
+        blank=True
     )
 
     value_meter = models.DecimalField(
