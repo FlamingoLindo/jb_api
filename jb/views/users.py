@@ -14,9 +14,6 @@ logger = logging.getLogger(__name__)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_users(request):
-    if not request.user.is_staff:
-        logger.error(f"User {request.user.email} tried to access users list.")
-        raise PermissionDenied("Sem permissões necessárias.")
 
     users = CustomUser.objects.all()
     paginator = CustomPagination()

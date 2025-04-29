@@ -38,10 +38,16 @@ class ItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        min_length=8,
+        style={'input_type': 'password'}
+    )
 
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = ['id', 'email', 'name', 'password', 'is_staff', 'is_active']
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
