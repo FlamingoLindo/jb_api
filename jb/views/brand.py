@@ -1,12 +1,14 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import Brand
 from ..serializer import BrandSerializer
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_brand(request):
     serializer = BrandSerializer(data=request.data)
     if serializer.is_valid():
@@ -15,18 +17,21 @@ def create_brand(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_brand(request):
     brands = Brand.objects.all()
     serializer = BrandSerializer(brands, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_brand_by_id(request, pk):
     brand = get_object_or_404(Brand, pk=pk)
     serializer = BrandSerializer(brand)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def manage_brand(request, pk):
     brand = get_object_or_404(Brand, pk=pk)
 

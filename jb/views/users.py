@@ -23,6 +23,7 @@ def get_users(request):
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def user_detail(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
 

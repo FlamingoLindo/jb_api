@@ -2,13 +2,15 @@ from decimal import Decimal, InvalidOperation
 
 from django.shortcuts import get_object_or_404
 from django.db.models import F, ExpressionWrapper, DecimalField
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import Product, Brand
 from ..serializer import ProductSerializer, BrandSerializer
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_product(request):
     serializer = ProductSerializer(data=request.data)
     if serializer.is_valid():
@@ -17,12 +19,14 @@ def create_product(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_product(request):
     products = Product.objects.all()
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_product_by_brand(request, brand_id):
     brand = get_object_or_404(Brand, pk=brand_id)
 
@@ -37,6 +41,7 @@ def get_product_by_brand(request, brand_id):
     )
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def manage_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
@@ -55,6 +60,7 @@ def manage_product(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def reajust_price(request, brand_id, reajust_value):
     brand = get_object_or_404(Brand, pk=brand_id)
     products = Product.objects.filter(brand=brand)
@@ -75,6 +81,7 @@ def reajust_price(request, brand_id, reajust_value):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def restore_price(request, brand_id):
     brand= get_object_or_404(Brand, pk=brand_id)
     products = Product.objects.filter(brand=brand)

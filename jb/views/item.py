@@ -1,12 +1,14 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import Item
 from ..serializer import ItemSerializer
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_item(request):
     serializer = ItemSerializer(data=request.data)
     if serializer.is_valid():
@@ -15,12 +17,14 @@ def create_item(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_item(request):
     items = Item.objects.all()
     serializer = ItemSerializer(items, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def manage_item(request, pk):
     item = get_object_or_404(Item, pk=pk)
 
@@ -39,6 +43,7 @@ def manage_item(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def filter_items(request):
     item_class = request.query_params.get('item_class')
     item_type = request.query_params.get('item_type')
@@ -57,6 +62,7 @@ def filter_items(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_item_classes(request):
     item_class = Item._meta.get_field('item_class')
     item_classes = item_class.choices
@@ -67,6 +73,7 @@ def get_item_classes(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_item_types(request):
     item_type = Item._meta.get_field('item_type')
     item_types = item_type.choices
