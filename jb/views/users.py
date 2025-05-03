@@ -1,4 +1,5 @@
 import logging
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -14,8 +15,8 @@ logger = logging.getLogger(__name__)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_users(request):
+    users = CustomUser.objects.exclude(pk=request.user.pk)
 
-    users = CustomUser.objects.all()
     paginator = CustomPagination()
     result_page = paginator.paginate_queryset(users, request)
     serializer = CustomUserSerializer(result_page, many=True)
@@ -40,3 +41,42 @@ def user_detail(request, pk):
     elif request.method == 'DELETE':
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def change_user_status(request, pk):
+    try:
+        user = CustomUser.objects.get(pk=pk)
+    except CustomUser.DoesNotExist:
+        return Response({'detail': 'Usuário não existe.'}, status=status.HTTP_404_NOT_FOUND)
+
+    user.is_active = not user.is_active
+    user.save(update_fields=['is_active'])
+
+    return Response({
+        'id': user.id,
+        'is_active': user.is_active
+    }, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+#@permission_classes([IsAuthenticated])
+def search_user(request):
+
+    query = request.query_params.get('q', '').strip()
+    if not query:
+        return Response(
+            {'detail': "Please provide a search term using the 'q' parameter."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Filter by email or name
+    qs = CustomUser.objects.filter(
+        Q(email__icontains=query) |
+        Q(name__icontains=query)
+    ).exclude(pk=request.user.pk)  # optionally exclude yourself
+
+    # Optional: paginate the results
+    paginator = CustomPagination()
+    page = paginator.paginate_queryset(qs, request)
+    serializer = CustomUserSerializer(page, many=True)
+    return paginator.get_paginated_response(serializer.data)

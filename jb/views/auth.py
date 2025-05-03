@@ -45,6 +45,8 @@ def login(request):
         return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
     if user.check_password(request.data['password']):
+        if user.is_active == False:
+            return Response({"error": "Conta desativada."}, status=status.HTTP_403_FORBIDDEN)
         user.last_login = timezone.now()
         user.save(update_fields=['last_login'])
         
