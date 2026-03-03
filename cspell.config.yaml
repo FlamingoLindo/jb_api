@@ -1,0 +1,13 @@
+version: "0.2"
+ignorePaths:
+  - .gitignore
+  - dockerfile
+  - compose.yaml
+dictionaryDefinitions: []
+dictionaries: []
+words:
+  - actix
+  - chrono
+  - sqlx
+ignoreWords: []
+import: []
