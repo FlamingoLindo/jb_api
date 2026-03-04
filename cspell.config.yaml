@@ -8,6 +8,9 @@ dictionaries: []
 words:
   - actix
   - chrono
+  - dotenv
+  - jsonwebtoken
+  - serde
   - sqlx
 ignoreWords: []
 import: []

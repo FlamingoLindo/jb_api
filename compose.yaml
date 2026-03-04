@@ -9,14 +9,15 @@ services:
       - db
 
   db:
-    image: postgres
+    image: postgres:alpine
     restart: always
     shm_size: 128mb
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_DB=${DB}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-
     volumes:
       - postgres_data:/var/lib/postgresql
 
