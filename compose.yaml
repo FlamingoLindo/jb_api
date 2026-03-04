@@ -1,6 +1,6 @@
 services:
   jb_api:
-    env_file: ".env.prod"
+    env_file: ".env"
     build: .
     restart: always
     ports:
@@ -10,7 +10,7 @@ services:
       - db
 
   db:
-    env_file: ".env.prod"
+    env_file: ".env"
     image: postgres:alpine
     restart: always
     shm_size: 128mb

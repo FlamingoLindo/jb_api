@@ -1,7 +1,7 @@
 use actix_web::web;
 
-pub fn config(conf: &mut web::ServiceConfig) {
-    // let users_scope = web::scope("/api/users").service(create_user);
+use crate::routes;
 
-    // conf.service(users_scope);
+pub fn config(cfg: &mut web::ServiceConfig) {
+    cfg.service(web::scope("/api/v1").configure(routes::users::users::config));
 }

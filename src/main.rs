@@ -1,7 +1,9 @@
+mod dto;
+mod entities;
+mod handlers;
 mod routes;
 use actix_cors::Cors;
 use actix_web::{App, HttpServer, http::header, middleware, web};
-use dotenv::dotenv;
 use sea_orm::{ConnectOptions, Database, DatabaseConnection, DbErr};
 use std::time::Duration;
 
@@ -9,8 +11,9 @@ use migration::{Migrator, MigratorTrait};
 
 use routes::config::config;
 
+// TODO add this function into a mod of its own
 pub async fn connect_to_db() -> Result<DatabaseConnection, DbErr> {
-    dotenv().ok();
+    dotenv::from_filename(".env").ok();
 
     let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set in env");
 
@@ -34,6 +37,9 @@ pub async fn connect_to_db() -> Result<DatabaseConnection, DbErr> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    dotenv::from_filename(".env").ok();
+    let port = std::env::var("PORT").expect("PORT must be set in env");
+
     let db_conn = connect_to_db()
         .await
         .expect("Failed to connect to database");
@@ -58,7 +64,7 @@ async fn main() -> std::io::Result<()> {
             ))
             .configure(config)
     })
-    .bind("0.0.0.0:8080")?
+    .bind(port)?
     .run()
     .await
 }
