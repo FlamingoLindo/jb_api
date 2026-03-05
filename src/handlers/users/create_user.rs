@@ -56,10 +56,13 @@ pub async fn create_user(
         }
     };
 
+    // Remove case sensitivity for login
+    let lower_username = user.username.to_lowercase();
+
     // Create user
     let new_user = users::ActiveModel {
         id: Set(Uuid::new_v4()),
-        username: Set(user.username.to_owned()),
+        username: Set(lower_username),
         password: Set(password_hash),
         blocked: Set(user.blocked),
         ..Default::default()

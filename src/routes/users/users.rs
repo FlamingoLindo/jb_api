@@ -19,6 +19,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             .route(
                 "/export",
                 web::post().to(handler::export_users::export_users),
-            ),
+            )
+            .route("/login", web::post().to(handler::login_user::login)),
     );
 }
