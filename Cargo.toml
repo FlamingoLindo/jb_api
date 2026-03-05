@@ -24,4 +24,5 @@ argon2 = "0.5.3"
 jsonwebtoken = { version = "10.2.0", features = ["aws_lc_rs"] }
 uuid = { version = "1.18.1", features = ["serde", "v4"] }
 validator = { version = "0.18", features = ["derive"] }
+rust_xlsxwriter = { version = "*", features = ["chrono"] }
 migration = { path = "migration" }

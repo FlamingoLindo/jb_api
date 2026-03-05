@@ -12,5 +12,6 @@ words:
   - jsonwebtoken
   - serde
   - sqlx
+  - xlsxwriter
 ignoreWords: []
 import: []

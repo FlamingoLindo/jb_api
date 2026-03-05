@@ -15,6 +15,10 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             .route(
                 "/status/{id}",
                 web::patch().to(handler::block_user::block_user),
+            )
+            .route(
+                "/export",
+                web::post().to(handler::export_users::export_users),
             ),
     );
 }
