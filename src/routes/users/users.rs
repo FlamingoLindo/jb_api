@@ -11,6 +11,10 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             .route(
                 "/delete/{id}",
                 web::delete().to(handler::delete_user::delete_user),
+            )
+            .route(
+                "/status/{id}",
+                web::patch().to(handler::block_user::block_user),
             ),
     );
 }
