@@ -1,7 +1,12 @@
 use actix_web::{HttpResponse, Responder, error::ErrorInternalServerError, web};
-use sea_orm::{ActiveModelTrait, DatabaseConnection, Set};
+use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use uuid::Uuid;
 use validator::Validate;
+
+use argon2::{
+    Argon2,
+    password_hash::{PasswordHasher, SaltString, rand_core::OsRng},
+};
 
 use crate::{
     dto::users::create_user::{CreateUserDTO, CreateUserResponseDTO},
@@ -12,14 +17,50 @@ pub async fn create_user(
     db: web::Data<DatabaseConnection>,
     user: web::Json<CreateUserDTO>,
 ) -> impl Responder {
+    // Check if theres an existing user with the same username
+    let existing_user = users::Entity::find()
+        .filter(users::Column::Username.eq(&user.username))
+        .one(db.get_ref())
+        .await;
+
+    match existing_user {
+        Ok(Some(_)) => {
+            return Ok(HttpResponse::Conflict().json(serde_json::json!({
+                "status": "Conflict",
+                "message": "Username already taken"
+            })));
+        }
+        Err(err) => {
+            return Ok(HttpResponse::InternalServerError().json(serde_json::json!({
+                "status": "Internal Server Error",
+                "message": err.to_string()
+            })));
+        }
+        Ok(None) => {}
+    }
+
     if let Err(errors) = user.validate() {
         return Ok(HttpResponse::BadRequest().json(errors));
     }
 
+    // Hash user's password
+    let salt = SaltString::generate(&mut OsRng);
+    let argon2 = Argon2::default();
+    let password_hash = match argon2.hash_password(user.password.as_bytes(), &salt) {
+        Ok(hash) => hash.to_string(),
+        Err(err) => {
+            return Ok(HttpResponse::InternalServerError().json(serde_json::json!({
+                "status": "Internal Server Error",
+                "message": err.to_string()
+            })));
+        }
+    };
+
+    // Create user
     let new_user = users::ActiveModel {
         id: Set(Uuid::new_v4()),
         username: Set(user.username.to_owned()),
-        password: Set(user.password.to_owned()),
+        password: Set(password_hash),
         blocked: Set(user.blocked),
         ..Default::default()
     }
@@ -31,8 +72,3 @@ pub async fn create_user(
         Err(err) => Err(ErrorInternalServerError(err)),
     }
 }
-
-
-// TODO Verify if user with the same "username" exists
-// TODO hash password with argon2
-// TODO add `createdAt` and `updatedAt`

@@ -1,0 +1,41 @@
+use sea_orm_migration::prelude::*;
+
+#[derive(DeriveMigrationName)]
+pub struct Migration;
+
+#[async_trait::async_trait]
+impl MigrationTrait for Migration {
+    async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Alias::new("users"))
+                    .add_column(
+                        ColumnDef::new(Alias::new("created_at"))
+                            .timestamp()
+                            .not_null()
+                            .default(Expr::current_timestamp()),
+                    )
+                    .add_column(
+                        ColumnDef::new(Alias::new("updated_at"))
+                            .timestamp()
+                            .not_null()
+                            .default(Expr::current_timestamp()),
+                    )
+                    .to_owned(),
+            )
+            .await
+    }
+
+    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Alias::new("users"))
+                    .drop_column(Alias::new("created_at"))
+                    .drop_column(Alias::new("updated_at"))
+                    .to_owned(),
+            )
+            .await
+    }
+}
