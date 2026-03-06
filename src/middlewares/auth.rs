@@ -4,12 +4,12 @@ use actix_web_httpauth::extractors::bearer::BearerAuth;
 use jsonwebtoken::{DecodingKey, Validation, decode};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
-struct Claims {
-    sub: String,
-    role: Option<String>,
-    iat: usize,
-    exp: usize,
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Claims {
+    pub sub: String,
+    pub role: Option<String>,
+    pub iat: usize,
+    pub exp: usize,
 }
 
 pub async fn validator(

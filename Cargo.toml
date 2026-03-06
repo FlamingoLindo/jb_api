@@ -28,3 +28,4 @@ rust_xlsxwriter = { version = "*", features = ["chrono"] }
 chrono = { version = "0.4.42", features = ["serde"] }
 actix-web-httpauth = "0.8"
 migration = { path = "migration" }
+futures = "0.3.32"

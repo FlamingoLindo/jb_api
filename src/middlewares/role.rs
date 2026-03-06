@@ -1,0 +1,66 @@
+use crate::middlewares::auth::Claims;
+use actix_web::{
+    Error, HttpMessage, HttpResponse,
+    body::EitherBody,
+    dev::{Service, ServiceRequest, ServiceResponse, Transform, forward_ready},
+};
+use futures::future::{LocalBoxFuture, Ready, ok};
+use std::rc::Rc;
+
+pub struct RoleGuard(pub &'static str);
+
+impl<S, B> Transform<S, ServiceRequest> for RoleGuard
+where
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error> + 'static,
+{
+    type Response = ServiceResponse<EitherBody<B>>;
+    type Error = Error;
+    type Transform = RoleGuardMiddleware<S>;
+    type InitError = ();
+    type Future = Ready<Result<Self::Transform, Self::InitError>>;
+
+    fn new_transform(&self, service: S) -> Self::Future {
+        ok(RoleGuardMiddleware {
+            service: Rc::new(service),
+            required_role: self.0,
+        })
+    }
+}
+
+pub struct RoleGuardMiddleware<S> {
+    service: Rc<S>,
+    required_role: &'static str,
+}
+
+impl<S, B> Service<ServiceRequest> for RoleGuardMiddleware<S>
+where
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error> + 'static,
+{
+    type Response = ServiceResponse<EitherBody<B>>;
+    type Error = Error;
+    type Future = LocalBoxFuture<'static, Result<Self::Response, Self::Error>>;
+
+    forward_ready!(service);
+
+    fn call(&self, req: ServiceRequest) -> Self::Future {
+        let service = Rc::clone(&self.service);
+        let required_role = self.required_role;
+
+        Box::pin(async move {
+            let has_role = {
+                let extensions = req.extensions();
+                extensions.get::<Claims>().and_then(|c| c.role.as_deref()) == Some(required_role)
+            };
+
+            if !has_role {
+                let response = HttpResponse::Unauthorized().json(serde_json::json!({
+                    "status": "error",
+                    "message": "You do not have permission to perform this action"
+                }));
+                return Ok(req.into_response(response.map_into_right_body()));
+            }
+
+            service.call(req).await.map(|res| res.map_into_left_body())
+        })
+    }
+}
