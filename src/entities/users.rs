@@ -13,9 +13,25 @@ pub struct Model {
     pub token: Option<String>,
     pub created_at: DateTime,
     pub updated_at: DateTime,
+    pub role_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {}
+pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::roles::Entity",
+        from = "Column::RoleId",
+        to = "super::roles::Column::Id",
+        on_update = "Cascade",
+        on_delete = "SetNull"
+    )]
+    Roles,
+}
+
+impl Related<super::roles::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Roles.def()
+    }
+}
 
 impl ActiveModelBehavior for ActiveModel {}

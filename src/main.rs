@@ -2,6 +2,7 @@ mod dto;
 mod entities;
 mod handlers;
 mod routes;
+mod middlewares;
 use actix_cors::Cors;
 use actix_web::{App, HttpServer, http::header, middleware, web};
 use sea_orm::{ConnectOptions, Database, DatabaseConnection, DbErr};
@@ -11,7 +12,6 @@ use migration::{Migrator, MigratorTrait};
 
 use routes::config::config;
 
-// TODO add roles table
 // TODO add this function into a mod of its own
 pub async fn connect_to_db() -> Result<DatabaseConnection, DbErr> {
     dotenv::from_filename(".env").ok();

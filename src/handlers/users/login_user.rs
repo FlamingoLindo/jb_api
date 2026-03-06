@@ -1,3 +1,4 @@
+use crate::entities::roles;
 use crate::{
     dto::users::login_user::LoginDTO, entities::users, entities::users::Model as UsersModel,
 };
@@ -17,17 +18,22 @@ use validator::Validate;
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {
     sub: String,
+    role: Option<String>,
     iat: usize,
     exp: usize,
 }
 
-fn gen_jwt(user: &UsersModel) -> Result<String, jsonwebtoken::errors::Error> {
+fn gen_jwt(
+    user: &UsersModel,
+    role_name: Option<String>,
+) -> Result<String, jsonwebtoken::errors::Error> {
     let exp = Utc::now()
         .checked_add_signed(Duration::hours(24))
         .expect("valid timestamp")
         .timestamp();
     let claims = Claims {
         sub: user.username.clone(),
+        role: role_name,
         exp: exp as usize,
         iat: Utc::now().timestamp() as usize,
     };
@@ -49,11 +55,12 @@ pub async fn login(
 
     let existing_user = users::Entity::find()
         .filter(users::Column::Username.eq(&credential.username.to_lowercase()))
+        .find_also_related(roles::Entity)
         .one(db.get_ref())
         .await;
 
     match existing_user {
-        Ok(Some(user)) => {
+        Ok(Some((user, role))) => {
             if user.blocked {
                 return Ok(HttpResponse::Unauthorized().json(json!({
                     "status": "Unauthorized",
@@ -61,11 +68,13 @@ pub async fn login(
                 })));
             }
 
+            let role_name = role.map(|r| r.title);
+
             let parsed_hash = PasswordHash::new(&user.password)
                 .map_err(|e| ErrorInternalServerError(e.to_string()))?;
 
             match Argon2::default().verify_password(credential.password.as_bytes(), &parsed_hash) {
-                Ok(()) => match gen_jwt(&user) {
+                Ok(()) => match gen_jwt(&user, role_name) {
                     Ok(token) => {
                         let mut active_user: users::ActiveModel = user.into();
                         active_user.token = Set(Some(token.clone()));

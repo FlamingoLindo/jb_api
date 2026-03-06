@@ -9,6 +9,7 @@ words:
   - actix
   - chrono
   - dotenv
+  - httpauth
   - jsonwebtoken
   - serde
   - sqlx
