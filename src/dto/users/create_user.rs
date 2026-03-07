@@ -12,7 +12,7 @@ fn validate_password(password: &str) -> Result<(), ValidationError> {
         err.message = Some("Password must contain at least one number".into());
         return Err(err);
     }
-    
+
     if !has_special {
         let mut err = ValidationError::new("invalid_password");
         err.message = Some("Password must contain at least one special character".into());
