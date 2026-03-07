@@ -5,6 +5,12 @@ mod m20260304_142033_add_token_to_user;
 mod m20260305_132645_add_created_updated_at_to_users;
 mod m20260306_130733_add_roles;
 mod m20260306_132055_add_roles_fk_users;
+mod m20260307_135800_create_class;
+mod m20260307_141844_create_types;
+mod m20260307_142040_create_brands;
+mod m20260307_142334_create_images;
+mod m20260307_143229_create_products;
+mod m20260307_144941_create_products_images_junction;
 
 pub struct Migrator;
 
@@ -17,6 +23,12 @@ impl MigratorTrait for Migrator {
             Box::new(m20260305_132645_add_created_updated_at_to_users::Migration),
             Box::new(m20260306_130733_add_roles::Migration),
             Box::new(m20260306_132055_add_roles_fk_users::Migration),
+            Box::new(m20260307_135800_create_class::Migration),
+            Box::new(m20260307_141844_create_types::Migration),
+            Box::new(m20260307_142334_create_images::Migration),
+            Box::new(m20260307_142040_create_brands::Migration),
+            Box::new(m20260307_143229_create_products::Migration),
+            Box::new(m20260307_144941_create_products_images_junction::Migration),
         ]
     }
 }

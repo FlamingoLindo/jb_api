@@ -2,5 +2,11 @@
 
 pub mod prelude;
 
+pub mod brands;
+pub mod classes;
+pub mod images;
+pub mod products;
+pub mod products_images;
 pub mod roles;
+pub mod types;
 pub mod users;
