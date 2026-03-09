@@ -1,10 +1,15 @@
 mod dto;
 mod entities;
 mod handlers;
-mod routes;
 mod middlewares;
+mod routes;
 use actix_cors::Cors;
-use actix_web::{App, HttpServer, http::header, middleware, web};
+use actix_web::{
+    App, HttpServer,
+    http::header,
+    middleware::{self, Logger},
+    web,
+};
 use sea_orm::{ConnectOptions, Database, DatabaseConnection, DbErr};
 use std::time::Duration;
 
@@ -12,7 +17,6 @@ use migration::{Migrator, MigratorTrait};
 
 use routes::config::config;
 
-// TODO check user's role
 // TODO add this function into a mod of its own
 pub async fn connect_to_db() -> Result<DatabaseConnection, DbErr> {
     dotenv::from_filename(".env").ok();
@@ -39,6 +43,13 @@ pub async fn connect_to_db() -> Result<DatabaseConnection, DbErr> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    if std::env::var_os("RUST_LOG").is_none() {
+        unsafe {
+            std::env::set_var("RUST_LOG", "actix_web=info");
+        }
+    }
+    env_logger::init();
+
     dotenv::from_filename(".env").ok();
     let port = std::env::var("PORT").expect("PORT must be set in env");
 
@@ -59,7 +70,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(db_conn.clone()))
             .wrap(cors)
-            .wrap(middleware::Logger::default())
+            .wrap(Logger::default())
             .wrap(middleware::Compress::default())
             .wrap(middleware::NormalizePath::new(
                 middleware::TrailingSlash::Trim,
