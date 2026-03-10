@@ -4,6 +4,7 @@ mod handlers;
 mod middlewares;
 mod routes;
 use actix_cors::Cors;
+use actix_multipart::form::tempfile::TempFileConfig;
 use actix_web::{
     App, HttpServer,
     http::header,
@@ -69,6 +70,7 @@ async fn main() -> std::io::Result<()> {
             .supports_credentials();
         App::new()
             .app_data(web::Data::new(db_conn.clone()))
+            .app_data(TempFileConfig::default().directory("./uploads/.temp"))
             .wrap(cors)
             .wrap(Logger::default())
             .wrap(middleware::Compress::default())

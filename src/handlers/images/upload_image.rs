@@ -1,0 +1,83 @@
+use actix_multipart::form::{MultipartForm, tempfile::TempFile};
+use actix_web::{HttpResponse, Responder, web};
+use sea_orm::{ActiveModelTrait, ActiveValue::Set, DatabaseConnection};
+use serde_json::json;
+use uuid::Uuid;
+
+use crate::entities::images;
+
+#[derive(Debug, MultipartForm)]
+pub struct UploadForm {
+    #[multipart(rename = "file")]
+    files: Vec<TempFile>,
+}
+
+pub async fn save_file(
+    db: web::Data<DatabaseConnection>,
+    path: web::Path<String>,
+    MultipartForm(form): MultipartForm<UploadForm>,
+) -> impl Responder {
+    let entity = path.into_inner();
+    let allowed = ["brands", "users", "products"];
+
+    if !allowed.contains(&entity.as_str()) {
+        return HttpResponse::BadRequest().json(json!({
+            "status": "Bad Request",
+            "message": format!("'{}' is not a valid entity", entity)
+        }));
+    }
+
+    if form.files.is_empty() {
+        return HttpResponse::BadRequest().json(json!({
+            "status": "Bad Request",
+            "message": "No file provided"
+        }));
+    }
+
+    let dir = format!("./uploads/{entity}");
+    std::fs::create_dir_all(&dir).unwrap();
+
+    let mut saved_paths: Vec<String> = Vec::new();
+
+    for f in form.files {
+        let file_name = f.file_name.unwrap();
+        let file_size = f.size;
+        let file_mime = f
+            .content_type
+            .map(|m| m.to_string())
+            .unwrap_or("application/octet-stream".to_string());
+        let dest = format!("{dir}/{file_name}");
+        log::info!("Saving to {dest}");
+        std::fs::copy(f.file.path(), &dest).unwrap();
+
+        let new_image = images::ActiveModel {
+            id: Set(Uuid::new_v4()),
+            file_name: Set(file_name),
+            path: Set(dest.clone()),
+            mime_type: Set(Some(file_mime)),
+            size: Set(file_size.try_into().unwrap()),
+            created_at: Set(chrono::Utc::now().naive_utc()),
+            ..Default::default()
+        }
+        .insert(db.get_ref())
+        .await;
+
+        match new_image {
+            Ok(_) => {
+                saved_paths.push(dest);
+            }
+            Err(err) => {
+                log::error!("Failed to insert image: {:?}", err);
+                return HttpResponse::InternalServerError().json(json!({
+                    "status": "Error",
+                    "message": "Failed to save image to database"
+                }));
+            }
+        }
+    }
+
+    HttpResponse::Ok().json(json!({
+        "status": "Ok",
+        "paths": saved_paths
+    }))
+}

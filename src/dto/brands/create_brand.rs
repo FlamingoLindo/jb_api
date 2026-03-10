@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 use validator::Validate;
 
 use crate::entities::brands::Model;
@@ -11,6 +12,8 @@ pub struct CreateBrandDTO {
         message = "Brand name must be between 3 and 50 characters"
     ))]
     pub name: String,
+
+    pub image_id: Option<Uuid>
     // pub blocked: bool,
     // pub created_at: DateTime<Utc>,
 }

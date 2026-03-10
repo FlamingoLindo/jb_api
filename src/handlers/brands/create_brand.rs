@@ -41,6 +41,7 @@ pub async fn create_brand(
     let new_brand = brands::ActiveModel {
         id: Set(Uuid::new_v4()),
         name: Set(brand.name.clone()),
+        image_id: Set(brand.image_id),
         created_at: Set(chrono::Utc::now().naive_utc()),
         blocked: Set(false),
         ..Default::default()
