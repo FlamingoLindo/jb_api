@@ -1,5 +1,6 @@
 use actix_multipart::form::{MultipartForm, tempfile::TempFile};
 use actix_web::{HttpResponse, Responder, web};
+use mime::IMAGE;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, DatabaseConnection};
 use serde_json::json;
 use uuid::Uuid;
@@ -32,6 +33,21 @@ pub async fn save_file(
             "status": "Bad Request",
             "message": "No file provided"
         }));
+    }
+
+    for f in &form.files {
+        let is_image = f
+            .content_type
+            .as_ref()
+            .map(|m| m.type_() == IMAGE)
+            .unwrap_or(false);
+
+        if !is_image {
+            return HttpResponse::BadRequest().json(json!({
+                "status": "Bad Request",
+                "message": "Only images are acceptable"
+            }));
+        }
     }
 
     let dir = format!("./uploads/{entity}");
