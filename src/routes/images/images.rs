@@ -11,7 +11,14 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             web::scope("")
                 .wrap(RoleGuard("master"))
                 .wrap(auth)
-                .route("/upload/{entity}", web::post().to(handler::upload_image::save_file)),
+                .route(
+                    "/delete/{id}",
+                    web::delete().to(handler::delete_image::delete_image),
+                )
+                .route(
+                    "/upload/{entity}",
+                    web::post().to(handler::upload_image::save_file),
+                ),
         ),
     );
 }
