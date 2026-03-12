@@ -9,14 +9,14 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("/users")
             .route("/login", web::post().to(handler::login_user::login))
-            .route(
-                "/register",
-                web::post().to(handler::create_user::create_user),
-            )
             .service(
                 web::scope("").wrap(auth).service(
                     web::scope("")
                         .wrap(RoleGuard("master"))
+                        .route(
+                            "/register",
+                            web::post().to(handler::create_user::create_user),
+                        )
                         .route(
                             "/delete/{id}",
                             web::delete().to(handler::delete_user::delete_user),
