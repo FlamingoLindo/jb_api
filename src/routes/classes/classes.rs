@@ -7,11 +7,16 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     let auth = HttpAuthentication::bearer(validator);
 
     cfg.service(
-        web::scope("/classes").service(web::scope("").wrap(auth).service(
-            web::scope("").wrap(RoleGuard("master")).route(
-                "/create",
-                web::post().to(handler::create_class::create_class),
+        web::scope("/classes").service(
+            web::scope("").wrap(auth).service(
+                web::scope("")
+                    .wrap(RoleGuard("master"))
+                    .route(
+                        "/create",
+                        web::post().to(handler::create_class::create_class),
+                    )
+                    .route("/{id}", web::get().to(handler::get_class::get_class)),
             ),
-        )),
+        ),
     );
 }
