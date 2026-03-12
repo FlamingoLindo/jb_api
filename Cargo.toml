@@ -31,4 +31,5 @@ migration = { path = "migration" }
 env_logger = "0.11.8"
 actix-multipart = "0.7.2"
 mime = "0.3.17"
+tokio = "1.50.0"
 futures = "0.3.32"

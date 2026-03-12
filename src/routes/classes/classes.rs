@@ -15,7 +15,11 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                         "/create",
                         web::post().to(handler::create_class::create_class),
                     )
-                    .route("/{id}", web::get().to(handler::get_class::get_class)),
+                    .route("/{id}", web::get().to(handler::get_class::get_class))
+                    .route(
+                        "/{id}",
+                        web::patch().to(handler::update_class::update_class),
+                    ),
             ),
         ),
     );
