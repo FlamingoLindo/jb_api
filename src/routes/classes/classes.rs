@@ -23,7 +23,8 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     .route(
                         "/{id}",
                         web::delete().to(handler::delete_class::delete_class),
-                    ),
+                    )
+                    .route("", web::get().to(handler::get_classes::get_classes)),
             ),
         ),
     );
