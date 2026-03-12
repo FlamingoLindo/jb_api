@@ -7,6 +7,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         web::scope("/api/v1")
             .configure(routes::users::users::config)
             .configure(routes::brands::brands::config)
+            .configure(routes::classes::classes::config)
             .configure(routes::images::images::config),
     );
 }
