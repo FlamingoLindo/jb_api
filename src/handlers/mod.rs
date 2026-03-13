@@ -1,4 +1,5 @@
-pub mod users;
 pub mod brands;
-pub mod images;
 pub mod classes;
+pub mod images;
+pub mod types;
+pub mod users;

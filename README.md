@@ -8,11 +8,12 @@
 
 ## TODO
 
-1. CRUD - Classes
+1. ~~CRUD - Classes~~
 2. CRUD - Types
-3. CRUD - Products
+3. CRUD - Brands
+4. CRUD - Products
    - Readjust price
-4. Budget
+5. Budget
     - (Product, Amount, Size, Weight and Price)
     - Calc. Total Value
     - Gen. PDF
