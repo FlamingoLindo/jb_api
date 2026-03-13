@@ -4,7 +4,7 @@ use uuid::Uuid;
 use validator::Validate;
 
 use crate::{
-    dto::brands::create_brand::{CreateBrandDTO, CreateBrandResponse},
+    dto::brands::create::{CreateBrandDTO, CreateBrandResponse},
     entities::brands,
 };
 

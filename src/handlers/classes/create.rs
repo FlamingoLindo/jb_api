@@ -7,7 +7,7 @@ use uuid::Uuid;
 use validator::Validate;
 
 use crate::{
-    dto::classes::create_class::{CreateClassDTO, CreateClassResponse},
+    dto::classes::create::{CreateClassDTO, CreateClassResponse},
     entities::classes,
 };
 

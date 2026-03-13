@@ -13,9 +13,8 @@ pub struct CreateBrandDTO {
     ))]
     pub name: String,
 
-    pub image_id: Option<Uuid>
-    // pub blocked: bool,
-    // pub created_at: DateTime<Utc>,
+    pub image_id: Option<Uuid>, // pub blocked: bool,
+                                // pub created_at: DateTime<Utc>,
 }
 
 #[derive(Serialize)]

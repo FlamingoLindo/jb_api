@@ -2,7 +2,7 @@ use actix_web::{HttpResponse, Responder, web};
 use sea_orm::{DatabaseConnection, EntityTrait};
 use uuid::Uuid;
 
-use crate::{dto::classes::get_class::ClassResponse, entities::classes};
+use crate::{dto::classes::get::ClassResponse, entities::classes};
 
 pub async fn get_class(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let found_class = classes::Entity::find_by_id(id.into_inner())

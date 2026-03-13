@@ -2,7 +2,7 @@ use actix_web::{HttpResponse, Responder, web};
 use sea_orm::{DatabaseConnection, EntityTrait};
 use uuid::Uuid;
 
-use crate::{dto::types::get_type::TypeResponse, entities::types};
+use crate::{dto::types::get::TypeResponse, entities::types};
 
 pub async fn get_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let id = id.into_inner();

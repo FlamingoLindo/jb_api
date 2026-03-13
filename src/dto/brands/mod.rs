@@ -1,2 +1,2 @@
-pub mod create_brand;
+pub mod create;
 pub mod get;

@@ -2,7 +2,7 @@ use actix_web::{HttpResponse, Responder, web};
 use sea_orm::{DatabaseConnection, EntityTrait, PaginatorTrait, QueryOrder, QuerySelect};
 
 use crate::{
-    dto::{classes::get_classes::GetClassesDTO, shared::pagination::PaginationParams},
+    dto::{classes::get_all::GetClassesDTO, shared::pagination::PaginationParams},
     entities::classes,
 };
 

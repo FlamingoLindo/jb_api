@@ -1,4 +1,4 @@
-pub mod create_type;
-pub mod get_type;
-pub mod get_types;
-pub mod update_type;
+pub mod create;
+pub mod get;
+pub mod get_all;
+pub mod update;

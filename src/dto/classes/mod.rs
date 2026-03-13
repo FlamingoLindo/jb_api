@@ -1,4 +1,4 @@
-pub mod create_class;
-pub mod get_class;
-pub mod get_classes;
-pub mod update_class;
+pub mod create;
+pub mod get;
+pub mod get_all;
+pub mod update;

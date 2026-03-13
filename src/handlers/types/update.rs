@@ -7,7 +7,7 @@ use uuid::Uuid;
 use validator::Validate;
 
 use crate::{
-    dto::types::update_type::{UpdateTypeDTO, UpdateTypeResponse},
+    dto::types::update::{UpdateTypeDTO, UpdateTypeResponse},
     entities::types,
 };
 
