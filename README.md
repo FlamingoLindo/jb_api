@@ -9,7 +9,7 @@
 ## TODO
 
 1. ~~CRUD - Classes~~
-2. CRUD - Types
+2. ~~CRUD - Types~~
 3. CRUD - Brands
 4. CRUD - Products
    - Readjust price
