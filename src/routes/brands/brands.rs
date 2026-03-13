@@ -12,7 +12,8 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 web::scope("")
                     .wrap(RoleGuard("master"))
                     .route("/register", web::post().to(handler::create::create_brand))
-                    .route("/{id}", web::get().to(handler::get::get_brand)),
+                    .route("/{id}", web::get().to(handler::get::get_brand))
+                    .route("", web::get().to(handler::get_all::get_brands)),
             ),
         ),
     );
