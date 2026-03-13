@@ -15,7 +15,8 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     .route("/{id}", web::get().to(handler::get_type::get_type))
                     .route("", web::get().to(handler::get_types::get_types))
                     .route("/{id}", web::patch().to(handler::update_type::update_type))
-                    .route("/{id}", web::delete().to(handler::delete_type::delete_type)),
+                    .route("/{id}", web::delete().to(handler::delete_type::delete_type))
+                    .route("/block/{id}", web::patch().to(handler::block_type::block_type)),
             ),
         ),
     );
