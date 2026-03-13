@@ -8,7 +8,7 @@ use validator::Validate;
 
 use crate::{
     dto::brands::update::{UpdateBrandDTO, UpdateBrandResponse},
-    entities::brands,
+    entities::{brands, images},
 };
 
 pub async fn update_brand(
@@ -69,6 +69,7 @@ pub async fn update_brand(
     let updated = brands::ActiveModel {
         id: Set(id),
         name: Set(brand.name.clone()),
+        image_id: Set(brand.image_id),
         updated_at: Set(chrono::Utc::now().naive_utc()),
         ..Default::default()
     }
@@ -76,7 +77,25 @@ pub async fn update_brand(
     .await;
 
     match updated {
-        Ok(brand) => HttpResponse::Ok().json(UpdateBrandResponse::from(brand)),
+        Ok(brand) => {
+            let image = if let Some(image_id) = brand.image_id {
+                match images::Entity::find_by_id(image_id).one(db.get_ref()).await {
+                    Ok(img) => img,
+                    Err(err) => {
+                        log::warn!("(update_brand) Could not get image data: {:?}", err);
+                        return HttpResponse::InternalServerError().json(serde_json::json!({
+                            "status": "Internal Server Error",
+                            "message": "Something went wrong when retrieving brand data"
+                        }));
+                    }
+                }
+            } else {
+                None
+            };
+
+            let dto = UpdateBrandResponse::from((brand, image));
+            HttpResponse::Ok().json(dto)
+        }
         Err(err) => {
             log::error!("(update_brand) Could not update brand: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
