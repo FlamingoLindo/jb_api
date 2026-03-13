@@ -1,5 +1,5 @@
-pub mod create_user;
-pub mod delete_user;
-pub mod block_user;
-pub mod export_users;
-pub mod login_user;
+pub mod block;
+pub mod create;
+pub mod delete;
+pub mod export;
+pub mod login;

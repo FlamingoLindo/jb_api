@@ -8,27 +8,18 @@ pub fn config(cfg: &mut web::ServiceConfig) {
 
     cfg.service(
         web::scope("/users")
-            .route("/login", web::post().to(handler::login_user::login))
+            .route("/login", web::post().to(handler::login::login))
             .service(
                 web::scope("").wrap(auth).service(
                     web::scope("")
                         .wrap(RoleGuard("master"))
-                        .route(
-                            "/register",
-                            web::post().to(handler::create_user::create_user),
-                        )
+                        .route("/register", web::post().to(handler::create::create_user))
                         .route(
                             "/delete/{id}",
-                            web::delete().to(handler::delete_user::delete_user),
+                            web::delete().to(handler::delete::delete_user),
                         )
-                        .route(
-                            "/status/{id}",
-                            web::patch().to(handler::block_user::block_user),
-                        )
-                        .route(
-                            "/export",
-                            web::post().to(handler::export_users::export_users),
-                        ),
+                        .route("/status/{id}", web::patch().to(handler::block::block_user))
+                        .route("/export", web::post().to(handler::export::export_users)),
                 ),
             ),
     );

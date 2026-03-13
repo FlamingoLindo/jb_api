@@ -11,24 +11,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             web::scope("").wrap(auth).service(
                 web::scope("")
                     .wrap(RoleGuard("master"))
-                    .route(
-                        "/create",
-                        web::post().to(handler::create_class::create_class),
-                    )
-                    .route("/{id}", web::get().to(handler::get_class::get_class))
-                    .route(
-                        "/{id}",
-                        web::patch().to(handler::update_class::update_class),
-                    )
-                    .route(
-                        "/{id}",
-                        web::delete().to(handler::delete_class::delete_class),
-                    )
-                    .route("", web::get().to(handler::get_classes::get_classes))
-                    .route(
-                        "/status/{id}",
-                        web::patch().to(handler::block_class::block_class),
-                    ),
+                    .route("/create", web::post().to(handler::create::create_class))
+                    .route("/{id}", web::get().to(handler::get::get_class))
+                    .route("/{id}", web::patch().to(handler::update::update_class))
+                    .route("/{id}", web::delete().to(handler::delete::delete_class))
+                    .route("", web::get().to(handler::get_all::get_classes))
+                    .route("/status/{id}", web::patch().to(handler::block::block_class)),
             ),
         ),
     );
