@@ -14,7 +14,8 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     .route("/register", web::post().to(handler::create::create_brand))
                     .route("/{id}", web::get().to(handler::get::get_brand))
                     .route("", web::get().to(handler::get_all::get_brands))
-                    .route("/{id}", web::patch().to(handler::update::update_brand)),
+                    .route("/{id}", web::patch().to(handler::update::update_brand))
+                    .route("/{id}", web::delete().to(handler::delete::delete_brand)),
             ),
         ),
     );
