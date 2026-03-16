@@ -6,7 +6,7 @@ use uuid::Uuid;
 #[derive(Serialize, Deserialize, FromQueryResult)]
 pub struct GetTypesDTO {
     pub id: Uuid,
-    pub name: String,
+    pub name: Option<String>,
     pub blocked: bool,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,

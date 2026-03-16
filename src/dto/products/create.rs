@@ -4,7 +4,7 @@ use uuid::Uuid;
 use validator::Validate;
 
 use crate::{
-    dto::shared::responses::{BrandResponse, ClassResponse, TypeResponse},
+    dto::shared::responses::{SharedBrandResponse, SharedClassResponse, SharedTypeResponse},
     entities::{brands, classes, images, products, types},
 };
 
@@ -39,9 +39,9 @@ pub struct CreateProductResponse {
     pub code: String,
     pub description: String,
     pub blocked: bool,
-    pub type_data: Option<TypeResponse>,
-    pub class_data: Option<ClassResponse>,
-    pub brand_data: Option<BrandResponse>,
+    pub type_data: Option<SharedTypeResponse>,
+    pub class_data: Option<SharedClassResponse>,
+    pub brand_data: Option<SharedBrandResponse>,
 }
 
 impl
@@ -66,11 +66,11 @@ impl
             code: product.code,
             description: product.description,
             blocked: product.blocked,
-            type_data: type_data.map(|t| TypeResponse { name: t.name }),
-            class_data: class_data.map(|t| ClassResponse { name: t.name }),
-            brand_data: brand_data.map(|b| BrandResponse {
+            type_data: type_data.map(|t| SharedTypeResponse { name: t.name }),
+            class_data: class_data.map(|t| SharedClassResponse { name: t.name }),
+            brand_data: brand_data.map(|b| SharedBrandResponse {
                 name: b.name,
-                image: brand_image.map(|i| i.path).unwrap_or_default(),
+                image: brand_image.map(|i| i.path),
             }),
         }
     }

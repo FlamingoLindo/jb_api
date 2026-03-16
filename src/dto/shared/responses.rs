@@ -1,15 +1,22 @@
-use serde::Serialize;
+use sea_orm::FromQueryResult;
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize)]
-pub struct TypeResponse {
+#[derive(Serialize, Deserialize, FromQueryResult)]
+pub struct SharedTypeResponse {
+    #[sea_orm(alias = "type_name")]
     pub name: String,
 }
-#[derive(Serialize)]
-pub struct ClassResponse {
+
+#[derive(Serialize, Deserialize, FromQueryResult)]
+pub struct SharedClassResponse {
+    #[sea_orm(alias = "class_name")]
     pub name: String,
 }
-#[derive(Serialize)]
-pub struct BrandResponse {
+
+#[derive(Serialize, Deserialize, FromQueryResult)]
+pub struct SharedBrandResponse {
+    #[sea_orm(alias = "brand_name")]
     pub name: String,
-    pub image: String,
+    #[sea_orm(alias = "brand_image")]
+    pub image: Option<String>,
 }
