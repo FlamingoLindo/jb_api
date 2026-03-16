@@ -13,26 +13,35 @@ pub struct Model {
     pub type_id: Option<Uuid>,
     pub class_id: Option<Uuid>,
     pub blocked: bool,
-    #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
-    pub price_kg: Decimal,
-    #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
-    pub price_kg_no_cut: Decimal,
-    #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
-    pub price_kg_cut: Decimal,
-    #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
-    pub price_3mt: Decimal,
-    #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
-    pub price_br: Decimal,
-    #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
-    pub price_rod: Decimal,
-    #[sea_orm(column_type = "Double")]
-    pub weight_3mts: f64,
+    #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
+    pub price_kg: Option<Decimal>,
+    #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
+    pub price_kg_no_cut: Option<Decimal>,
+    #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
+    pub price_kg_cut: Option<Decimal>,
+    #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
+    pub price_3mt: Option<Decimal>,
+    #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
+    pub price_br: Option<Decimal>,
+    #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
+    pub price_rod: Option<Decimal>,
+    #[sea_orm(column_type = "Double", nullable)]
+    pub weight_3mts: Option<f64>,
     pub created_at: DateTime,
     pub updated_at: DateTime,
+    pub brand_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::brands::Entity",
+        from = "Column::BrandId",
+        to = "super::brands::Column::Id",
+        on_update = "Cascade",
+        on_delete = "SetNull"
+    )]
+    Brands,
     #[sea_orm(
         belongs_to = "super::classes::Entity",
         from = "Column::ClassId",
@@ -51,6 +60,12 @@ pub enum Relation {
         on_delete = "SetNull"
     )]
     Types,
+}
+
+impl Related<super::brands::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Brands.def()
+    }
 }
 
 impl Related<super::classes::Entity> for Entity {

@@ -11,6 +11,8 @@ mod m20260307_142040_create_brands;
 mod m20260307_142334_create_images;
 mod m20260307_143229_create_products;
 mod m20260307_144941_create_products_images_junction;
+mod m20260316_131520_nullable_cols;
+mod m20260316_132307_add_brand_to_product;
 
 pub struct Migrator;
 
@@ -25,10 +27,12 @@ impl MigratorTrait for Migrator {
             Box::new(m20260306_132055_add_roles_fk_users::Migration),
             Box::new(m20260307_135800_create_class::Migration),
             Box::new(m20260307_141844_create_types::Migration),
-            Box::new(m20260307_142334_create_images::Migration),
             Box::new(m20260307_142040_create_brands::Migration),
+            Box::new(m20260307_142334_create_images::Migration),
             Box::new(m20260307_143229_create_products::Migration),
             Box::new(m20260307_144941_create_products_images_junction::Migration),
+            Box::new(m20260316_131520_nullable_cols::Migration),
+            Box::new(m20260316_132307_add_brand_to_product::Migration),
         ]
     }
 }
