@@ -1,30 +1,21 @@
+use chrono::NaiveDateTime;
 use sea_orm::prelude::Decimal;
-use serde::{Deserialize, Serialize};
-use uuid::Uuid;
-use validator::Validate;
+use serde::Serialize;
 
 use crate::{
     dto::shared::responses::{BrandResponse, ClassResponse, TypeResponse},
     entities::{brands, classes, images, products, types},
 };
 
-#[derive(Serialize, Deserialize, Validate)]
-pub struct CreateProductDTO {
-    #[validate(length(
-        min = 3,
-        max = 350,
-        message = "Code must be between 3 and 350 characters"
-    ))]
+#[derive(Serialize)]
+pub struct ProductResponse {
     pub code: String,
-    #[validate(length(
-        min = 3,
-        max = 550,
-        message = "Description must be between 3 and 550 characters"
-    ))]
     pub description: String,
-    pub type_id: Option<Uuid>,
-    pub class_id: Option<Uuid>,
-    pub brand_id: Option<Uuid>,
+    pub blocked: bool,
+    pub type_data: Option<TypeResponse>,
+    pub class_data: Option<ClassResponse>,
+    pub brand_data: Option<BrandResponse>,
+
     pub price_kg: Option<Decimal>,
     pub price_kg_no_cut: Option<Decimal>,
     pub price_kg_cut: Option<Decimal>,
@@ -32,16 +23,8 @@ pub struct CreateProductDTO {
     pub price_br: Option<Decimal>,
     pub price_rod: Option<Decimal>,
     pub weight_3mts: Option<f64>,
-}
-
-#[derive(Serialize)]
-pub struct CreateProductResponse {
-    pub code: String,
-    pub description: String,
-    pub blocked: bool,
-    pub type_data: Option<TypeResponse>,
-    pub class_data: Option<ClassResponse>,
-    pub brand_data: Option<BrandResponse>,
+    pub created_at: NaiveDateTime,
+    pub updated_at: NaiveDateTime,
 }
 
 impl
@@ -51,7 +34,7 @@ impl
         Option<classes::Model>,
         Option<brands::Model>,
         Option<images::Model>,
-    )> for CreateProductResponse
+    )> for ProductResponse
 {
     fn from(
         (product, type_data, class_data, brand_data, brand_image): (
@@ -66,12 +49,24 @@ impl
             code: product.code,
             description: product.description,
             blocked: product.blocked,
+
             type_data: type_data.map(|t| TypeResponse { name: t.name }),
             class_data: class_data.map(|t| ClassResponse { name: t.name }),
             brand_data: brand_data.map(|b| BrandResponse {
                 name: b.name,
                 image: brand_image.map(|i| i.path).unwrap_or_default(),
             }),
+
+            price_kg: product.price_kg,
+            price_kg_no_cut: product.price_kg_no_cut,
+            price_kg_cut: product.price_kg_cut,
+            price_3mt: product.price_3mt,
+            price_br: product.price_br,
+            price_rod: product.price_rod,
+            weight_3mts: product.weight_3mts,
+
+            created_at: product.created_at,
+            updated_at: product.updated_at,
         }
     }
 }

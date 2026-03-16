@@ -17,3 +17,10 @@
     - (Product, Amount, Size, Weight and Price)
     - Calc. Total Value
     - Gen. PDF
+
+6. Fix error
+   - Return generic message and log the error
+7. Remove `.clone` from DTO stuff
+8. Substitute `serde_json::json!` for `json!`
+9. Transform find and retrieve block into function?
+10. Blocked users should not be able to use protected routes
