@@ -1,1 +1,1 @@
-pub mod images;
+pub mod routes;
