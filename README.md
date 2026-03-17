@@ -24,3 +24,4 @@
 8. Substitute `serde_json::json!` for `json!`
 9. Transform find and retrieve block into function?
 10. Blocked users should not be able to use protected routes
+11. Fix Logs

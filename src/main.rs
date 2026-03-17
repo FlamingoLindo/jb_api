@@ -44,6 +44,7 @@ pub async fn connect_to_db() -> Result<DatabaseConnection, DbErr> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    // TODO change this to an actual .env var
     if std::env::var_os("RUST_LOG").is_none() {
         unsafe {
             std::env::set_var("RUST_LOG", "actix_web=info");

@@ -3,7 +3,7 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "products")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
@@ -25,8 +25,8 @@ pub struct Model {
     pub price_br: Option<Decimal>,
     #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
     pub price_rod: Option<Decimal>,
-    #[sea_orm(column_type = "Double", nullable)]
-    pub weight_3mts: Option<f64>,
+    #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
+    pub weight_3mts: Option<Decimal>,
     pub created_at: DateTime,
     pub updated_at: DateTime,
     pub brand_id: Option<Uuid>,

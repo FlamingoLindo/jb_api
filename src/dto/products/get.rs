@@ -22,7 +22,7 @@ pub struct ProductResponse {
     pub price_3mt: Option<Decimal>,
     pub price_br: Option<Decimal>,
     pub price_rod: Option<Decimal>,
-    pub weight_3mts: Option<f64>,
+    pub weight_3mts: Option<Decimal>,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }

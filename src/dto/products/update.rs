@@ -31,7 +31,7 @@ pub struct UpdateProductDTO {
     pub price_3mt: Option<Decimal>,
     pub price_br: Option<Decimal>,
     pub price_rod: Option<Decimal>,
-    pub weight_3mts: Option<f64>,
+    pub weight_3mts: Option<Decimal>,
 }
 
 #[derive(Serialize)]
