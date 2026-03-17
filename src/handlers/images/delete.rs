@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::warn;
 use sea_orm::{DatabaseConnection, EntityTrait, ModelTrait};
 use uuid::Uuid;
 
@@ -29,7 +30,7 @@ pub async fn delete_image(
     };
 
     if let Err(err) = std::fs::remove_file(&image.path) {
-        log::warn!("Could not delete file from disk: {:?}", err);
+        warn!("Could not delete file from disk: {:?}", err);
         return HttpResponse::InternalServerError().json(serde_json::json!({
             "status": "Internal Server Error",
             "message": "Something went wrong when deleting image"

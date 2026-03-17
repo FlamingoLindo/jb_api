@@ -5,6 +5,8 @@ use uuid::Uuid;
 
 use crate::entities::products;
 
+use log::error;
+
 pub async fn delete_product(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,
@@ -22,7 +24,7 @@ pub async fn delete_product(
             }));
         }
         Err(err) => {
-            log::error!("(delete_product) Could not find Product: {:?}", err);
+            error!("(delete_product) Could not find Product: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when finding the provided product, please try again later"
@@ -37,7 +39,7 @@ pub async fn delete_product(
         })),
 
         Err(err) => {
-            log::error!("(delete_product) Could not delete product: {:?}", err);
+            error!("(delete_product) Could not delete product: {:?}", err);
             return HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
                 "message": "An error occurred when deleting the product, please try again later"

@@ -8,6 +8,8 @@ use crate::{
     entities::{brands, classes, images, products, types},
 };
 
+use log::{error, warn};
+
 pub async fn create_product(
     db: web::Data<DatabaseConnection>,
     product: web::Json<CreateProductDTO>,
@@ -25,7 +27,7 @@ pub async fn create_product(
             })));
         }
         Err(err) => {
-            log::error!("(create_product) Could not find type: {:?}", err);
+            error!("(create_product) Could not find type: {:?}", err);
             return Ok(HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when getting products data, please try again later"
@@ -65,7 +67,7 @@ pub async fn create_product(
                 match types::Entity::find_by_id(type_id).one(db.get_ref()).await {
                     Ok(t) => t,
                     Err(err) => {
-                        log::warn!("(create_product) Could not get type data: {:?}", err);
+                        warn!("(create_product) Could not get type data: {:?}", err);
                         return Ok(HttpResponse::InternalServerError().json(serde_json::json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when creating product"
@@ -84,7 +86,7 @@ pub async fn create_product(
                 {
                     Ok(c) => c,
                     Err(err) => {
-                        log::warn!("(create_product) Could not get class data: {:?}", err);
+                        warn!("(create_product) Could not get class data: {:?}", err);
                         return Ok(HttpResponse::InternalServerError().json(serde_json::json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when creating product"
@@ -103,10 +105,7 @@ pub async fn create_product(
                             match images::Entity::find_by_id(image_id).one(db.get_ref()).await {
                                 Ok(img) => img,
                                 Err(err) => {
-                                    log::warn!(
-                                        "(create_product) Could not get brand image: {:?}",
-                                        err
-                                    );
+                                    warn!("(create_product) Could not get brand image: {:?}", err);
                                     return Ok(HttpResponse::InternalServerError().json(
                                         serde_json::json!({
                                             "status": "Internal Server Error",
@@ -122,7 +121,7 @@ pub async fn create_product(
                     }
                     Ok(None) => (None, None),
                     Err(err) => {
-                        log::warn!("(create_product) Could not get brand data: {:?}", err);
+                        warn!("(create_product) Could not get brand data: {:?}", err);
                         return Ok(HttpResponse::InternalServerError().json(serde_json::json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when creating product"

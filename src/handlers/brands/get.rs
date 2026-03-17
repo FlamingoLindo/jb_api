@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::warn;
 use sea_orm::{DatabaseConnection, EntityTrait};
 use uuid::Uuid;
 
@@ -18,7 +19,7 @@ pub async fn get_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -
                 match images::Entity::find_by_id(image_id).one(db.get_ref()).await {
                     Ok(img) => img,
                     Err(err) => {
-                        log::warn!("(get_brand) Could not get image data: {:?}", err);
+                        warn!("(get_brand) Could not get image data: {:?}", err);
                         return HttpResponse::InternalServerError().json(serde_json::json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when retrieving brand data"
@@ -37,7 +38,7 @@ pub async fn get_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -
             "message": "Brand not found"
         })),
         Err(err) => {
-            log::warn!("(get_brand) Could not get brand data: {:?}", err);
+            warn!("(get_brand) Could not get brand data: {:?}", err);
             HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving brand data"

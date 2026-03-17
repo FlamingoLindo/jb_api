@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, error::ErrorInternalServerError, web};
+use log::error;
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
 };
@@ -26,14 +27,14 @@ pub async fn create_type(
 
     match existing_type {
         Ok(Some(_)) => {
-            log::error!("(create_type) Type name already in use");
+            error!("(create_type) Type name already in use");
             return Ok(HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
                 "message": "Type name already in use"
             })));
         }
         Err(err) => {
-            log::error!("(create_type) Could not find type: {:?}", err);
+            error!("(create_type) Could not find type: {:?}", err);
             return Ok(HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when getting types data, please try again later"

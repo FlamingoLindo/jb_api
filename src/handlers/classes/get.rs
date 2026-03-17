@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::warn;
 use sea_orm::{DatabaseConnection, EntityTrait};
 use uuid::Uuid;
 
@@ -19,7 +20,7 @@ pub async fn get_class(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -
             "message": "Class not found"
         })),
         Err(err) => {
-            log::warn!("Could not get class data: {:?}", err);
+            warn!("Could not get class data: {:?}", err);
             HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving class data"

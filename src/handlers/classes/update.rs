@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::{error, warn};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
 };
@@ -32,14 +33,14 @@ pub async fn update_class(
 
     match current_class {
         Ok(None) => {
-            log::warn!("(update_class) Class not found: {}", id);
+            warn!("(update_class) Class not found: {}", id);
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Class not found"
             }));
         }
         Err(err) => {
-            log::error!("(update_class) Database error: {:?}", err);
+            error!("(update_class) Database error: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when finding class, please try again later"
@@ -50,14 +51,14 @@ pub async fn update_class(
 
     match existing_class {
         Ok(Some(_)) => {
-            log::warn!("(update_class) Class with same name already exists");
+            warn!("(update_class) Class with same name already exists");
             return HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
                 "message": "Class name already in use"
             }));
         }
         Err(err) => {
-            log::error!("(update_class) Could not check class name: {:?}", err);
+            error!("(update_class) Could not check class name: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when finding class, please try again later"
@@ -78,7 +79,7 @@ pub async fn update_class(
     match updated {
         Ok(class) => HttpResponse::Ok().json(UpdateClassResponse::from(class)),
         Err(err) => {
-            log::error!("(update_class) Could not update class: {:?}", err);
+            error!("(update_class) Could not update class: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when updating class, please try again later"

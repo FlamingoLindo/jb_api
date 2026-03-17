@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::warn;
 use sea_orm::{ActiveModelTrait, DatabaseConnection, EntityTrait, Set, prelude::Decimal};
 use serde_json::json;
 use validator::Validate;
@@ -22,14 +23,14 @@ pub async fn readjust_price(
         let product = match product {
             Ok(Some(p)) => p,
             Ok(None) => {
-                log::warn!("(readjust_price) Product with id: {:?} not found", id);
+                warn!("(readjust_price) Product with id: {:?} not found", id);
                 return HttpResponse::NotFound().json(json!({
                     "status": "Not Found",
                     "message": "Product not found"
                 }));
             }
             Err(err) => {
-                log::warn!("Could not get product data: {:?}", err);
+                warn!("Could not get product data: {:?}", err);
                 return HttpResponse::InternalServerError().json(json!({
                     "status": "Internal Server Error",
                     "message": "Something went wrong when retrieving product data"
@@ -53,7 +54,7 @@ pub async fn readjust_price(
         .await;
 
         if let Err(err) = update {
-            log::warn!("Could not update product {}: {:?}", id, err);
+            warn!("Could not update product {}: {:?}", id, err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when updating product prices"

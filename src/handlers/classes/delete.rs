@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::error;
 use sea_orm::{DatabaseConnection, EntityTrait, ModelTrait};
 use serde_json::json;
 use uuid::Uuid;
@@ -22,7 +23,7 @@ pub async fn delete_class(
             }));
         }
         Err(err) => {
-            log::error!("(delete_class) Could not find class: {:?}", err);
+            error!("(delete_class) Could not find class: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when finding the provided class, please try again later"
@@ -37,7 +38,7 @@ pub async fn delete_class(
         })),
 
         Err(err) => {
-            log::error!("(delete_class) Could not delete class: {:?}", err);
+            error!("(delete_class) Could not delete class: {:?}", err);
             return HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
                 "message": "An error occurred when deleting the class, please try again later"

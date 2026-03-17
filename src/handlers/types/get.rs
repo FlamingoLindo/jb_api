@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::warn;
 use sea_orm::{DatabaseConnection, EntityTrait};
 use uuid::Uuid;
 
@@ -19,7 +20,7 @@ pub async fn get_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) ->
             "message": "Type not found"
         })),
         Err(err) => {
-            log::warn!("(get_type) Could not get type data: {:?}", err);
+            warn!("(get_type) Could not get type data: {:?}", err);
             HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving type data"

@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::{error, warn};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde_json::json;
 use uuid::Uuid;
@@ -30,14 +31,14 @@ pub async fn update_product(
 
     match current_product {
         Ok(None) => {
-            log::warn!("(update_product) Product not found: {}", id);
+            warn!("(update_product) Product not found: {}", id);
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Product not found"
             }));
         }
         Err(err) => {
-            log::error!("(update_product) Database error: {:?}", err);
+            error!("(update_product) Database error: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when finding product, please try again later"
@@ -48,14 +49,14 @@ pub async fn update_product(
 
     match existing_product {
         Ok(Some(_)) => {
-            log::warn!("(update_product) Product with same name already exists");
+            warn!("(update_product) Product with same name already exists");
             return HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
                 "message": "Product name already in use"
             }));
         }
         Err(err) => {
-            log::error!("(update_product) Could not check product name: {:?}", err);
+            error!("(update_product) Could not check product name: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when finding product, please try again later"
@@ -93,7 +94,7 @@ pub async fn update_product(
                 match types::Entity::find_by_id(type_id).one(db.get_ref()).await {
                     Ok(t) => t,
                     Err(err) => {
-                        log::warn!("(update_product) Could not get type data: {:?}", err);
+                        warn!("(update_product) Could not get type data: {:?}", err);
                         return HttpResponse::InternalServerError().json(serde_json::json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when updating product"
@@ -112,7 +113,7 @@ pub async fn update_product(
                 {
                     Ok(c) => c,
                     Err(err) => {
-                        log::warn!("(update_product) Could not get class data: {:?}", err);
+                        warn!("(update_product) Could not get class data: {:?}", err);
                         return HttpResponse::InternalServerError().json(serde_json::json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when updating product"
@@ -131,10 +132,7 @@ pub async fn update_product(
                             match images::Entity::find_by_id(image_id).one(db.get_ref()).await {
                                 Ok(img) => img,
                                 Err(err) => {
-                                    log::warn!(
-                                        "(update_product) Could not get brand image: {:?}",
-                                        err
-                                    );
+                                    warn!("(update_product) Could not get brand image: {:?}", err);
                                     return HttpResponse::InternalServerError().json(
                                         serde_json::json!({
                                             "status": "Internal Server Error",
@@ -150,7 +148,7 @@ pub async fn update_product(
                     }
                     Ok(None) => (None, None),
                     Err(err) => {
-                        log::warn!("(update_product) Could not get brand data: {:?}", err);
+                        warn!("(update_product) Could not get brand data: {:?}", err);
                         return HttpResponse::InternalServerError().json(serde_json::json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when updating product"
@@ -170,7 +168,7 @@ pub async fn update_product(
             )))
         }
         Err(err) => {
-            log::error!("(update_product) Could not update product: {:?}", err);
+            error!("(update_product) Could not update product: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when updating product, please try again later"

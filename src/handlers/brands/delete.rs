@@ -1,5 +1,6 @@
 use crate::entities::{brands, images};
 use actix_web::{HttpResponse, Responder, web};
+use log::error;
 use sea_orm::{DatabaseConnection, EntityTrait, ModelTrait, TransactionTrait};
 use serde_json::json;
 use uuid::Uuid;
@@ -21,7 +22,7 @@ pub async fn delete_brand(
             }));
         }
         Err(err) => {
-            log::error!("(delete_brand) Could not find brand: {:?}", err);
+            error!("(delete_brand) Could not find brand: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when finding the provided brand, please try again later"
@@ -52,7 +53,7 @@ pub async fn delete_brand(
             "message": "Brand deleted successfully"
         })),
         Err(err) => {
-            log::error!("(delete_brand) Transaction failed: {:?}", err);
+            error!("(delete_brand) Transaction failed: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "An error occurred when deleting the brand, please try again later"

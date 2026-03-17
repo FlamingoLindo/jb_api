@@ -3,6 +3,8 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, Qu
 use serde::Serialize;
 use uuid::Uuid;
 
+use log::error;
+
 use crate::entities::products;
 
 #[derive(Serialize)]
@@ -45,7 +47,7 @@ pub async fn block_product(
             blocked: updated_product.blocked,
         }),
         Err(err) => {
-            log::error!("(block_product) Could not block product: {:?}", err);
+            error!("(block_product) Could not block product: {:?}", err);
             HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
                 "message": "err.to_string()"

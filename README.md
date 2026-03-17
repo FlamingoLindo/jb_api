@@ -11,8 +11,8 @@
 1. ~~CRUD - Classes~~
 2. ~~CRUD - Types~~
 3. ~~CRUD - Brands~~
-4. CRUD - Products
-   - Readjust price
+4. ~~CRUD - Products~~
+   - ~~Readjust price~~
 5. Budget
     - (Product, Amount, Size, Weight and Price)
     - Calc. Total Value
@@ -25,3 +25,4 @@
 9. Transform find and retrieve block into function?
 10. Blocked users should not be able to use protected routes
 11. Fix Logs
+12. Products images

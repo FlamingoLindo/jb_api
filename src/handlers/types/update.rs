@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::{error, warn};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
 };
@@ -32,14 +33,14 @@ pub async fn update_type(
 
     match current_type {
         Ok(None) => {
-            log::warn!("(update_type) Type not found: {}", id);
+            warn!("(update_type) Type not found: {}", id);
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Type not found"
             }));
         }
         Err(err) => {
-            log::error!("(update_type) Database error: {:?}", err);
+            error!("(update_type) Database error: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when finding type, please try again later"
@@ -50,14 +51,14 @@ pub async fn update_type(
 
     match existing_type {
         Ok(Some(_)) => {
-            log::warn!("(update_type) Type with same name already exists");
+            warn!("(update_type) Type with same name already exists");
             return HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
                 "message": "Type name already in use"
             }));
         }
         Err(err) => {
-            log::error!("(update_type) Could not check type name: {:?}", err);
+            error!("(update_type) Could not check type name: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when finding type, please try again later"
@@ -78,7 +79,7 @@ pub async fn update_type(
     match updated {
         Ok(updated_type) => HttpResponse::Ok().json(UpdateTypeResponse::from(updated_type)),
         Err(err) => {
-            log::error!("(update_type) Could not update type: {:?}", err);
+            error!("(update_type) Could not update type: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when updating type, please try again later"

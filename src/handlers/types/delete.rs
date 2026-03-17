@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::error;
 use sea_orm::{DatabaseConnection, EntityTrait, ModelTrait};
 use serde_json::json;
 use uuid::Uuid;
@@ -19,7 +20,7 @@ pub async fn delete_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
             }));
         }
         Err(err) => {
-            log::error!("(delete_type) Could not find Type: {:?}", err);
+            error!("(delete_type) Could not find Type: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when finding the provided type, please try again later"
@@ -34,7 +35,7 @@ pub async fn delete_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
         })),
 
         Err(err) => {
-            log::error!("(delete_type) Could not delete type: {:?}", err);
+            error!("(delete_type) Could not delete type: {:?}", err);
             return HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
                 "message": "An error occurred when deleting the type, please try again later"

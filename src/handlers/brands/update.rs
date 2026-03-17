@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::{error, warn};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
 };
@@ -32,14 +33,14 @@ pub async fn update_brand(
 
     match current_brand {
         Ok(None) => {
-            log::warn!("(update_brand) Brand not found: {}", id);
+            warn!("(update_brand) Brand not found: {}", id);
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Brand not found"
             }));
         }
         Err(err) => {
-            log::error!("(update_brand) Database error: {:?}", err);
+            error!("(update_brand) Database error: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when finding brand, please try again later"
@@ -50,14 +51,14 @@ pub async fn update_brand(
 
     match existing_brand {
         Ok(Some(_)) => {
-            log::warn!("(update_brand) Brand with same name already exists");
+            warn!("(update_brand) Brand with same name already exists");
             return HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
                 "message": "Brand name already in use"
             }));
         }
         Err(err) => {
-            log::error!("(update_brand) Could not check brand name: {:?}", err);
+            error!("(update_brand) Could not check brand name: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when finding brand, please try again later"
@@ -82,7 +83,7 @@ pub async fn update_brand(
                 match images::Entity::find_by_id(image_id).one(db.get_ref()).await {
                     Ok(img) => img,
                     Err(err) => {
-                        log::warn!("(update_brand) Could not get image data: {:?}", err);
+                        warn!("(update_brand) Could not get image data: {:?}", err);
                         return HttpResponse::InternalServerError().json(serde_json::json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when retrieving brand data"
@@ -97,7 +98,7 @@ pub async fn update_brand(
             HttpResponse::Ok().json(dto)
         }
         Err(err) => {
-            log::error!("(update_brand) Could not update brand: {:?}", err);
+            error!("(update_brand) Could not update brand: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Error when updating brand, please try again later"

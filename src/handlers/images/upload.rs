@@ -1,5 +1,6 @@
 use actix_multipart::form::{MultipartForm, tempfile::TempFile};
 use actix_web::{HttpResponse, Responder, web};
+use log::{error, info};
 use mime::IMAGE;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, DatabaseConnection};
 use serde_json::json;
@@ -63,7 +64,7 @@ pub async fn save_file(
             .map(|m| m.to_string())
             .unwrap_or("application/octet-stream".to_string());
         let dest = format!("{dir}/{file_name}");
-        log::info!("Saving to {dest}");
+        info!("Saving to {dest}");
         std::fs::copy(f.file.path(), &dest).unwrap();
 
         let new_image = images::ActiveModel {
@@ -83,7 +84,7 @@ pub async fn save_file(
                 saved_paths.push(dest);
             }
             Err(err) => {
-                log::error!("Failed to insert image: {:?}", err);
+                error!("Failed to insert image: {:?}", err);
                 return HttpResponse::InternalServerError().json(json!({
                     "status": "Error",
                     "message": "Failed to save image to database"
