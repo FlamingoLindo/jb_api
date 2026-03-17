@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, error::ErrorInternalServerError, web};
+use log::error;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use uuid::Uuid;
 use validator::Validate;
@@ -25,9 +26,10 @@ pub async fn create_brand(
             })));
         }
         Err(err) => {
+            error!("(create_brand) Could not find brand by name: {:?}", err);
             return Ok(HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
-                "message": err.to_string()
+                "message": "There has been an error when finding brand, please try again"
             })));
         }
         Ok(None) => {}

@@ -1,5 +1,6 @@
 use crate::entities::users;
 use actix_web::{HttpResponse, Responder, web};
+use log::error;
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, ModelTrait, QueryFilter};
 use uuid::Uuid;
 
@@ -15,18 +16,24 @@ pub async fn delete_user(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                 "status": "Ok",
                 "message": "User deleted"
             })),
-            Err(err) => HttpResponse::InternalServerError().json(serde_json::json!({
-                "status": "Internal Server Error",
-                "message": err.to_string()
-            })),
+            Err(err) => {
+                error!("(delete_user) Could not delete user: {:?}", err);
+                HttpResponse::InternalServerError().json(serde_json::json!({
+                    "status": "Internal Server Error",
+                    "message": "There has been an error when deleting user, please try again"
+                }))
+            }
         },
         Ok(None) => HttpResponse::NotFound().json(serde_json::json!({
             "status": "Not Found",
             "message": "User not found"
         })),
-        Err(err) => HttpResponse::InternalServerError().json(serde_json::json!({
-            "status": "Internal Server Error",
-            "message": err.to_string()
-        })),
+        Err(err) => {
+            error!("(delete_user) Could not find user: {:?}", err);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "status": "Internal Server Error",
+                "message": "There has been an error when finding user, please try again"
+            }))
+        }
     }
 }

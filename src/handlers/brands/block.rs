@@ -1,7 +1,9 @@
 use crate::entities::brands;
 use actix_web::{HttpResponse, Responder, web};
+use log::error;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde::Serialize;
+use serde_json::json;
 use uuid::Uuid;
 
 #[derive(Serialize)]
@@ -19,15 +21,16 @@ pub async fn block_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
     let brand = match existing_brand {
         Ok(Some(brand)) => brand,
         Ok(None) => {
-            return HttpResponse::NotFound().json(serde_json::json!({
+            return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Brand not found"
             }));
         }
         Err(err) => {
-            return HttpResponse::InternalServerError().json(serde_json::json!({
+            error!("(block_brand) Could not find brand: {:?}", err);
+            return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
-                "message": err.to_string()
+                "message": "There has been an error when finding brand, please try again"
             }));
         }
     };
@@ -40,9 +43,12 @@ pub async fn block_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
             name: updated_brand.name,
             blocked: updated_brand.blocked,
         }),
-        Err(err) => HttpResponse::InternalServerError().json(serde_json::json!({
-            "status": "Internal Server Error",
-            "message": err.to_string()
-        })),
+        Err(err) => {
+            error!("(block_brand) Could not update brand block status: {:?}", err);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "status": "Internal Server Error",
+                "message": "There has been an error when updating brand, please try again"
+            }))
+        }
     }
 }

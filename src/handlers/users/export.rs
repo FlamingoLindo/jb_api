@@ -1,5 +1,6 @@
 use crate::entities::users;
 use actix_web::{HttpResponse, Responder, web};
+use log::error;
 use rust_xlsxwriter::{ExcelDateTime, Format, Workbook};
 use sea_orm::{DatabaseConnection, EntityTrait};
 
@@ -7,9 +8,10 @@ pub async fn export_users(db: web::Data<DatabaseConnection>) -> impl Responder {
     let users = match users::Entity::find().all(db.get_ref()).await {
         Ok(users) => users,
         Err(err) => {
+            error!("(export_users) Could not fetch users: {:?}", err);
             return HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
-                "message": err.to_string()
+                "message": "There has been an error when exporting users, please try again"
             }));
         }
     };
@@ -44,9 +46,12 @@ pub async fn export_users(db: web::Data<DatabaseConnection>) -> impl Responder {
             "status": "Ok",
             "message": "Users exported successfully"
         })),
-        Err(err) => HttpResponse::InternalServerError().json(serde_json::json!({
-            "status": "Internal Server Error",
-            "message": err.to_string()
-        })),
+        Err(err) => {
+            error!("(export_users) Could not save users export file: {:?}", err);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "status": "Internal Server Error",
+                "message": "There has been an error when exporting users, please try again"
+            }))
+        }
     }
 }

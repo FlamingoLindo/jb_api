@@ -7,6 +7,7 @@ use argon2::password_hash::PasswordHash;
 use argon2::{Argon2, PasswordVerifier};
 use chrono::{Duration, Utc};
 use jsonwebtoken::{Algorithm, EncodingKey, Header, encode};
+use log::error;
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
 };
@@ -88,10 +89,13 @@ pub async fn login(
                             "token": token
                         })))
                     }
-                    Err(err) => Ok(HttpResponse::InternalServerError().json(json!({
-                        "status": "Internal Server Error",
-                        "message": err.to_string()
-                    }))),
+                    Err(err) => {
+                        error!("(login) Could not generate JWT token: {:?}", err);
+                        Ok(HttpResponse::InternalServerError().json(json!({
+                            "status": "Internal Server Error",
+                            "message": "There has been an error when logging in, please try again"
+                        })))
+                    }
                 },
                 Err(_) => Ok(HttpResponse::Unauthorized().json(json!({
                     "status": "Unauthorized",

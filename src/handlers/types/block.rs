@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::error;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde::Serialize;
 use uuid::Uuid;
@@ -26,9 +27,10 @@ pub async fn block_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) 
             }));
         }
         Err(err) => {
+            error!("(block_type) Could not find type: {:?}", err);
             return HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
-                "message": err.to_string()
+                "message": "There has been an error when finding type, please try again"
             }));
         }
     };
@@ -41,9 +43,12 @@ pub async fn block_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) 
             name: updated_type.name,
             blocked: updated_type.blocked,
         }),
-        Err(err) => HttpResponse::InternalServerError().json(serde_json::json!({
-            "status": "Internal Server Error",
-            "message": err.to_string()
-        })),
+        Err(err) => {
+            error!("(block_type) Could not update type block status: {:?}", err);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "status": "Internal Server Error",
+                "message": "There has been an error when updating type, please try again"
+            }))
+        }
     }
 }

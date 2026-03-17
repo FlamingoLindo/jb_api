@@ -1,5 +1,6 @@
 use crate::entities::users;
 use actix_web::{HttpResponse, Responder, web};
+use log::error;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde::Serialize;
 use uuid::Uuid;
@@ -25,9 +26,10 @@ pub async fn block_user(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) 
             }));
         }
         Err(err) => {
+            error!("(block_user) Could not find user: {:?}", err);
             return HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
-                "message": err.to_string()
+                "message": "There has been an error when finding user, please try again"
             }));
         }
     };
@@ -40,9 +42,12 @@ pub async fn block_user(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) 
             username: updated_user.username,
             blocked: updated_user.blocked,
         }),
-        Err(err) => HttpResponse::InternalServerError().json(serde_json::json!({
-            "status": "Internal Server Error",
-            "message": err.to_string()
-        })),
+        Err(err) => {
+            error!("(block_user) Could not update user block status: {:?}", err);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "status": "Internal Server Error",
+                "message": "There has been an error when updating user, please try again"
+            }))
+        }
     }
 }

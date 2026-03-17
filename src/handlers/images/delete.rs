@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
-use log::warn;
+use log::{error, warn};
 use sea_orm::{DatabaseConnection, EntityTrait, ModelTrait};
 use uuid::Uuid;
 
@@ -22,9 +22,10 @@ pub async fn delete_image(
             }));
         }
         Err(err) => {
+            error!("(delete_image) Could not find image: {:?}", err);
             return HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
-                "message": err.to_string()
+                "message": "There has been an error when finding image, please try again"
             }));
         }
     };
@@ -42,9 +43,12 @@ pub async fn delete_image(
             "status": "Ok",
             "message": "Image deleted successfully"
         })),
-        Err(err) => HttpResponse::InternalServerError().json(serde_json::json!({
-            "status": "Internal Server Error",
-            "message": err.to_string()
-        })),
+        Err(err) => {
+            error!("(delete_image) Could not delete image from database: {:?}", err);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "status": "Internal Server Error",
+                "message": "There has been an error when deleting image, please try again"
+            }))
+        }
     }
 }

@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::error;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde::Serialize;
 use uuid::Uuid;
@@ -26,9 +27,10 @@ pub async fn block_class(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
             }));
         }
         Err(err) => {
+            error!("(block_class) Could not find class: {:?}", err);
             return HttpResponse::InternalServerError().json(serde_json::json!({
                 "status": "Internal Server Error",
-                "message": err.to_string()
+                "message": "There has been an error when finding class, please try again"
             }));
         }
     };
@@ -41,9 +43,12 @@ pub async fn block_class(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
             name: updated_class.name,
             blocked: updated_class.blocked,
         }),
-        Err(err) => HttpResponse::InternalServerError().json(serde_json::json!({
-            "status": "Internal Server Error",
-            "message": err.to_string()
-        })),
+        Err(err) => {
+            error!("(block_class) Could not update class block status: {:?}", err);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "status": "Internal Server Error",
+                "message": "There has been an error when updating class, please try again"
+            }))
+        }
     }
 }

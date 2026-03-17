@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, error::ErrorInternalServerError, web};
+use log::error;
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
 };
@@ -28,9 +29,10 @@ pub async fn create_class(
             })));
         }
         Err(err) => {
+            error!("(create_class) Could not find class by name: {:?}", err);
             return Ok(HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
-                "message": err.to_string()
+                "message": "There has been an error when finding class, please try again"
             })));
         }
         Ok(None) => {}
