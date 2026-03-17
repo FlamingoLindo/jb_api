@@ -22,7 +22,7 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                     Ok(t) => t,
                     Err(err) => {
                         warn!("(get_product) Could not get type data: {:?}", err);
-                        return HttpResponse::InternalServerError().json(serde_json::json!({
+                        return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when retrieving product"
                         }));
@@ -40,7 +40,7 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                     Ok(c) => c,
                     Err(err) => {
                         warn!("(get_product) Could not get class data: {:?}", err);
-                        return HttpResponse::InternalServerError().json(serde_json::json!({
+                        return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when retrieving product"
                         }));
@@ -58,7 +58,7 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                                 Ok(img) => img,
                                 Err(err) => {
                                     warn!("(get_product) Could not get brand image: {:?}", err);
-                                    return HttpResponse::InternalServerError().json(serde_json::json!({
+                                    return HttpResponse::InternalServerError().json(json!({
                                         "status": "Internal Server Error",
                                         "message": "Something went wrong when retrieving product"
                                     }));
@@ -72,7 +72,7 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                     Ok(None) => (None, None),
                     Err(err) => {
                         warn!("(get_product) Could not get brand data: {:?}", err);
-                        return HttpResponse::InternalServerError().json(serde_json::json!({
+                        return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when retrieving product"
                         }));

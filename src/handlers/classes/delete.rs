@@ -32,14 +32,14 @@ pub async fn delete_class(
     };
 
     match class.delete(db.get_ref()).await {
-        Ok(_) => HttpResponse::Ok().json(serde_json::json!({
+        Ok(_) => HttpResponse::Ok().json(json!({
             "status": "Ok",
             "message": "Class deleted successfully"
         })),
 
         Err(err) => {
             error!("(delete_class) Could not delete class: {:?}", err);
-            return HttpResponse::InternalServerError().json(serde_json::json!({
+            return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "An error occurred when deleting the class, please try again later"
             }));

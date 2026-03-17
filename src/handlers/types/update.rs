@@ -67,9 +67,10 @@ pub async fn update_type(
         Ok(None) => {}
     }
 
+    let type_data = type_data.into_inner();
     let updated = types::ActiveModel {
         id: Set(id),
-        name: Set(type_data.name.clone()),
+        name: Set(type_data.name),
         updated_at: Set(chrono::Utc::now().naive_utc()),
         ..Default::default()
     }

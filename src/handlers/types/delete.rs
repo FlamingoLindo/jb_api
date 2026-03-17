@@ -29,14 +29,14 @@ pub async fn delete_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
     };
 
     match delete_type.delete(db.get_ref()).await {
-        Ok(_) => HttpResponse::Ok().json(serde_json::json!({
+        Ok(_) => HttpResponse::Ok().json(json!({
             "status": "Ok",
             "message": "Type deleted successfully"
         })),
 
         Err(err) => {
             error!("(delete_type) Could not delete type: {:?}", err);
-            return HttpResponse::InternalServerError().json(serde_json::json!({
+            return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "An error occurred when deleting the type, please try again later"
             }));

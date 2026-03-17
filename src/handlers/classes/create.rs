@@ -42,9 +42,10 @@ pub async fn create_class(
         return Ok(HttpResponse::BadRequest().json(errors));
     }
 
-    let class = classes::ActiveModel {
+    let class = class.into_inner();
+    let new_class = classes::ActiveModel {
         id: Set(Uuid::new_v4()),
-        name: Set(class.name.clone()),
+        name: Set(class.name),
         blocked: Set(false),
         created_at: Set(chrono::Utc::now().naive_utc()),
         ..Default::default()
@@ -52,7 +53,7 @@ pub async fn create_class(
     .insert(db.get_ref())
     .await;
 
-    match class {
+    match new_class {
         Ok(class) => Ok(HttpResponse::Created().json(CreateClassResponse::from(class))),
         Err(err) => Err(ErrorInternalServerError(err)),
     }

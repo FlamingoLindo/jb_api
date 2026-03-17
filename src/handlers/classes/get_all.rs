@@ -1,6 +1,7 @@
 use actix_web::{HttpResponse, Responder, web};
 use log::warn;
 use sea_orm::{DatabaseConnection, EntityTrait, PaginatorTrait, QueryOrder, QuerySelect};
+use serde_json::json;
 
 use crate::{
     dto::{classes::get_all::GetClassesDTO, shared::pagination::PaginationParams},
@@ -31,7 +32,7 @@ pub async fn get_classes(
         Ok(n) => n,
         Err(err) => {
             warn!("(get_classes) Could not count classes: {:?}", err);
-            return HttpResponse::InternalServerError().json(serde_json::json!({
+            return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving classes data"
             }));
@@ -39,7 +40,7 @@ pub async fn get_classes(
     };
 
     match paginator.fetch_page(page).await {
-        Ok(found_classes) => HttpResponse::Ok().json(serde_json::json!({
+        Ok(found_classes) => HttpResponse::Ok().json(json!({
             "data": found_classes,
             "page": page,
             "page_size": page_size,
@@ -47,7 +48,7 @@ pub async fn get_classes(
         })),
         Err(err) => {
             warn!("(get_classes) Could not get classes data: {:?}", err);
-            HttpResponse::InternalServerError().json(serde_json::json!({
+            HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving classes data"
             }))

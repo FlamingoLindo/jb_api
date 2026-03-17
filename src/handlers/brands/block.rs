@@ -45,7 +45,7 @@ pub async fn block_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
         }),
         Err(err) => {
             error!("(block_brand) Could not update brand block status: {:?}", err);
-            HttpResponse::InternalServerError().json(serde_json::json!({
+            HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when updating brand, please try again"
             }))

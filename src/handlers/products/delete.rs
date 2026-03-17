@@ -33,14 +33,14 @@ pub async fn delete_product(
     };
     // TODO also delete product image
     match delete_product.delete(db.get_ref()).await {
-        Ok(_) => HttpResponse::Ok().json(serde_json::json!({
+        Ok(_) => HttpResponse::Ok().json(json!({
             "status": "Ok",
             "message": "Product deleted successfully"
         })),
 
         Err(err) => {
             error!("(delete_product) Could not delete product: {:?}", err);
-            return HttpResponse::InternalServerError().json(serde_json::json!({
+            return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "An error occurred when deleting the product, please try again later"
             }));

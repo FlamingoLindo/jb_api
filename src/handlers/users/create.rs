@@ -1,6 +1,7 @@
 use actix_web::{HttpResponse, Responder, error::ErrorInternalServerError, web};
 use log::error;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
+use serde_json::json;
 use uuid::Uuid;
 use validator::Validate;
 
@@ -26,14 +27,14 @@ pub async fn create_user(
 
     match existing_user {
         Ok(Some(_)) => {
-            return Ok(HttpResponse::Conflict().json(serde_json::json!({
+            return Ok(HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
                 "message": "Username already taken"
             })));
         }
         Err(err) => {
             error!("(create_user) Could not find user by username: {:?}", err);
-            return Ok(HttpResponse::InternalServerError().json(serde_json::json!({
+            return Ok(HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when finding user, please try again"
             })));
@@ -52,7 +53,7 @@ pub async fn create_user(
         Ok(hash) => hash.to_string(),
         Err(err) => {
             error!("(create_user) Could not hash user password: {:?}", err);
-            return Ok(HttpResponse::InternalServerError().json(serde_json::json!({
+            return Ok(HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when processing password, please try again"
             })));
@@ -63,11 +64,12 @@ pub async fn create_user(
     let lower_username = user.username.to_lowercase();
 
     // Create user
+    let user_data = user.into_inner();
     let new_user = users::ActiveModel {
         id: Set(Uuid::new_v4()),
         username: Set(lower_username),
         password: Set(password_hash),
-        blocked: Set(user.blocked),
+        blocked: Set(user_data.blocked),
         ..Default::default()
     }
     .insert(db.get_ref())

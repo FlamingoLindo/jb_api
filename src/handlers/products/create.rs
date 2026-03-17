@@ -36,7 +36,6 @@ pub async fn create_product(
         Ok(None) => {}
     }
 
-    // TODO do this to all handlers...
     let product = product.into_inner();
 
     let new_product = products::ActiveModel {
@@ -68,7 +67,7 @@ pub async fn create_product(
                     Ok(t) => t,
                     Err(err) => {
                         warn!("(create_product) Could not get type data: {:?}", err);
-                        return Ok(HttpResponse::InternalServerError().json(serde_json::json!({
+                        return Ok(HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when creating product"
                         })));
@@ -87,7 +86,7 @@ pub async fn create_product(
                     Ok(c) => c,
                     Err(err) => {
                         warn!("(create_product) Could not get class data: {:?}", err);
-                        return Ok(HttpResponse::InternalServerError().json(serde_json::json!({
+                        return Ok(HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when creating product"
                         })));
@@ -106,12 +105,10 @@ pub async fn create_product(
                                 Ok(img) => img,
                                 Err(err) => {
                                     warn!("(create_product) Could not get brand image: {:?}", err);
-                                    return Ok(HttpResponse::InternalServerError().json(
-                                        serde_json::json!({
-                                            "status": "Internal Server Error",
-                                            "message": "Something went wrong when creating product"
-                                        }),
-                                    ));
+                                    return Ok(HttpResponse::InternalServerError().json(json!({
+                                        "status": "Internal Server Error",
+                                        "message": "Something went wrong when creating product"
+                                    })));
                                 }
                             }
                         } else {
@@ -122,7 +119,7 @@ pub async fn create_product(
                     Ok(None) => (None, None),
                     Err(err) => {
                         warn!("(create_product) Could not get brand data: {:?}", err);
-                        return Ok(HttpResponse::InternalServerError().json(serde_json::json!({
+                        return Ok(HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when creating product"
                         })));

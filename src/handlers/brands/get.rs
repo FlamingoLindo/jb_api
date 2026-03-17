@@ -1,6 +1,7 @@
 use actix_web::{HttpResponse, Responder, web};
 use log::warn;
 use sea_orm::{DatabaseConnection, EntityTrait};
+use serde_json::json;
 use uuid::Uuid;
 
 use crate::{
@@ -20,7 +21,7 @@ pub async fn get_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -
                     Ok(img) => img,
                     Err(err) => {
                         warn!("(get_brand) Could not get image data: {:?}", err);
-                        return HttpResponse::InternalServerError().json(serde_json::json!({
+                        return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when retrieving brand data"
                         }));
@@ -33,13 +34,13 @@ pub async fn get_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -
             let dto = BrandResponse::from((found_brand, image));
             HttpResponse::Ok().json(dto)
         }
-        Ok(None) => HttpResponse::NotFound().json(serde_json::json!({
+        Ok(None) => HttpResponse::NotFound().json(json!({
             "status": "Not Found",
             "message": "Brand not found"
         })),
         Err(err) => {
             warn!("(get_brand) Could not get brand data: {:?}", err);
-            HttpResponse::InternalServerError().json(serde_json::json!({
+            HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving brand data"
             }))

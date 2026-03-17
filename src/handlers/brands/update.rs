@@ -67,9 +67,10 @@ pub async fn update_brand(
         Ok(None) => {}
     }
 
+    let brand = brand.into_inner();
     let updated = brands::ActiveModel {
         id: Set(id),
-        name: Set(brand.name.clone()),
+        name: Set(brand.name),
         image_id: Set(brand.image_id),
         updated_at: Set(chrono::Utc::now().naive_utc()),
         ..Default::default()
@@ -84,7 +85,7 @@ pub async fn update_brand(
                     Ok(img) => img,
                     Err(err) => {
                         warn!("(update_brand) Could not get image data: {:?}", err);
-                        return HttpResponse::InternalServerError().json(serde_json::json!({
+                        return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when retrieving brand data"
                         }));

@@ -1,6 +1,7 @@
 use actix_web::{HttpResponse, Responder, web};
 use log::{error, warn};
 use sea_orm::{DatabaseConnection, EntityTrait, ModelTrait};
+use serde_json::json;
 use uuid::Uuid;
 
 use crate::entities::images;
@@ -16,14 +17,14 @@ pub async fn delete_image(
     let image = match existing_image {
         Ok(Some(image)) => image,
         Ok(None) => {
-            return HttpResponse::NotFound().json(serde_json::json!({
+            return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Image not found"
             }));
         }
         Err(err) => {
             error!("(delete_image) Could not find image: {:?}", err);
-            return HttpResponse::InternalServerError().json(serde_json::json!({
+            return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when finding image, please try again"
             }));
@@ -32,20 +33,23 @@ pub async fn delete_image(
 
     if let Err(err) = std::fs::remove_file(&image.path) {
         warn!("Could not delete file from disk: {:?}", err);
-        return HttpResponse::InternalServerError().json(serde_json::json!({
+        return HttpResponse::InternalServerError().json(json!({
             "status": "Internal Server Error",
             "message": "Something went wrong when deleting image"
         }));
     }
 
     match image.delete(db.get_ref()).await {
-        Ok(_) => HttpResponse::Ok().json(serde_json::json!({
+        Ok(_) => HttpResponse::Ok().json(json!({
             "status": "Ok",
             "message": "Image deleted successfully"
         })),
         Err(err) => {
-            error!("(delete_image) Could not delete image from database: {:?}", err);
-            HttpResponse::InternalServerError().json(serde_json::json!({
+            error!(
+                "(delete_image) Could not delete image from database: {:?}",
+                err
+            );
+            HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when deleting image, please try again"
             }))

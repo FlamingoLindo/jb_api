@@ -67,9 +67,10 @@ pub async fn update_class(
         Ok(None) => {}
     }
 
+    let class = class.into_inner();
     let updated = classes::ActiveModel {
         id: Set(id),
-        name: Set(class.name.clone()),
+        name: Set(class.name),
         updated_at: Set(chrono::Utc::now().naive_utc()),
         ..Default::default()
     }

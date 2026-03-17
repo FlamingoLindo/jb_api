@@ -5,6 +5,7 @@ use actix_web::{
     dev::{Service, ServiceRequest, ServiceResponse, Transform, forward_ready},
 };
 use futures::future::{LocalBoxFuture, Ready, ok};
+use serde_json::json;
 use std::rc::Rc;
 
 pub struct RoleGuard(pub &'static str);
@@ -53,7 +54,7 @@ where
             };
 
             if !has_role {
-                let response = HttpResponse::Unauthorized().json(serde_json::json!({
+                let response = HttpResponse::Unauthorized().json(json!({
                     "status": "error",
                     "message": "You do not have permission to perform this action"
                 }));

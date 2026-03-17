@@ -4,6 +4,7 @@ use sea_orm::{
     DatabaseConnection, EntityTrait, JoinType, PaginatorTrait, QueryOrder, QuerySelect,
     RelationTrait,
 };
+use serde_json::json;
 
 use crate::{
     dto::{brands::get_all::GetBrandsDTO, shared::pagination::PaginationParams},
@@ -36,7 +37,7 @@ pub async fn get_brands(
         Ok(n) => n,
         Err(err) => {
             warn!("(get_brands) Could not count brands: {:?}", err);
-            return HttpResponse::InternalServerError().json(serde_json::json!({
+            return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving brands data"
             }));
@@ -44,7 +45,7 @@ pub async fn get_brands(
     };
 
     match paginator.fetch_page(page).await {
-        Ok(found_brands) => HttpResponse::Ok().json(serde_json::json!({
+        Ok(found_brands) => HttpResponse::Ok().json(json!({
             "data": found_brands,
             "page": page,
             "page_size": page_size,
@@ -52,7 +53,7 @@ pub async fn get_brands(
         })),
         Err(err) => {
             warn!("(get_brands) Could not get brands data: {:?}", err);
-            HttpResponse::InternalServerError().json(serde_json::json!({
+            HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving brands data"
             }))

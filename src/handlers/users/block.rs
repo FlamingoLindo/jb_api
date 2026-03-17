@@ -3,6 +3,7 @@ use actix_web::{HttpResponse, Responder, web};
 use log::error;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde::Serialize;
+use serde_json::json;
 use uuid::Uuid;
 
 #[derive(Serialize)]
@@ -20,14 +21,14 @@ pub async fn block_user(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) 
     let user = match existing_user {
         Ok(Some(user)) => user,
         Ok(None) => {
-            return HttpResponse::NotFound().json(serde_json::json!({
+            return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "User not found"
             }));
         }
         Err(err) => {
             error!("(block_user) Could not find user: {:?}", err);
-            return HttpResponse::InternalServerError().json(serde_json::json!({
+            return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when finding user, please try again"
             }));
@@ -44,7 +45,7 @@ pub async fn block_user(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) 
         }),
         Err(err) => {
             error!("(block_user) Could not update user block status: {:?}", err);
-            HttpResponse::InternalServerError().json(serde_json::json!({
+            HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when updating user, please try again"
             }))

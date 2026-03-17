@@ -43,9 +43,10 @@ pub async fn create_type(
         Ok(None) => {}
     }
 
+    let type_data = type_data.into_inner();
     let new_type = types::ActiveModel {
         id: Set(Uuid::new_v4()),
-        name: Set(type_data.name.clone()),
+        name: Set(type_data.name),
         blocked: Set(false),
         created_at: Set(chrono::Utc::now().naive_utc()),
         ..Default::default()
