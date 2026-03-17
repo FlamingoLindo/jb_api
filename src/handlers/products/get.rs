@@ -1,11 +1,11 @@
 use actix_web::{HttpResponse, Responder, web};
-use sea_orm::{DatabaseConnection, EntityTrait};
+use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
 use serde_json::json;
 use uuid::Uuid;
 
 use crate::{
     dto::products::get::ProductResponse,
-    entities::{brands, classes, images, products, types},
+    entities::{brands, classes, images, products, products_images, types},
 };
 use log::warn;
 
@@ -81,6 +81,42 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
             } else {
                 (None, None)
             };
+            // Get Product image
+            let product_images: Vec<images::Model> = {
+                match products_images::Entity::find()
+                    .filter(products_images::Column::ProductId.eq(id))
+                    .all(db.get_ref())
+                    .await
+                {
+                    Ok(rows) => {
+                        let mut imgs = vec![];
+                        for pi in rows {
+                            match images::Entity::find_by_id(pi.image_id)
+                                .one(db.get_ref())
+                                .await
+                            {
+                                Ok(Some(img)) => imgs.push(img),
+                                Ok(None) => {}
+                                Err(err) => {
+                                    warn!("(get_product) Could not get product image: {:?}", err);
+                                    return HttpResponse::InternalServerError().json(json!({
+                                        "status": "Internal Server Error",
+                                        "message": "Something went wrong when retrieving product"
+                                    }));
+                                }
+                            }
+                        }
+                        imgs
+                    }
+                    Err(err) => {
+                        warn!("(get_product) Could not get product images: {:?}", err);
+                        return HttpResponse::InternalServerError().json(json!({
+                            "status": "Internal Server Error",
+                            "message": "Something went wrong when retrieving product"
+                        }));
+                    }
+                }
+            };
 
             HttpResponse::Ok().json(ProductResponse::from((
                 product,
@@ -88,6 +124,7 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                 class_data,
                 brand_data,
                 brand_image,
+                product_images,
             )))
         }
         Ok(None) => HttpResponse::NotFound().json(json!({

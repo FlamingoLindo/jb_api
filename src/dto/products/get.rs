@@ -1,11 +1,16 @@
 use chrono::NaiveDateTime;
 use sea_orm::prelude::Decimal;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     dto::shared::responses::{SharedBrandResponse, SharedClassResponse, SharedTypeResponse},
     entities::{brands, classes, images, products, types},
 };
+
+#[derive(Serialize, Deserialize)]
+pub struct ImageData {
+    pub path: Vec<String>,
+}
 
 #[derive(Serialize)]
 pub struct ProductResponse {
@@ -25,6 +30,8 @@ pub struct ProductResponse {
     pub weight_3mts: Option<Decimal>,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
+
+    pub image_data: Option<ImageData>,
 }
 
 impl
@@ -33,18 +40,21 @@ impl
         Option<types::Model>,
         Option<classes::Model>,
         Option<brands::Model>,
-        Option<images::Model>,
+        Option<images::Model>, // brand
+        Vec<images::Model>,    // product
     )> for ProductResponse
 {
     fn from(
-        (product, type_data, class_data, brand_data, brand_image): (
+        (product, type_data, class_data, brand_data, brand_image, product_images): (
             products::Model,
             Option<types::Model>,
             Option<classes::Model>,
             Option<brands::Model>,
             Option<images::Model>,
+            Vec<images::Model>,
         ),
     ) -> Self {
+        let paths: Vec<String> = product_images.into_iter().map(|i| i.path).collect();
         Self {
             code: product.code,
             description: product.description,
@@ -67,6 +77,12 @@ impl
 
             created_at: product.created_at,
             updated_at: product.updated_at,
+
+            image_data: if paths.is_empty() {
+                None
+            } else {
+                Some(ImageData { path: paths })
+            },
         }
     }
 }
