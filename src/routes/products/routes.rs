@@ -14,9 +14,14 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     .route("/create", web::post().to(handler::create::create_product))
                     .route("", web::get().to(handler::get_all::get_products))
                     .route(
+                        "/image-bind",
+                        web::post().to(handler::images::bind::bind_product_to_image),
+                    )
+                    .route(
                         "/readjust-prices",
                         web::patch().to(handler::readjust_price::readjust_price),
                     )
+                    
                     .route("/{id}", web::get().to(handler::get::get_product))
                     .route("/{id}", web::patch().to(handler::update::update_product))
                     .route("/{id}", web::delete().to(handler::delete::delete_product))

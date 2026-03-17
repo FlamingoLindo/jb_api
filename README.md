@@ -26,3 +26,4 @@
 10. Blocked users should not be able to use protected routes
 11. ~~Fix Logs~~
 12. Products images
+13. Delete images on delete (product and brands)
