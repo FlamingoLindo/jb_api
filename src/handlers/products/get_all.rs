@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use migration::{Alias, Expr};
 use sea_orm::{
     DatabaseConnection, EntityTrait, JoinType, PaginatorTrait, QueryOrder, QuerySelect,
     RelationTrait,
@@ -7,7 +8,7 @@ use serde_json::json;
 
 use crate::{
     dto::{products::get_all::GetProductsDTO, shared::pagination::PaginationParams},
-    entities::{brands, classes, images, products, types},
+    entities::{brands, classes, images, products, products_images, types},
 };
 use log::warn;
 
@@ -41,7 +42,17 @@ pub async fn get_products(
         .column_as(images::Column::Path, "brand_image")
         .join(JoinType::LeftJoin, brands::Relation::Images.def())
         // TODO get product image
-        .order_by_asc(products::Column::Id)
+        .join(JoinType::LeftJoin, products::Relation::ProductsImages.def())
+        .join_as(
+            JoinType::LeftJoin,
+            products_images::Relation::Images.def(),
+            Alias::new("product_imgs"),
+        )
+        .column_as(
+            Expr::col((Alias::new("product_imgs"), images::Column::Path)),
+            "product_image",
+        )
+        .order_by_asc(products::Column::Code)
         .into_model::<GetProductsDTO>()
         .paginate(db.get_ref(), page_size);
 

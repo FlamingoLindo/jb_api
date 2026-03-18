@@ -19,4 +19,6 @@ pub struct GetProductsDTO {
     pub brand_data: Option<SharedBrandResponse>,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
+
+    pub product_image: Option<String>,
 }

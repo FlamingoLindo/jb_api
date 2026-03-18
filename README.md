@@ -27,3 +27,4 @@
 11. ~~Fix Logs~~
 12. Products images
 13. Delete images on delete (product and brands)
+14. Expose `uploads` dir in `compose.yaml`?
