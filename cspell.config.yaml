@@ -3,6 +3,7 @@ ignorePaths:
   - .gitignore
   - dockerfile
   - compose.yaml
+  - src/entities
 dictionaryDefinitions: []
 dictionaries: []
 words:

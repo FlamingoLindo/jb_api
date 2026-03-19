@@ -30,6 +30,20 @@ pub struct Model {
     pub created_at: DateTime,
     pub updated_at: DateTime,
     pub brand_id: Option<Uuid>,
+    #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
+    pub price_p_mt: Option<Decimal>,
+    #[sea_orm(column_type = "Decimal(Some((5, 2)))", nullable)]
+    pub cut_percentage: Option<Decimal>,
+    #[sea_orm(column_type = "Decimal(Some((12, 6)))", nullable)]
+    pub weight_p_mm: Option<Decimal>,
+    #[sea_orm(column_type = "Decimal(Some((10, 3)))", nullable)]
+    pub weight: Option<Decimal>,
+    #[sea_orm(column_type = "Decimal(Some((10, 3)))", nullable)]
+    pub weight_esp: Option<Decimal>,
+    #[sea_orm(column_type = "Decimal(Some((10, 3)))", nullable)]
+    pub weight_p_br: Option<Decimal>,
+    #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
+    pub br_price: Option<Decimal>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

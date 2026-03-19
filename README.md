@@ -26,6 +26,6 @@
 10. Blocked users should not be able to use protected routes
 11. ~~Fix Logs~~
 12. ~~Products images~~
-13. Delete images on delete (product and brands)
+13. ~~Delete images on delete (product and brands)~~
 14. Expose `uploads` dir in `compose.yaml`?
 15. Filters and searching on list routes

@@ -14,6 +14,7 @@ mod m20260307_144941_create_products_images_junction;
 mod m20260316_131520_nullable_cols;
 mod m20260316_132307_add_brand_to_product;
 mod m20260316_184710_products_weight_to_decimal;
+mod m20260319_134858_products_new_fields;
 
 pub struct Migrator;
 
@@ -35,6 +36,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260316_131520_nullable_cols::Migration),
             Box::new(m20260316_132307_add_brand_to_product::Migration),
             Box::new(m20260316_184710_products_weight_to_decimal::Migration),
+            Box::new(m20260319_134858_products_new_fields::Migration),
         ]
     }
 }
