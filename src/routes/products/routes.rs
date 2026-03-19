@@ -21,13 +21,16 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                         "/readjust-prices",
                         web::patch().to(handler::readjust_price::readjust_price),
                     )
-                    
                     .route("/{id}", web::get().to(handler::get::get_product))
                     .route("/{id}", web::patch().to(handler::update::update_product))
                     .route("/{id}", web::delete().to(handler::delete::delete_product))
                     .route(
                         "/block/{id}",
                         web::patch().to(handler::block::block_product),
+                    )
+                    .route(
+                        "/image-bind/{id}",
+                        web::delete().to(handler::images::delete::delete_bind),
                     ),
             ),
         ),
