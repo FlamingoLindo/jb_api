@@ -52,6 +52,15 @@ pub async fn create_product(
         price_br: Set(product.price_br),
         price_rod: Set(product.price_rod),
         weight_3mts: Set(product.weight_3mts),
+
+        price_p_mt: Set(product.price_p_mt),
+        cut_percentage: Set(product.cut_percentage),
+        weight_p_mm: Set(product.weight_p_mm),
+        weight: Set(product.weight),
+        weight_esp: Set(product.weight_esp),
+        weight_p_br: Set(product.weight_p_br),
+        br_price: Set(product.br_price),
+
         blocked: Set(false),
         created_at: Set(chrono::Utc::now().naive_utc()),
         ..Default::default()

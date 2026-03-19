@@ -47,6 +47,8 @@ pub async fn readjust_price(
             price_br: Set(product.price_br.map(|p| p * multiplier)),
             price_rod: Set(product.price_rod.map(|p| p * multiplier)),
             weight_3mts: Set(product.weight_3mts.map(|p| p * multiplier)),
+            price_p_mt: Set(product.price_p_mt.map(|p| p * multiplier)),
+            br_price: Set(product.br_price.map(|p| p * multiplier)),
             updated_at: Set(chrono::Utc::now().naive_utc()),
             ..Default::default()
         }

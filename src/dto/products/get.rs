@@ -28,6 +28,15 @@ pub struct ProductResponse {
     pub price_br: Option<Decimal>,
     pub price_rod: Option<Decimal>,
     pub weight_3mts: Option<Decimal>,
+
+    pub price_p_mt: Option<Decimal>,
+    pub cut_percentage: Option<Decimal>,
+    pub weight_p_mm: Option<Decimal>,
+    pub weight: Option<Decimal>,
+    pub weight_esp: Option<Decimal>,
+    pub weight_p_br: Option<Decimal>,
+    pub br_price: Option<Decimal>,
+
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 
@@ -74,6 +83,14 @@ impl
             price_br: product.price_br,
             price_rod: product.price_rod,
             weight_3mts: product.weight_3mts,
+
+            price_p_mt: product.price_p_mt,
+            cut_percentage: product.cut_percentage,
+            weight_p_mm: product.weight_p_mm,
+            weight: product.weight,
+            weight_esp: product.weight_esp,
+            weight_p_br: product.weight_p_br,
+            br_price: product.br_price,
 
             created_at: product.created_at,
             updated_at: product.updated_at,
