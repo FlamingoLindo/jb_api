@@ -1,11 +1,11 @@
 use actix_web::{HttpResponse, Responder, web};
-use sea_orm::{DatabaseConnection, EntityTrait, ModelTrait};
+use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, ModelTrait, QueryFilter};
 use serde_json::json;
 use uuid::Uuid;
 
-use crate::entities::products;
+use crate::entities::{images, products, products_images};
 
-use log::error;
+use log::{error, warn};
 
 pub async fn delete_product(
     db: web::Data<DatabaseConnection>,
@@ -31,7 +31,58 @@ pub async fn delete_product(
             }));
         }
     };
-    // TODO also delete product image
+    let bind_imgs = products_images::Entity::find()
+        .filter(products_images::Column::ProductId.eq(id))
+        .all(db.get_ref())
+        .await;
+
+    match bind_imgs {
+        Ok(binds) => {
+            for bind in binds {
+                let image = images::Entity::find()
+                    .filter(images::Column::Id.eq(bind.image_id))
+                    .one(db.get_ref())
+                    .await;
+
+                match image {
+                    Ok(Some(img)) => {
+                        if let Err(err) = std::fs::remove_file(&img.path) {
+                            warn!("Could not delete file from disk: {:?}", err);
+                            return HttpResponse::InternalServerError().json(json!({
+                                "status": "Internal Server Error",
+                                "message": "Something went wrong when deleting image"
+                            }));
+                        }
+
+                        let _ = img.delete(db.get_ref()).await;
+                    }
+                    Ok(None) => {
+                        return HttpResponse::NotFound().json(json!({
+                            "status": "Not Found",
+                            "message": "Image not found"
+                        }));
+                    }
+                    Err(err) => {
+                        error!("(delete_product) Could not find Product: {:?}", err);
+                        return HttpResponse::InternalServerError().json(json!({
+                        "status": "Internal Server Error",
+                        "message": "There has been an error when deleting product image, please try again later"
+                    }));
+                    }
+                }
+
+                let _ = bind.delete(db.get_ref()).await;
+            }
+        }
+        Err(err) => {
+            error!("(delete_product) Could not product's images: {:?}", err);
+            return HttpResponse::InternalServerError().json(json!({
+                "status": "Internal Server Error",
+                "message": "An error occurred when deleting the product's images, please try again later"
+            }));
+        }
+    }
+
     match delete_product.delete(db.get_ref()).await {
         Ok(_) => HttpResponse::Ok().json(json!({
             "status": "Ok",
