@@ -11,9 +11,12 @@ words:
   - chrono
   - dotenv
   - httpauth
+  - intoval
   - jsonwebtoken
+  - printpdf
   - serde
   - sqlx
+  - typst
   - xlsxwriter
 ignoreWords: []
 import: []
