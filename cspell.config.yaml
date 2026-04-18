@@ -4,6 +4,9 @@ ignorePaths:
   - dockerfile
   - compose.yaml
   - src/entities
+  - .env
+  - .example.env
+  - .dockerignore
 dictionaryDefinitions: []
 dictionaries: []
 words:
