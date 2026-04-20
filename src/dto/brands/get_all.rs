@@ -12,3 +12,24 @@ pub struct GetBrandsDTO {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
+
+#[derive(Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum BrandsSortOrder {
+    #[default]
+    NameAsc,
+    NameDesc,
+    CreatedAtAsc,
+    CreatedAtDesc,
+    BlockedAsc,
+    BlockedDesc,
+}
+
+#[derive(Deserialize)]
+pub struct BrandsQueryParams {
+    pub page: Option<u64>,
+    pub page_size: Option<u64>,
+    pub search: Option<String>,
+    #[serde(default)]
+    pub sort: BrandsSortOrder,
+}

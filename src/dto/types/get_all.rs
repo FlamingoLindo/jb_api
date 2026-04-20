@@ -11,3 +11,24 @@ pub struct GetTypesDTO {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
+
+#[derive(Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum TypesSortOrder {
+    #[default]
+    NameAsc,
+    NameDesc,
+    BlockedAsc,
+    BlockedDesc,
+    CreateAtAsc,
+    CreateAtDesc,
+}
+
+#[derive(Deserialize)]
+pub struct TypesQueryParams {
+    pub page: Option<u64>,
+    pub page_size: Option<u64>,
+    pub search: Option<String>,
+    #[serde(default)]
+    pub sort: TypesSortOrder,
+}

@@ -22,3 +22,30 @@ pub struct GetProductsDTO {
 
     pub product_image: Option<String>,
 }
+
+#[derive(Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum ProductsSortOrder {
+    #[default]
+    DescriptionAsc,
+    DescriptionDesc,
+    CodeAsc,
+    CodeDesc,
+    BlockedAsc,
+    BlockedDesc,
+    TypeAsc,
+    TypeDesc,
+    ClassAsc,
+    ClassDesc,
+    BrandAsc,
+    BrandDesc,
+}
+
+#[derive(Deserialize)]
+pub struct ProductsQueryParams {
+    pub page: Option<u64>,
+    pub page_size: Option<u64>,
+    pub search: Option<String>,
+    #[serde(default)]
+    pub sort: ProductsSortOrder,
+}

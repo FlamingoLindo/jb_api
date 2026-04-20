@@ -1,25 +1,37 @@
 use actix_web::{HttpResponse, Responder, web};
 use migration::{Alias, Expr};
 use sea_orm::{
-    DatabaseConnection, EntityTrait, JoinType, PaginatorTrait, QueryOrder, QuerySelect,
-    RelationTrait,
+    ColumnTrait, Condition, DatabaseConnection, EntityTrait, JoinType, Order, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect, RelationTrait
 };
 use serde_json::json;
 
 use crate::{
-    dto::{products::get_all::GetProductsDTO, shared::pagination::PaginationParams},
+    dto::products::get_all::{GetProductsDTO, ProductsQueryParams, ProductsSortOrder},
     entities::{brands, classes, images, products, products_images, types},
 };
 use log::warn;
 
 pub async fn get_products(
     db: web::Data<DatabaseConnection>,
-    query: web::Query<PaginationParams>,
+    query: web::Query<ProductsQueryParams>,
 ) -> impl Responder {
     let page = query.page.unwrap_or(0);
     let page_size = query.page_size.unwrap_or(10);
 
-    let paginator = products::Entity::find()
+    let condition = match &query.search {
+        Some(term) if !term.is_empty() => {
+            let pattern = format!("%{}%", term);
+            Condition::any()
+            .add(products::Column::Description.ilike(&pattern))
+            .add(products::Column::Code.ilike(&pattern))
+            .add(types::Column::Name.ilike(&pattern))
+            .add(classes::Column::Name.ilike(&pattern))
+            .add(brands::Column::Name.ilike(&pattern))
+        }
+        _ => Condition::all(),
+    };
+
+    let mut select = products::Entity::find()
         .select_only()
         .columns([
             products::Column::Id,
@@ -52,7 +64,28 @@ pub async fn get_products(
             Expr::col((Alias::new("product_imgs"), images::Column::Path)),
             "product_image",
         )
-        .order_by_asc(products::Column::Code)
+        .filter(condition);
+
+    select = match query.sort {
+        ProductsSortOrder::DescriptionAsc => {
+            select.order_by(products::Column::Description, Order::Asc)
+        }
+        ProductsSortOrder::DescriptionDesc => {
+            select.order_by(products::Column::Description, Order::Desc)
+        }
+        ProductsSortOrder::CodeAsc => select.order_by(products::Column::Code, Order::Asc),
+        ProductsSortOrder::CodeDesc => select.order_by(products::Column::Code, Order::Desc),
+        ProductsSortOrder::BlockedAsc => select.order_by(products::Column::Blocked, Order::Asc),
+        ProductsSortOrder::BlockedDesc => select.order_by(products::Column::Blocked, Order::Desc),
+        ProductsSortOrder::TypeAsc => select.order_by(types::Column::Name, Order::Asc),
+        ProductsSortOrder::TypeDesc => select.order_by(types::Column::Name, Order::Desc),
+        ProductsSortOrder::ClassAsc => select.order_by(classes::Column::Name, Order::Asc),
+        ProductsSortOrder::ClassDesc => select.order_by(classes::Column::Name, Order::Desc),
+        ProductsSortOrder::BrandAsc => select.order_by(brands::Column::Name, Order::Asc),
+        ProductsSortOrder::BrandDesc => select.order_by(brands::Column::Name, Order::Desc),
+    };
+
+    let paginator = select
         .into_model::<GetProductsDTO>()
         .paginate(db.get_ref(), page_size);
 

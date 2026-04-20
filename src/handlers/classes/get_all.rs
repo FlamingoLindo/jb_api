@@ -1,21 +1,32 @@
 use actix_web::{HttpResponse, Responder, web};
 use log::warn;
-use sea_orm::{DatabaseConnection, EntityTrait, PaginatorTrait, QueryOrder, QuerySelect};
+use sea_orm::{
+    ColumnTrait, Condition, DatabaseConnection, EntityTrait, Order, PaginatorTrait, QueryFilter,
+    QueryOrder, QuerySelect,
+};
 use serde_json::json;
 
 use crate::{
-    dto::{classes::get_all::GetClassesDTO, shared::pagination::PaginationParams},
+    dto::classes::get_all::{ClassesQueryParams, ClassesSortOrder, GetClassesDTO},
     entities::classes,
 };
 
 pub async fn get_classes(
     db: web::Data<DatabaseConnection>,
-    query: web::Query<PaginationParams>,
+    query: web::Query<ClassesQueryParams>,
 ) -> impl Responder {
     let page = query.page.unwrap_or(0);
     let page_size = query.page_size.unwrap_or(10);
 
-    let paginator = classes::Entity::find()
+    let condition = match &query.search {
+        Some(term) if !term.is_empty() => {
+            let pattern = format!("%{}%", term);
+            Condition::all().add(classes::Column::Name.ilike(&pattern))
+        }
+        _ => Condition::all(),
+    };
+
+    let mut select = classes::Entity::find()
         .select_only()
         .columns([
             classes::Column::Id,
@@ -24,7 +35,18 @@ pub async fn get_classes(
             classes::Column::CreatedAt,
             classes::Column::UpdatedAt,
         ])
-        .order_by_asc(classes::Column::Name)
+        .filter(condition);
+
+    select = match query.sort {
+        ClassesSortOrder::NameAsc => select.order_by(classes::Column::Name, Order::Asc),
+        ClassesSortOrder::NameDesc => select.order_by(classes::Column::Name, Order::Desc),
+        ClassesSortOrder::CreatedAtAsc => select.order_by(classes::Column::CreatedAt, Order::Asc),
+        ClassesSortOrder::CreatedAtDesc => select.order_by(classes::Column::CreatedAt, Order::Desc),
+        ClassesSortOrder::BlockedAsc => select.order_by(classes::Column::Blocked, Order::Asc),
+        ClassesSortOrder::BlockedDesc => select.order_by(classes::Column::Blocked, Order::Desc),
+    };
+
+    let paginator = select
         .into_model::<GetClassesDTO>()
         .paginate(db.get_ref(), page_size);
 
