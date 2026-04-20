@@ -2,6 +2,7 @@
 #![allow(unused_imports)]
 pub use super::brands::Entity as Brands;
 pub use super::classes::Entity as Classes;
+pub use super::clients::Entity as Clients;
 pub use super::images::Entity as Images;
 pub use super::products::Entity as Products;
 pub use super::products_images::Entity as ProductsImages;

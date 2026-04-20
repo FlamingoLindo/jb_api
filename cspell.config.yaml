@@ -12,6 +12,7 @@ dictionaries: []
 words:
   - actix
   - chrono
+  - cnpj
   - dotenv
   - httpauth
   - ilike
