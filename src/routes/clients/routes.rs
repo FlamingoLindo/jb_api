@@ -11,7 +11,8 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             web::scope("").wrap(auth).service(
                 web::scope("")
                     .wrap(RoleGuard("master"))
-                    .route("/register", web::post().to(handler::create::create_client)),
+                    .route("/register", web::post().to(handler::create::create_client))
+                    .route("", web::get().to(handler::get_all::get_clients)),
             ),
         ),
     );

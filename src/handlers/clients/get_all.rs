@@ -1,0 +1,92 @@
+use actix_web::{HttpResponse, Responder, web};
+use log::warn;
+use sea_orm::{
+    ColumnTrait, Condition, DatabaseConnection, EntityTrait, Order, PaginatorTrait, QueryFilter,
+    QueryOrder, QuerySelect,
+};
+use serde_json::json;
+
+use crate::{
+    dto::clients::get_all::{ClientsQueryParams, ClientsSortOrder, GetClientsDTO},
+    entities::clients,
+};
+
+pub async fn get_clients(
+    db: web::Data<DatabaseConnection>,
+    query: web::Query<ClientsQueryParams>,
+) -> impl Responder {
+    let page = query.page.unwrap_or(0);
+    let page_size = query.page_size.unwrap_or(10);
+
+    let condition = match &query.search {
+        Some(term) if !term.is_empty() => {
+            let pattern = format!("%{}%", term);
+            Condition::any()
+                .add(clients::Column::Name.ilike(&pattern))
+                .add(clients::Column::Cpf.ilike(&pattern))
+                .add(clients::Column::Cnpj.ilike(&pattern))
+                .add(clients::Column::Phone.ilike(&pattern))
+        }
+        _ => Condition::all(),
+    };
+
+    let mut select = clients::Entity::find()
+        .select_only()
+        .columns([
+            clients::Column::Id,
+            clients::Column::Name,
+            clients::Column::Cpf,
+            clients::Column::Cnpj,
+            clients::Column::Blocked,
+            clients::Column::Phone,
+            clients::Column::CreatedAt,
+            clients::Column::UpdatedAt,
+        ])
+        .filter(condition);
+
+    select = match query.sort {
+        ClientsSortOrder::NameAsc => select.order_by(clients::Column::Name, Order::Asc),
+        ClientsSortOrder::NameDesc => select.order_by(clients::Column::Name, Order::Desc),
+        ClientsSortOrder::PhoneAsc => select.order_by(clients::Column::Phone, Order::Asc),
+        ClientsSortOrder::PhoneDesc => select.order_by(clients::Column::Phone, Order::Desc),
+        ClientsSortOrder::CpfAsc => select.order_by(clients::Column::Cpf, Order::Asc),
+        ClientsSortOrder::CpfDesc => select.order_by(clients::Column::Phone, Order::Desc),
+        ClientsSortOrder::CnpjAsc => select.order_by(clients::Column::Cnpj, Order::Asc),
+        ClientsSortOrder::CnpjDesc => select.order_by(clients::Column::Cnpj, Order::Desc),
+        ClientsSortOrder::BlockedAsc => select.order_by(clients::Column::Blocked, Order::Asc),
+        ClientsSortOrder::BlockedDesc => select.order_by(clients::Column::Blocked, Order::Desc),
+        ClientsSortOrder::CreatedAtAsc => select.order_by(clients::Column::CreatedAt, Order::Asc),
+        ClientsSortOrder::CreatedAtDesc => select.order_by(clients::Column::CreatedAt, Order::Desc),
+    };
+
+    let paginator = select
+        .into_model::<GetClientsDTO>()
+        .paginate(db.get_ref(), page_size);
+
+    let total_pages = match paginator.num_pages().await {
+        Ok(n) => n,
+        Err(err) => {
+            warn!("(get_clients) Could not count clients: {:?}", err);
+            return HttpResponse::InternalServerError().json(json!({
+                "status": "Internal Server Error",
+                "message": "Something went wrong when retrieving clients data"
+            }));
+        }
+    };
+
+    match paginator.fetch_page(page).await {
+        Ok(clients) => HttpResponse::Ok().json(json!({
+            "data": clients,
+            "page": page,
+            "page_size": page_size,
+            "total_pages": total_pages,
+        })),
+        Err(err) => {
+            warn!("(get_clients) Could not get clients data: {:?}", err);
+            HttpResponse::InternalServerError().json(json!({
+                "status": "Internal Server Error",
+                "message": "Something went wrong when retrieving clients data"
+            }))
+        }
+    }
+}
