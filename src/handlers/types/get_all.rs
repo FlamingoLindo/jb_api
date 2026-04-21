@@ -1,8 +1,9 @@
 use actix_web::{HttpResponse, Responder, web};
 use log::warn;
+use sea_orm::sea_query::Expr;
 use sea_orm::{
-    ColumnTrait, Condition, DatabaseConnection, EntityTrait, Order, PaginatorTrait, QueryFilter,
-    QueryOrder, QuerySelect,
+    Condition, DatabaseConnection, EntityTrait, Order, PaginatorTrait, QueryFilter, QueryOrder,
+    QuerySelect,
 };
 use serde_json::json;
 
@@ -21,7 +22,10 @@ pub async fn get_types(
     let condition = match &query.search {
         Some(term) if !term.is_empty() => {
             let pattern = format!("%{}%", term);
-            Condition::all().add(types::Column::Name.ilike(&pattern))
+            Condition::all().add(Expr::cust_with_values(
+                "unaccent(types.name) ILIKE unaccent($1)",
+                [&pattern],
+            ))
         }
         _ => Condition::all(),
     };

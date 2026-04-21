@@ -1,8 +1,9 @@
 use actix_web::{HttpResponse, Responder, web};
 use log::warn;
+use sea_orm::sea_query::Expr;
 use sea_orm::{
-    ColumnTrait, Condition, DatabaseConnection, EntityTrait, Order, PaginatorTrait, QueryFilter,
-    QueryOrder, QuerySelect,
+    Condition, DatabaseConnection, EntityTrait, Order, PaginatorTrait, QueryFilter, QueryOrder,
+    QuerySelect,
 };
 use serde_json::json;
 
@@ -22,10 +23,22 @@ pub async fn get_clients(
         Some(term) if !term.is_empty() => {
             let pattern = format!("%{}%", term);
             Condition::any()
-                .add(clients::Column::Name.ilike(&pattern))
-                .add(clients::Column::Cpf.ilike(&pattern))
-                .add(clients::Column::Cnpj.ilike(&pattern))
-                .add(clients::Column::Phone.ilike(&pattern))
+                .add(Expr::cust_with_values(
+                    "unaccent(clients.name) ILIKE unaccent($1)",
+                    [&pattern],
+                ))
+                .add(Expr::cust_with_values(
+                    "unaccent(clients.cpf) ILIKE unaccent($1)",
+                    [&pattern],
+                ))
+                .add(Expr::cust_with_values(
+                    "unaccent(clients.cnpj) ILIKE unaccent($1)",
+                    [&pattern],
+                ))
+                .add(Expr::cust_with_values(
+                    "unaccent(clients.phone) ILIKE unaccent($1)",
+                    [&pattern],
+                ))
         }
         _ => Condition::all(),
     };

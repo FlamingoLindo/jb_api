@@ -1,7 +1,9 @@
 use actix_web::{HttpResponse, Responder, web};
-use migration::{Alias, Expr};
+use migration::Alias; // UNDO HERE IF ERROR
+use sea_orm::sea_query::Expr;
 use sea_orm::{
-    ColumnTrait, Condition, DatabaseConnection, EntityTrait, JoinType, Order, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect, RelationTrait
+    Condition, DatabaseConnection, EntityTrait, JoinType, Order, PaginatorTrait, QueryFilter,
+    QueryOrder, QuerySelect, RelationTrait,
 };
 use serde_json::json;
 
@@ -22,11 +24,26 @@ pub async fn get_products(
         Some(term) if !term.is_empty() => {
             let pattern = format!("%{}%", term);
             Condition::any()
-            .add(products::Column::Description.ilike(&pattern))
-            .add(products::Column::Code.ilike(&pattern))
-            .add(types::Column::Name.ilike(&pattern))
-            .add(classes::Column::Name.ilike(&pattern))
-            .add(brands::Column::Name.ilike(&pattern))
+                .add(Expr::cust_with_values(
+                    "unaccent(products.description) ILIKE unaccent($1)",
+                    [&pattern],
+                ))
+                .add(Expr::cust_with_values(
+                    "unaccent(products.code) ILIKE unaccent($1)",
+                    [&pattern],
+                ))
+                .add(Expr::cust_with_values(
+                    "unaccent(types.name) ILIKE unaccent($1)",
+                    [&pattern],
+                ))
+                .add(Expr::cust_with_values(
+                    "unaccent(classes.name) ILIKE unaccent($1)",
+                    [&pattern],
+                ))
+                .add(Expr::cust_with_values(
+                    "unaccent(brands.name) ILIKE unaccent($1)",
+                    [&pattern],
+                ))
         }
         _ => Condition::all(),
     };

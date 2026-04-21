@@ -1,8 +1,9 @@
 use actix_web::{HttpResponse, Responder, web};
 use log::warn;
+use sea_orm::sea_query::Expr;
 use sea_orm::{
-    ColumnTrait, Condition, DatabaseConnection, EntityTrait, JoinType, Order, PaginatorTrait,
-    QueryFilter, QueryOrder, QuerySelect, RelationTrait,
+    Condition, DatabaseConnection, EntityTrait, JoinType, Order, PaginatorTrait, QueryFilter,
+    QueryOrder, QuerySelect, RelationTrait,
 };
 use serde_json::json;
 
@@ -21,7 +22,10 @@ pub async fn get_brands(
     let condition = match &query.search {
         Some(term) if !term.is_empty() => {
             let pattern = format!("%{}%", term);
-            Condition::all().add(brands::Column::Name.ilike(&pattern))
+            Condition::all().add(Expr::cust_with_values(
+                "unaccent(brands.name) ILIKE unaccent($1)",
+                [pattern],
+            ))
         }
         _ => Condition::all(),
     };
