@@ -13,7 +13,8 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     .wrap(RoleGuard("master"))
                     .route("/register", web::post().to(handler::create::create_client))
                     .route("", web::get().to(handler::get_all::get_clients))
-                    .route("/{id}", web::get().to(handler::get::get_client)),
+                    .route("/{id}", web::get().to(handler::get::get_client))
+                    .route("/{id}", web::patch().to(handler::block::block_client)),
             ),
         ),
     );
