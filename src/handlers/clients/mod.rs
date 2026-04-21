@@ -1,3 +1,4 @@
+pub mod available;
 pub mod block;
 pub mod create;
 pub mod get;
