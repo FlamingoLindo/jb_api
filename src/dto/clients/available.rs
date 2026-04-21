@@ -7,3 +7,8 @@ pub struct AvailableDTO {
     pub id: Uuid,
     pub name: String,
 }
+
+#[derive(Deserialize)]
+pub struct AvailableQueryParams {
+    pub search: Option<String>,
+}

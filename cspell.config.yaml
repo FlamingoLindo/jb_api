@@ -13,6 +13,7 @@ words:
   - actix
   - chrono
   - cnpj
+  - cust
   - dotenv
   - httpauth
   - ilike
@@ -22,6 +23,7 @@ words:
   - serde
   - sqlx
   - typst
+  - unaccent
   - xlsxwriter
 ignoreWords: []
 import: []

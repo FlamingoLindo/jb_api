@@ -1,15 +1,36 @@
 use actix_web::{HttpResponse, Responder, web};
 use log::warn;
-use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, QueryOrder, QuerySelect};
+use sea_orm::sea_query::Expr;
+use sea_orm::{
+    ColumnTrait, Condition, DatabaseConnection, EntityTrait, QueryFilter, QueryOrder, QuerySelect,
+};
 use serde_json::json;
 
-use crate::{dto::clients::available::AvailableDTO, entities::clients};
+use crate::{
+    dto::clients::available::{AvailableDTO, AvailableQueryParams},
+    entities::clients,
+};
 
-pub async fn available_clients(db: web::Data<DatabaseConnection>) -> impl Responder {
+pub async fn available_clients(
+    db: web::Data<DatabaseConnection>,
+    query: web::Query<AvailableQueryParams>,
+) -> impl Responder {
+    let condition = match &query.search {
+        Some(term) if !term.is_empty() => {
+            let pattern = format!("%{}%", term);
+            Condition::any().add(Expr::cust_with_values(
+                "unaccent(clients.name) ILIKE unaccent($1)",
+                [pattern],
+            ))
+        }
+        _ => Condition::all(),
+    };
+
     let available_clients = clients::Entity::find()
         .select_only()
         .columns([clients::Column::Id, clients::Column::Name])
         .filter(clients::Column::Blocked.ne(false))
+        .filter(condition)
         .order_by_asc(clients::Column::Name)
         .into_model::<AvailableDTO>()
         .all(db.get_ref())
