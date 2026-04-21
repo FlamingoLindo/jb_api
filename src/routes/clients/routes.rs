@@ -18,7 +18,8 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                         web::get().to(handler::available::available_clients),
                     )
                     .route("/{id}", web::get().to(handler::get::get_client))
-                    .route("/block/{id}", web::patch().to(handler::block::block_client)),
+                    .route("/block/{id}", web::patch().to(handler::block::block_client))
+                    .route("/{id}", web::delete().to(handler::delete::delete_client)),
             ),
         ),
     );
