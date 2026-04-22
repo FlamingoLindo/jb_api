@@ -7,7 +7,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     let auth = HttpAuthentication::bearer(validator);
 
     cfg.service(
-        web::scope("/budget").service(
+        web::scope("/budgets").service(
             web::scope("").wrap(auth).service(
                 web::scope("")
                     .wrap(RoleGuard("master"))
@@ -16,6 +16,10 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     .route(
                         "/count/{id}",
                         web::get().to(handler::count::count_client_budgets),
+                    )
+                    .route(
+                        "/{id}",
+                        web::get().to(handler::get_per_client::get_all_budgets_per_client),
                     ),
             ),
         ),
