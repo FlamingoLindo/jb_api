@@ -891,6 +891,25 @@
 								"url": "{{base-url}}budget/f374270f-74e7-4af2-b4e4-8349919fc722"
 							},
 							"response": []
+						},
+						{
+							"name": "Count",
+							"id": "912a78e8-6c8c-4114-aff8-a6bc3576d075",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "{{base-url}}budget/count/caa970ef-6370-4f3a-a468-0ccaf12d118b"
+							},
+							"response": []
 						}
 					],
 					"id": "ac15c2cf-2b8b-403c-87f8-61688627b5e0"
