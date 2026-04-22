@@ -3,18 +3,47 @@ use std::path::Path;
 
 use actix_web::{HttpResponse, Responder, web};
 use log::error;
-use sea_orm::prelude::Decimal;
+use sea_orm::{
+    ActiveModelTrait, ActiveValue::Set, DatabaseConnection, EntityTrait, prelude::Decimal,
+};
 use serde_json::json;
 use typst::layout::PagedDocument;
 use typst_as_lib::TypstEngine;
 use typst_pdf::PdfOptions;
 use uuid::Uuid;
 
-use crate::dto::budget::create::CreateBudgetDTO;
+use crate::{
+    dto::budget::create::CreateBudgetDTO,
+    entities::{budgets, clients},
+};
 
-pub async fn create_budget(data: web::Json<CreateBudgetDTO>) -> impl Responder {
+pub async fn create_budget(
+    db: web::Data<DatabaseConnection>,
+    data: web::Json<CreateBudgetDTO>,
+) -> impl Responder {
     let data = data.into_inner();
-    let typst_source = build_budget_typst(&data);
+
+    let client = match clients::Entity::find_by_id(data.client)
+        .one(db.get_ref())
+        .await
+    {
+        Ok(Some(client)) => client,
+        Ok(None) => {
+            return HttpResponse::NotFound().json(json!({
+                "status": "Not Found",
+                "message": "Client not found"
+            }));
+        }
+        Err(err) => {
+            error!("(create_budget) Could not get client data: {:?}", err);
+            return HttpResponse::InternalServerError().json(json!({
+                "status": "Internal Server Error",
+                "message": "Something went wrong when retrieving client data"
+            }));
+        }
+    };
+
+    let typst_source = build_budget_typst(&data, &client);
     let fonts = load_typst_fonts();
 
     if fonts.is_empty() {
@@ -28,6 +57,7 @@ pub async fn create_budget(data: web::Json<CreateBudgetDTO>) -> impl Responder {
     let engine = TypstEngine::builder()
         .main_file(typst_source)
         .fonts(fonts)
+        .with_file_system_resolver("./assets/images")
         .build();
     let compilation = engine.compile::<PagedDocument>();
 
@@ -53,7 +83,7 @@ pub async fn create_budget(data: web::Json<CreateBudgetDTO>) -> impl Responder {
         }
     };
 
-    if let Err(err) = fs::create_dir_all("exports") {
+    if let Err(err) = fs::create_dir_all("exports/budgets") {
         error!("(create_budget) Could not create exports dir: {:?}", err);
         return HttpResponse::InternalServerError().json(json!({
             "status": "Internal Server Error",
@@ -62,7 +92,7 @@ pub async fn create_budget(data: web::Json<CreateBudgetDTO>) -> impl Responder {
     }
 
     let file_name = format!("budget_{}.pdf", Uuid::new_v4());
-    let file_path = format!("exports/{}", file_name);
+    let file_path = format!("exports/budgets/{}", file_name);
 
     if let Err(err) = fs::write(&file_path, pdf) {
         error!("(create_budget) Could not write PDF file: {:?}", err);
@@ -72,6 +102,29 @@ pub async fn create_budget(data: web::Json<CreateBudgetDTO>) -> impl Responder {
         }));
     }
 
+    let budget = budgets::ActiveModel {
+        id: Set(Uuid::new_v4()),
+        file_name: Set(file_name),
+        path: Set(file_path.clone()),
+        amount: Set(data.total_price),
+        client_id: Set(client.id),
+        created_at: Set(chrono::Utc::now().naive_utc()),
+        ..Default::default()
+    }
+    .insert(db.get_ref())
+    .await;
+
+    match budget {
+        Ok(_) => {}
+        Err(err) => {
+            error!("(create_budget) Could not create budget: {:?}", err);
+            return HttpResponse::InternalServerError().json(json!({
+                "status": "Internal Server Error",
+                "message": "Could not save budget to database"
+            }));
+        }
+    }
+
     HttpResponse::Ok().json(json!({
         "status": "Ok",
         "message": "Budget PDF generated successfully",
@@ -79,7 +132,7 @@ pub async fn create_budget(data: web::Json<CreateBudgetDTO>) -> impl Responder {
     }))
 }
 
-fn build_budget_typst(data: &CreateBudgetDTO) -> String {
+fn build_budget_typst(data: &CreateBudgetDTO, client: &clients::Model) -> String {
     let products = data
         .products
         .iter()
@@ -97,17 +150,35 @@ fn build_budget_typst(data: &CreateBudgetDTO) -> String {
         .join("\n");
 
     format!(
-        r#"#set page(paper: "a4", margin: 2cm)
+        r#"#set page(
+        paper: "a4",
+        margin: 2cm,
+        background: place(
+        top + right,
+        box(
+            image("watermark.png", width: 15%),
+        )
+    )
+)
 #set text(font: ("New Computer Modern", "Arial", "Liberation Sans", "DejaVu Sans"), size: 11pt)
 
 #let budget = (
+    client: "{client_name}",
     products: (
 {products}
     ),
     total_price: {total_price},
 )
 
-= Budget Report
+#align(center)[
+    #text(size: 24pt, weight: "bold")[Ferros e Aços JB]
+
+    Budget
+
+    #budget.client
+]
+
+#v(0.5cm)
 
 #table(
     columns: (2fr, 1fr, 1fr, 1fr, 1fr),
@@ -127,7 +198,7 @@ fn build_budget_typst(data: &CreateBudgetDTO) -> String {
         [#p.amount],
         [#p.size],
         [#p.weight],
-        [R\$#p.price],
+        [R\$ #p.price],
     )).flatten(),
 
     table.footer(
@@ -136,6 +207,7 @@ fn build_budget_typst(data: &CreateBudgetDTO) -> String {
     ),
 )
 "#,
+        client_name = escape_typst_string(&client.name),
         products = products,
         total_price = format_decimal(&data.total_price)
     )
