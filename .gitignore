@@ -20,4 +20,5 @@ uploads/*/*
 !uploads/**/.gitkeep
 
 exports/**
+!exports/*/
 !exports/**/.gitkeep

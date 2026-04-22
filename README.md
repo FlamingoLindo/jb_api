@@ -1,9 +1,11 @@
 # JB-API
 
-Add search and sort for GET all routes
+Save Budgets in DB
 
-- ~~Brands~~ ADD BLOCKED
-- ~~Classes~~ ADD BLOCKED
-- Products
-- Types
-- Users
+- ~~Create a dir in `/exports` (also add a `.gitkeep`)~~
+- Create budgets table in db
+- Add client relations
+- Fix create budget
+- Download budget
+- Delete budget
+- Add a budget counter for clients? (change when deleted)
