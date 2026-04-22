@@ -869,7 +869,7 @@
 										}
 									}
 								},
-								"url": "{{base-url}}budget/create"
+								"url": "{{base-url}}budgets/create"
 							},
 							"response": []
 						},
@@ -888,7 +888,7 @@
 								},
 								"method": "DELETE",
 								"header": [],
-								"url": "{{base-url}}budget/f374270f-74e7-4af2-b4e4-8349919fc722"
+								"url": "{{base-url}}budgets/f374270f-74e7-4af2-b4e4-8349919fc722"
 							},
 							"response": []
 						},
@@ -907,7 +907,43 @@
 								},
 								"method": "GET",
 								"header": [],
-								"url": "{{base-url}}budget/count/caa970ef-6370-4f3a-a468-0ccaf12d118b"
+								"url": "{{base-url}}budgets/count/caa970ef-6370-4f3a-a468-0ccaf12d118b"
+							},
+							"response": []
+						},
+						{
+							"name": "Client's Budgtes",
+							"id": "00599e16-eeaa-41eb-a888-b9f82a8b5f78",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base-url}}budgets?page=0&page_size=20&search=&sort=name_desc",
+									"host": [
+										"{{base-url}}budgets"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "page_size",
+											"value": "20"
+										},
+										{
+											"key": "search",
+											"value": ""
+										},
+										{
+											"key": "sort",
+											"value": "name_desc"
+										}
+									]
+								}
 							},
 							"response": []
 						}
