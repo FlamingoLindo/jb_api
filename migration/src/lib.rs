@@ -18,6 +18,7 @@ mod m20260319_134858_products_new_fields;
 mod m20260418_151752_auto_add_roles;
 mod m20260418_152857_auto_add_master_user;
 mod m20260420_164641_clients;
+mod m20260422_125320_budget_table;
 
 pub struct Migrator;
 
@@ -43,6 +44,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260418_151752_auto_add_roles::Migration),
             Box::new(m20260418_152857_auto_add_master_user::Migration),
             Box::new(m20260420_164641_clients::Migration),
+            Box::new(m20260422_125320_budget_table::Migration),
         ]
     }
 }
