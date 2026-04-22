@@ -11,6 +11,7 @@ pub struct GetClientsDTO {
     pub cnpj: Option<String>,
     pub blocked: bool,
     pub phone: String,
+    pub budget_count: i64,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }

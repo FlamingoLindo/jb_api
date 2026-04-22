@@ -8,7 +8,7 @@ Save Budgets in DB
 - ~~Fix create budget~~
 - Download budget
 - ~~Delete budget~~
-- Add a budget counter for clients? (change when deleted)
+- ~~Add a budget counter for clients? (change when deleted)~~
 
 - Inside a client there will be a "budgets" segment, what will contain:
   - filename
