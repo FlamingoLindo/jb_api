@@ -1,5 +1,5 @@
 use crate::middlewares::role::RoleGuard;
-use crate::{handlers::budget as handler, middlewares::auth::validator};
+use crate::{handlers::budgets as handler, middlewares::auth::validator};
 use actix_web::web::{self};
 use actix_web_httpauth::middleware::HttpAuthentication;
 

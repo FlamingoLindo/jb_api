@@ -1,5 +1,5 @@
 pub mod brands;
-pub mod budget;
+pub mod budgets;
 pub mod classes;
 pub mod clients;
 pub mod config;
