@@ -844,7 +844,55 @@
 				},
 				{
 					"name": "Budget",
-					"item": [],
+					"item": [
+						{
+							"name": "Create",
+							"id": "6fd99d4f-941b-4b20-ad9c-aa8f5ee09408",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"client\": \"caa970ef-6370-4f3a-a468-0ccaf12d118b\",\r\n    \"products\": [\r\n        {\r\n            \"product\": \"FERRO QUADRADO 3/4\",\r\n            \"amount\": 1,\r\n            \"size\": 2,\r\n            \"weight\": 3,\r\n            \"price\": 4\r\n        },\r\n        {\r\n            \"product\": \"FERRO QUADRADO 2 1/2  SAE 1045\",\r\n            \"amount\": 1,\r\n            \"size\": 2,\r\n            \"weight\": 3,\r\n            \"price\": 4\r\n        }\r\n    ],\r\n    \"total_price\": 10\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}budget/create"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"id": "d6cf02e2-b705-43ec-8a92-a3e2fa06d83b",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": "{{base-url}}budget/f374270f-74e7-4af2-b4e4-8349919fc722"
+							},
+							"response": []
+						}
+					],
 					"id": "ac15c2cf-2b8b-403c-87f8-61688627b5e0"
 				},
 				{
@@ -1083,34 +1131,6 @@
 							}
 						},
 						"url": "{{base-url}}users/login"
-					},
-					"response": []
-				},
-				{
-					"name": "{{base-url}}budget/create",
-					"id": "6fd99d4f-941b-4b20-ad9c-aa8f5ee09408",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"client\": \"caa970ef-6370-4f3a-a468-0ccaf12d118b\",\r\n    \"products\": [\r\n        {\r\n            \"product\": \"FERRO QUADRADO 3/4\",\r\n            \"amount\": 1,\r\n            \"size\": 2,\r\n            \"weight\": 3,\r\n            \"price\": 4\r\n        },\r\n        {\r\n            \"product\": \"FERRO QUADRADO 2 1/2  SAE 1045\",\r\n            \"amount\": 1,\r\n            \"size\": 2,\r\n            \"weight\": 3,\r\n            \"price\": 4\r\n        }\r\n    ],\r\n    \"total_price\": 10\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": "{{base-url}}budget/create"
 					},
 					"response": []
 				}
