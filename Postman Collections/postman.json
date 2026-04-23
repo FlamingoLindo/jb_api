@@ -1065,30 +1065,26 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base-url}}clients?page=0&page_size=20&search=&sort=name_desc",
+									"raw": "{{base-url}}clients?page=0&page_size=20&search=&sort=name_asc",
 									"host": [
 										"{{base-url}}clients"
 									],
 									"query": [
 										{
 											"key": "page",
-											"value": "0",
-											"type": "text"
+											"value": "0"
 										},
 										{
 											"key": "page_size",
-											"value": "20",
-											"type": "text"
+											"value": "20"
 										},
 										{
 											"key": "search",
-											"value": "",
-											"type": "text"
+											"value": ""
 										},
 										{
 											"key": "sort",
-											"value": "name_desc",
-											"type": "text"
+											"value": "name_asc"
 										}
 									]
 								}
