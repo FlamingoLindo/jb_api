@@ -219,7 +219,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base-url}}brands?page=0&page_size=10&search=nor&sort=name_asc",
+									"raw": "{{base-url}}brands?page=0&page_size=10&sort=name_asc",
 									"host": [
 										"{{base-url}}brands"
 									],
@@ -234,7 +234,8 @@
 										},
 										{
 											"key": "search",
-											"value": "nor"
+											"value": "nor",
+											"disabled": true
 										},
 										{
 											"key": "sort",
