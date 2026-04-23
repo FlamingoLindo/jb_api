@@ -57,7 +57,7 @@ pub async fn get_brands(
         .into_model::<GetBrandsDTO>()
         .paginate(db.get_ref(), page_size);
 
-    let total_pages = match paginator.num_pages().await {
+    let total = match paginator.num_items_and_pages().await {
         Ok(n) => n,
         Err(err) => {
             warn!("(get_brands) Could not count brands: {:?}", err);
@@ -73,7 +73,8 @@ pub async fn get_brands(
             "data": found_brands,
             "page": page,
             "page_size": page_size,
-            "total_pages": total_pages,
+            "total_items": total.number_of_items,
+            "total_pages": total.number_of_pages,
         })),
         Err(err) => {
             warn!("(get_brands) Could not get brands data: {:?}", err);

@@ -54,7 +54,7 @@ pub async fn get_types(
         .into_model::<GetTypesDTO>()
         .paginate(db.get_ref(), page_size);
 
-    let total_pages = match paginator.num_pages().await {
+    let total = match paginator.num_items_and_pages().await {
         Ok(n) => n,
         Err(err) => {
             warn!("(get_types) Could not count types: {:?}", err);
@@ -70,7 +70,8 @@ pub async fn get_types(
             "data": found_types,
             "page": page,
             "page_size": page_size,
-            "total_pages": total_pages,
+            "total_items": total.number_of_items,
+            "total_pages": total.number_of_pages,
         })),
         Err(err) => {
             warn!("(get_types) Could not get types data: {:?}", err);

@@ -2,7 +2,8 @@ use actix_web::{HttpResponse, Responder, web};
 use log::warn;
 use sea_orm::sea_query::Expr;
 use sea_orm::{
-    Condition, DatabaseConnection, EntityTrait, JoinType, Order, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect
+    Condition, DatabaseConnection, EntityTrait, JoinType, Order, PaginatorTrait, QueryFilter,
+    QueryOrder, QuerySelect,
 };
 use serde_json::json;
 
@@ -92,7 +93,7 @@ pub async fn get_clients(
         .into_model::<GetClientsDTO>()
         .paginate(db.get_ref(), page_size);
 
-    let total_pages = match paginator.num_pages().await {
+    let total = match paginator.num_items_and_pages().await {
         Ok(n) => n,
         Err(err) => {
             warn!("(get_clients) Could not count clients: {:?}", err);
@@ -108,7 +109,8 @@ pub async fn get_clients(
             "data": clients,
             "page": page,
             "page_size": page_size,
-            "total_pages": total_pages,
+            "total_items": total.number_of_items,
+            "total_pages": total.number_of_pages,
         })),
         Err(err) => {
             warn!("(get_clients) Could not get clients data: {:?}", err);

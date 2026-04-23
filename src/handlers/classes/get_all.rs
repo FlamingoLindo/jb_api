@@ -54,7 +54,7 @@ pub async fn get_classes(
         .into_model::<GetClassesDTO>()
         .paginate(db.get_ref(), page_size);
 
-    let total_pages = match paginator.num_pages().await {
+    let total = match paginator.num_items_and_pages().await {
         Ok(n) => n,
         Err(err) => {
             warn!("(get_classes) Could not count classes: {:?}", err);
@@ -69,8 +69,8 @@ pub async fn get_classes(
         Ok(found_classes) => HttpResponse::Ok().json(json!({
             "data": found_classes,
             "page": page,
-            "page_size": page_size,
-            "total_pages": total_pages,
+            "total_items": total.number_of_items,
+            "total_pages": total.number_of_pages,
         })),
         Err(err) => {
             warn!("(get_classes) Could not get classes data: {:?}", err);
