@@ -103,6 +103,60 @@
 					"name": "Brands",
 					"item": [
 						{
+							"name": "Images",
+							"item": [
+								{
+									"name": "Bind Image",
+									"id": "66f13054-55a0-4656-8168-19001a007af6",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": {
+												"token": "{{token}}"
+											}
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"brand_id\": \"5a5382eb-2917-4791-a168-4519d0bd9712\",\r\n    \"img_id\": \"59fbecf3-40ed-4428-ba4d-08b8997aa537\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{base-url}}brands/image-bind"
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Bind",
+									"id": "c6b4ceff-4765-41d2-b0ac-fd39af6fbdd4",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": {
+												"token": "{{token}}"
+											}
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": "{{base-url}}brands/image-bind/02fe3105-7dba-4fe1-bd21-9cb6445dc5b0",
+										"description": "Uuid needs to be from the product"
+									},
+									"response": []
+								}
+							],
+							"id": "30ea7a15-4b1b-4af3-abb3-1769eedd3aea"
+						},
+						{
 							"name": "Create",
 							"id": "3fd932a5-d5d2-4b73-9a8f-7b775f0ee3bf",
 							"protocolProfileBehavior": {
