@@ -15,6 +15,7 @@ use uuid::Uuid;
 use crate::{
     dto::budget::create::CreateBudgetDTO,
     entities::{budgets, clients},
+    mailer::mailer::Mailer,
 };
 
 pub async fn create_budget(
@@ -124,6 +125,16 @@ pub async fn create_budget(
                 "message": "Could not save budget to database"
             }));
         }
+    }
+
+    if let Err(err) =
+        Mailer::send_budget(&client.email, &client.name, &data.total_price, &file_path)
+    {
+        error!("(create_budget) Could not send budget email: {:?}", err);
+        return HttpResponse::InternalServerError().json(json!({
+            "status": "Internal Server Error",
+            "message": "Could not send budget email"
+        }));
     }
 
     HttpResponse::Ok().json(json!({

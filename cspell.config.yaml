@@ -3,12 +3,13 @@ ignorePaths:
   - .gitignore
   - dockerfile
   - compose.yaml
-  - src/entities 
+  - src/entities
   - .env.prod.example
   - .env.dev.example
   - .env.prod
   - .env.dev
   - .dockerignore
+  - assets/emails/budget.html
 dictionaryDefinitions: []
 dictionaries: []
 words:
@@ -24,9 +25,12 @@ words:
   - ilike
   - intoval
   - jsonwebtoken
+  - lettre
   - luma
+  - Orçamento
   - printpdf
   - serde
+  - singlepart
   - sqlx
   - typst
   - unaccent

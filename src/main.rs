@@ -3,6 +3,7 @@ mod database;
 mod dto;
 mod entities;
 mod handlers;
+mod mailer;
 mod middlewares;
 mod routes;
 use actix_cors::Cors;
