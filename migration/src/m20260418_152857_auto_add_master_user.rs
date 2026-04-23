@@ -8,8 +8,6 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        dotenv::from_filename(".env").ok();
-
         let username =
             std::env::var("MASTER_USERNAME").expect("MASTER_USERNAME must be set in env");
         let password =
@@ -41,7 +39,6 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        dotenv::from_filename(".env").ok();
         let username =
             std::env::var("MASTER_USERNAME").expect("MASTER_USERNAME must be set in env");
         let db = manager.get_connection();

@@ -3,9 +3,11 @@ ignorePaths:
   - .gitignore
   - dockerfile
   - compose.yaml
-  - src/entities
-  - .env
-  - .example.env
+  - src/entities 
+  - .env.prod.example
+  - .env.dev.example
+  - .env.prod
+  - .env.dev
   - .dockerignore
 dictionaryDefinitions: []
 dictionaries: []

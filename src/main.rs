@@ -1,3 +1,4 @@
+mod config;
 mod database;
 mod dto;
 mod entities;
@@ -18,7 +19,7 @@ use crate::database::connect_to_db::connect_to_db;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    dotenv::from_filename(".env").ok();
+    config::load_env();
     env_logger::init();
 
     let port = std::env::var("PORT").expect("PORT must be set in env");

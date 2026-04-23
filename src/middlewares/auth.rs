@@ -16,7 +16,6 @@ pub async fn validator(
     req: ServiceRequest,
     credentials: BearerAuth,
 ) -> Result<ServiceRequest, (Error, ServiceRequest)> {
-    dotenv::from_filename(".env").ok();
     let secret = std::env::var("JWT_SECRET").expect("JWT_SECRET must be set in env");
 
     let mut validation = Validation::new(jsonwebtoken::Algorithm::HS256);

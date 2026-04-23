@@ -35,6 +35,8 @@ USER appuser
 
 COPY --from=build /bin/server /bin/
 
+COPY .env.prod .env.prod 
+
 EXPOSE 8080
 
 CMD ["/bin/server"]

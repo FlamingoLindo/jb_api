@@ -4,8 +4,6 @@ use migration::{Migrator, MigratorTrait};
 use sea_orm::{ConnectOptions, Database, DatabaseConnection, DbErr};
 
 pub async fn connect_to_db() -> Result<DatabaseConnection, DbErr> {
-    dotenv::from_filename(".env").ok();
-
     let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set in env");
 
     let mut opt = ConnectOptions::new(database_url);
