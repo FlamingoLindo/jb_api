@@ -917,7 +917,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"client\": \"caa970ef-6370-4f3a-a468-0ccaf12d118b\",\r\n    \"products\": [\r\n        {\r\n            \"product\": \"FERRO QUADRADO 3/4\",\r\n            \"amount\": 1,\r\n            \"size\": 2,\r\n            \"weight\": 3,\r\n            \"price\": 4\r\n        },\r\n        {\r\n            \"product\": \"FERRO QUADRADO 2 1/2  SAE 1045\",\r\n            \"amount\": 1,\r\n            \"size\": 2,\r\n            \"weight\": 3,\r\n            \"price\": 4\r\n        }\r\n    ],\r\n    \"total_price\": 10\r\n}",
+									"raw": "{\r\n    \"client\": \"8aa93731-beff-4267-9034-834ac1355e33\",\r\n    \"products\": [\r\n        {\r\n            \"product\": \"FERRO QUADRADO 3/4\",\r\n            \"amount\": 1,\r\n            \"size\": 2,\r\n            \"weight\": 3,\r\n            \"price\": 4\r\n        },\r\n        {\r\n            \"product\": \"FERRO QUADRADO 2 1/2  SAE 1045\",\r\n            \"amount\": 1,\r\n            \"size\": 2,\r\n            \"weight\": 3,\r\n            \"price\": 4\r\n        }\r\n    ],\r\n    \"total_price\": 10\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
