@@ -25,6 +25,7 @@ pub struct Model {
     pub number: String,
     pub created_at: DateTime,
     pub updated_at: DateTime,
+    pub email: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

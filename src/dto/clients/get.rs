@@ -5,6 +5,7 @@ use serde::Serialize;
 #[derive(Serialize)]
 pub struct ClientResponse {
     pub name: String,
+    pub email: String,
     pub phone: String,
     pub cpf: Option<String>,
     pub cnpj: Option<String>,
@@ -25,6 +26,7 @@ impl From<clients::Model> for ClientResponse {
     fn from(client: clients::Model) -> Self {
         Self {
             name: client.name,
+            email: client.email,
             phone: client.phone,
             cpf: client.cpf,
             cnpj: client.cnpj,

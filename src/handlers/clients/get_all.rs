@@ -40,6 +40,10 @@ pub async fn get_clients(
                     "unaccent(clients.phone) ILIKE unaccent($1)",
                     [&pattern],
                 ))
+                .add(Expr::cust_with_values(
+                    "unaccent(clients.email) ILIKE unaccent($1)",
+                    [&pattern],
+                ))
         }
         _ => Condition::all(),
     };
@@ -49,6 +53,7 @@ pub async fn get_clients(
         .columns([
             clients::Column::Id,
             clients::Column::Name,
+            clients::Column::Email,
             clients::Column::Cpf,
             clients::Column::Cnpj,
             clients::Column::Blocked,
@@ -66,6 +71,7 @@ pub async fn get_clients(
         )
         .group_by(clients::Column::Id)
         .group_by(clients::Column::Name)
+        .group_by(clients::Column::Email)
         .group_by(clients::Column::Cpf)
         .group_by(clients::Column::Cnpj)
         .group_by(clients::Column::Blocked)
@@ -77,6 +83,8 @@ pub async fn get_clients(
     select = match query.sort {
         ClientsSortOrder::NameAsc => select.order_by(clients::Column::Name, Order::Asc),
         ClientsSortOrder::NameDesc => select.order_by(clients::Column::Name, Order::Desc),
+        ClientsSortOrder::EmailAsc => select.order_by(clients::Column::Email, Order::Asc),
+        ClientsSortOrder::EmailDesc => select.order_by(clients::Column::Email, Order::Desc),
         ClientsSortOrder::PhoneAsc => select.order_by(clients::Column::Phone, Order::Asc),
         ClientsSortOrder::PhoneDesc => select.order_by(clients::Column::Phone, Order::Desc),
         ClientsSortOrder::CpfAsc => select.order_by(clients::Column::Cpf, Order::Asc),

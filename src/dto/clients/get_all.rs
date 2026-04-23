@@ -7,6 +7,7 @@ use uuid::Uuid;
 pub struct GetClientsDTO {
     pub id: Uuid,
     pub name: String,
+    pub email: String,
     pub cpf: Option<String>,
     pub cnpj: Option<String>,
     pub blocked: bool,
@@ -22,6 +23,8 @@ pub enum ClientsSortOrder {
     #[default]
     NameAsc,
     NameDesc,
+    EmailAsc,
+    EmailDesc,
     CreatedAtAsc,
     CreatedAtDesc,
     BlockedAsc,

@@ -25,7 +25,7 @@ pub async fn update_client(
     let (current_client, existing_client) = tokio::join!(
         clients::Entity::find_by_id(id).one(db.get_ref()),
         clients::Entity::find()
-            .filter(clients::Column::Name.eq(&client_data.name))
+            .filter(clients::Column::Email.eq(&client_data.email))
             .filter(clients::Column::Id.ne(id))
             .one(db.get_ref())
     );
@@ -50,10 +50,10 @@ pub async fn update_client(
 
     match existing_client {
         Ok(Some(_)) => {
-            warn!("(update_client) Client with same name already exists");
+            warn!("(update_client) Client with same email already exists");
             return HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
-                "message": "Client name already in use"
+                "message": "Client email already in use"
             }));
         }
         Err(err) => {
@@ -71,6 +71,7 @@ pub async fn update_client(
     let updated = clients::ActiveModel {
         id: Set(id),
         name: Set(client_data.name),
+        email: Set(client_data.email),
         phone: Set(client_data.phone),
         client_type: Set(client_data.client_type),
         cpf: Set(client_data.cpf),

@@ -20,6 +20,29 @@ pub async fn create_client(
         return HttpResponse::BadRequest().json(errors);
     }
 
+    // Check email
+    match clients::Entity::find()
+        .filter(clients::Column::Email.eq(&client.email.to_lowercase()))
+        .one(db.get_ref())
+        .await
+    {
+        Ok(Some(_)) => {
+            warn!("(create_client) Email already in use");
+            return HttpResponse::Conflict().json(json!({
+                "status": "Conflict",
+                "message": "Invalid data"
+            }));
+        }
+        Err(err) => {
+            error!("(create_client) Could not check client email: {:?}", err);
+            return HttpResponse::InternalServerError().json(json!({
+                "status": "Internal Server Error",
+                "message": "Something went wrong"
+            }));
+        }
+        Ok(None) => {}
+    }
+
     // Check name
     match clients::Entity::find()
         .filter(clients::Column::Name.eq(&client.name))
@@ -137,6 +160,7 @@ pub async fn create_client(
     let new_client = clients::ActiveModel {
         id: Set(Uuid::new_v4()),
         name: Set(client.name),
+        email: Set(client.email.to_lowercase()),
         phone: Set(client.phone),
         client_type: Set(client.client_type),
         cpf: Set(client.cpf),
