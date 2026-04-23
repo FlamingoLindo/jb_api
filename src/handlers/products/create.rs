@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 use crate::{
     dto::products::create::{CreateProductDTO, CreateProductResponse},
-    entities::{brands, classes, images, products, types},
+    entities::{brands, brands_images, classes, images, products, types},
 };
 
 use log::{error, warn};
@@ -109,20 +109,40 @@ pub async fn create_product(
             let (brand_data, brand_image) = if let Some(brand_id) = new_product.brand_id {
                 match brands::Entity::find_by_id(brand_id).one(db.get_ref()).await {
                     Ok(Some(brand)) => {
-                        let image = if let Some(image_id) = brand.image_id {
-                            match images::Entity::find_by_id(image_id).one(db.get_ref()).await {
-                                Ok(img) => img,
-                                Err(err) => {
-                                    warn!("(create_product) Could not get brand image: {:?}", err);
-                                    return Ok(HttpResponse::InternalServerError().json(json!({
-                                        "status": "Internal Server Error",
-                                        "message": "Something went wrong when creating product"
-                                    })));
+                        let bind = brands_images::Entity::find()
+                            .filter(brands_images::Column::BrandId.eq(brand.id))
+                            .one(db.get_ref())
+                            .await;
+
+                        let image = match bind {
+                            Ok(Some(bind)) => {
+                                match images::Entity::find_by_id(bind.image_id)
+                                    .one(db.get_ref())
+                                    .await
+                                {
+                                    Ok(img) => img,
+                                    Err(err) => {
+                                        warn!(
+                                            "(create_product) Could not get brand image: {:?}",
+                                            err
+                                        );
+                                        return Ok(HttpResponse::InternalServerError().json(json!({
+                                            "status": "Internal Server Error",
+                                            "message": "Something went wrong when creating product"
+                                        })));
+                                    }
                                 }
                             }
-                        } else {
-                            None
+                            Ok(None) => None,
+                            Err(err) => {
+                                warn!("(create_product) Could not get brand/image bind: {:?}", err);
+                                return Ok(HttpResponse::InternalServerError().json(json!({
+                                    "status": "Internal Server Error",
+                                    "message": "Something went wrong when creating product"
+                                })));
+                            }
                         };
+
                         (Some(brand), image)
                     }
                     Ok(None) => (None, None),

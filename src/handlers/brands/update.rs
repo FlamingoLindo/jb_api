@@ -9,7 +9,7 @@ use validator::Validate;
 
 use crate::{
     dto::brands::update::{UpdateBrandDTO, UpdateBrandResponse},
-    entities::{brands, images},
+    entities::{brands, brands_images, images},
 };
 
 pub async fn update_brand(
@@ -71,7 +71,6 @@ pub async fn update_brand(
     let updated = brands::ActiveModel {
         id: Set(id),
         name: Set(brand.name),
-        image_id: Set(brand.image_id),
         updated_at: Set(chrono::Utc::now().naive_utc()),
         ..Default::default()
     }
@@ -80,19 +79,35 @@ pub async fn update_brand(
 
     match updated {
         Ok(brand) => {
-            let image = if let Some(image_id) = brand.image_id {
-                match images::Entity::find_by_id(image_id).one(db.get_ref()).await {
-                    Ok(img) => img,
-                    Err(err) => {
-                        warn!("(update_brand) Could not get image data: {:?}", err);
-                        return HttpResponse::InternalServerError().json(json!({
-                            "status": "Internal Server Error",
-                            "message": "Something went wrong when retrieving brand data"
-                        }));
+            let bind = brands_images::Entity::find()
+                .filter(brands_images::Column::BrandId.eq(id))
+                .one(db.get_ref())
+                .await;
+
+            let image = match bind {
+                Ok(Some(bind)) => {
+                    match images::Entity::find_by_id(bind.image_id)
+                        .one(db.get_ref())
+                        .await
+                    {
+                        Ok(img) => img,
+                        Err(err) => {
+                            warn!("(update_brand) Could not get image data: {:?}", err);
+                            return HttpResponse::InternalServerError().json(json!({
+                                "status": "Internal Server Error",
+                                "message": "Something went wrong when retrieving brand data"
+                            }));
+                        }
                     }
                 }
-            } else {
-                None
+                Ok(None) => None,
+                Err(err) => {
+                    warn!("(update_brand) Could not get brand/image bind: {:?}", err);
+                    return HttpResponse::InternalServerError().json(json!({
+                        "status": "Internal Server Error",
+                        "message": "Something went wrong when retrieving brand data"
+                    }));
+                }
             };
 
             let dto = UpdateBrandResponse::from((brand, image));

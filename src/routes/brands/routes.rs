@@ -16,7 +16,15 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     .route("", web::get().to(handler::get_all::get_brands))
                     .route("/{id}", web::patch().to(handler::update::update_brand))
                     .route("/{id}", web::delete().to(handler::delete::delete_brand))
-                    .route("/block/{id}", web::patch().to(handler::block::block_brand)),
+                    .route("/block/{id}", web::patch().to(handler::block::block_brand))
+                    .route(
+                        "/image-bind",
+                        web::post().to(handler::images::bind::bind_brand_to_image),
+                    )
+                    .route(
+                        "/image-bind/{id}",
+                        web::delete().to(handler::images::delete::delete_brand_bind),
+                    ),
             ),
         ),
     );

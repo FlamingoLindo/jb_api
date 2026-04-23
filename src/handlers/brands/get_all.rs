@@ -9,7 +9,7 @@ use serde_json::json;
 
 use crate::{
     dto::brands::get_all::{BrandsQueryParams, BrandsSortOrder, GetBrandsDTO},
-    entities::{brands, images},
+    entities::{brands, brands_images, images},
 };
 
 pub async fn get_brands(
@@ -40,7 +40,8 @@ pub async fn get_brands(
             brands::Column::UpdatedAt,
         ])
         .column_as(images::Column::Path, "image")
-        .join(JoinType::LeftJoin, brands::Relation::Images.def())
+        .join(JoinType::LeftJoin, brands::Relation::BrandsImages.def())
+        .join(JoinType::LeftJoin, brands_images::Relation::Images.def())
         .filter(condition);
 
     select = match query.sort {

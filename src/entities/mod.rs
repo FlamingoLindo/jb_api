@@ -3,6 +3,7 @@
 pub mod prelude;
 
 pub mod brands;
+pub mod brands_images;
 pub mod budgets;
 pub mod classes;
 pub mod clients;

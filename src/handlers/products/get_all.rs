@@ -9,7 +9,7 @@ use serde_json::json;
 
 use crate::{
     dto::products::get_all::{GetProductsDTO, ProductsQueryParams, ProductsSortOrder},
-    entities::{brands, classes, images, products, products_images, types},
+    entities::{brands, brands_images, classes, images, products, products_images, types},
 };
 use log::warn;
 
@@ -64,13 +64,21 @@ pub async fn get_products(
         // Class
         .column_as(classes::Column::Name, "class_name")
         .join(JoinType::LeftJoin, products::Relation::Classes.def())
-        // Brands - name
+        // Brand - name
         .column_as(brands::Column::Name, "brand_name")
         .join(JoinType::LeftJoin, products::Relation::Brands.def())
-        // Brands - image
-        .column_as(images::Column::Path, "brand_image")
-        .join(JoinType::LeftJoin, brands::Relation::Images.def())
-        // TODO get product image
+        // Brand - image (via junction table, aliased to avoid ambiguity with product_imgs)
+        .join(JoinType::LeftJoin, brands::Relation::BrandsImages.def())
+        .join_as(
+            JoinType::LeftJoin,
+            brands_images::Relation::Images.def(),
+            Alias::new("brand_imgs"),
+        )
+        .column_as(
+            Expr::col((Alias::new("brand_imgs"), images::Column::Path)),
+            "brand_image",
+        )
+        // Product image
         .join(JoinType::LeftJoin, products::Relation::ProductsImages.def())
         .join_as(
             JoinType::LeftJoin,

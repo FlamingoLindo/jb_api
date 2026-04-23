@@ -1,6 +1,5 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 use validator::Validate;
 
 use crate::entities::{brands, images};
@@ -13,7 +12,6 @@ pub struct UpdateBrandDTO {
         message = "Brand name must be between 3 and 150 characters"
     ))]
     pub name: String,
-    pub image_id: Option<Uuid>,
 }
 
 #[derive(Serialize)]

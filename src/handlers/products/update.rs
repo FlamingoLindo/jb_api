@@ -7,7 +7,7 @@ use validator::Validate;
 
 use crate::{
     dto::products::update::{UpdateProductDTO, UpdateProductResponse},
-    entities::{brands, classes, images, products, types},
+    entities::{brands, brands_images, classes, images, products, types},
 };
 
 pub async fn update_product(
@@ -137,20 +137,40 @@ pub async fn update_product(
             let (brand_data, brand_image) = if let Some(brand_id) = product.brand_id {
                 match brands::Entity::find_by_id(brand_id).one(db.get_ref()).await {
                     Ok(Some(brand)) => {
-                        let image = if let Some(image_id) = brand.image_id {
-                            match images::Entity::find_by_id(image_id).one(db.get_ref()).await {
-                                Ok(img) => img,
-                                Err(err) => {
-                                    warn!("(update_product) Could not get brand image: {:?}", err);
-                                    return HttpResponse::InternalServerError().json(json!({
-                                        "status": "Internal Server Error",
-                                        "message": "Something went wrong when updating product"
-                                    }));
+                        let bind = brands_images::Entity::find()
+                            .filter(brands_images::Column::BrandId.eq(brand.id))
+                            .one(db.get_ref())
+                            .await;
+
+                        let image = match bind {
+                            Ok(Some(bind)) => {
+                                match images::Entity::find_by_id(bind.image_id)
+                                    .one(db.get_ref())
+                                    .await
+                                {
+                                    Ok(img) => img,
+                                    Err(err) => {
+                                        warn!(
+                                            "(update_product) Could not get brand image: {:?}",
+                                            err
+                                        );
+                                        return HttpResponse::InternalServerError().json(json!({
+                                            "status": "Internal Server Error",
+                                            "message": "Something went wrong when updating product"
+                                        }));
+                                    }
                                 }
                             }
-                        } else {
-                            None
+                            Ok(None) => None,
+                            Err(err) => {
+                                warn!("(update_product) Could not get brand/image bind: {:?}", err);
+                                return HttpResponse::InternalServerError().json(json!({
+                                    "status": "Internal Server Error",
+                                    "message": "Something went wrong when updating product"
+                                }));
+                            }
                         };
+
                         (Some(brand), image)
                     }
                     Ok(None) => (None, None),

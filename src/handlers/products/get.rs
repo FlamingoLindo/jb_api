@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 use crate::{
     dto::products::get::ProductResponse,
-    entities::{brands, classes, images, products, products_images, types},
+    entities::{brands, brands_images, classes, images, products, products_images, types},
 };
 use log::warn;
 
@@ -53,20 +53,37 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
             let (brand_data, brand_image) = if let Some(brand_id) = product.brand_id {
                 match brands::Entity::find_by_id(brand_id).one(db.get_ref()).await {
                     Ok(Some(brand)) => {
-                        let image = if let Some(image_id) = brand.image_id {
-                            match images::Entity::find_by_id(image_id).one(db.get_ref()).await {
-                                Ok(img) => img,
-                                Err(err) => {
-                                    warn!("(get_product) Could not get brand image: {:?}", err);
-                                    return HttpResponse::InternalServerError().json(json!({
-                                        "status": "Internal Server Error",
-                                        "message": "Something went wrong when retrieving product"
-                                    }));
+                        let bind = brands_images::Entity::find()
+                            .filter(brands_images::Column::BrandId.eq(brand.id))
+                            .one(db.get_ref())
+                            .await;
+
+                        let image = match bind {
+                            Ok(Some(bind)) => {
+                                match images::Entity::find_by_id(bind.image_id)
+                                    .one(db.get_ref())
+                                    .await
+                                {
+                                    Ok(img) => img,
+                                    Err(err) => {
+                                        warn!("(get_product) Could not get brand image: {:?}", err);
+                                        return HttpResponse::InternalServerError().json(json!({
+                                "status": "Internal Server Error",
+                                "message": "Something went wrong when retrieving product"
+                            }));
+                                    }
                                 }
                             }
-                        } else {
-                            None
+                            Ok(None) => None,
+                            Err(err) => {
+                                warn!("(get_product) Could not get brand/image bind: {:?}", err);
+                                return HttpResponse::InternalServerError().json(json!({
+                                    "status": "Internal Server Error",
+                                    "message": "Something went wrong when retrieving product"
+                                }));
+                            }
                         };
+
                         (Some(brand), image)
                     }
                     Ok(None) => (None, None),
@@ -81,6 +98,7 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
             } else {
                 (None, None)
             };
+
             // Get Product image
             let product_images: Vec<images::Model> = {
                 match products_images::Entity::find()

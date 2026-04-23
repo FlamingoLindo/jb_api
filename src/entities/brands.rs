@@ -9,7 +9,6 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub name: String,
-    pub image_id: Option<Uuid>,
     pub blocked: bool,
     pub created_at: DateTime,
     pub updated_at: DateTime,
@@ -17,21 +16,15 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::images::Entity",
-        from = "Column::ImageId",
-        to = "super::images::Column::Id",
-        on_update = "Cascade",
-        on_delete = "SetNull"
-    )]
-    Images,
+    #[sea_orm(has_many = "super::brands_images::Entity")]
+    BrandsImages,
     #[sea_orm(has_many = "super::products::Entity")]
     Products,
 }
 
-impl Related<super::images::Entity> for Entity {
+impl Related<super::brands_images::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Images.def()
+        Relation::BrandsImages.def()
     }
 }
 
