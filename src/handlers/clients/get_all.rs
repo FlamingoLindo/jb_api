@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
-use log::warn;
+use log::error;
 use sea_orm::sea_query::Expr;
 use sea_orm::{
     Condition, DatabaseConnection, EntityTrait, JoinType, Order, PaginatorTrait, QueryFilter,
@@ -96,7 +96,7 @@ pub async fn get_clients(
     let total = match paginator.num_items_and_pages().await {
         Ok(n) => n,
         Err(err) => {
-            warn!("(get_clients) Could not count clients: {:?}", err);
+            error!("(get_clients) Could not count clients: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving clients data"
@@ -113,7 +113,7 @@ pub async fn get_clients(
             "total_pages": total.number_of_pages,
         })),
         Err(err) => {
-            warn!("(get_clients) Could not get clients data: {:?}", err);
+            error!("(get_clients) Could not get clients data: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving clients data"

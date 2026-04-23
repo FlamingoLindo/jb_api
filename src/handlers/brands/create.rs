@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, error::ErrorInternalServerError, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde_json::json;
 use uuid::Uuid;
@@ -14,6 +14,12 @@ pub async fn create_brand(
     db: web::Data<DatabaseConnection>,
     brand: web::Json<CreateBrandDTO>,
 ) -> impl Responder {
+    if let Err(errors) = brand.validate() {
+        return Ok(HttpResponse::BadRequest().json(errors));
+    }
+
+    let brand = brand.into_inner();
+
     let existing_brand = brands::Entity::find()
         .filter(brands::Column::Name.eq(&brand.name))
         .one(db.get_ref())
@@ -21,9 +27,10 @@ pub async fn create_brand(
 
     match existing_brand {
         Ok(Some(_)) => {
+            warn!("(create_brand) Brand with the same name already exiting");
             return Ok(HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
-                "message": "Username already taken"
+                "message": "Name already taken"
             })));
         }
         Err(err) => {
@@ -35,12 +42,6 @@ pub async fn create_brand(
         }
         Ok(None) => {}
     }
-
-    if let Err(errors) = brand.validate() {
-        return Ok(HttpResponse::BadRequest().json(errors));
-    }
-
-    let brand = brand.into_inner();
 
     // Create brand
     let new_brand = brands::ActiveModel {

@@ -103,7 +103,7 @@ pub async fn update_product(
                 match types::Entity::find_by_id(type_id).one(db.get_ref()).await {
                     Ok(t) => t,
                     Err(err) => {
-                        warn!("(update_product) Could not get type data: {:?}", err);
+                        error!("(update_product) Could not get type data: {:?}", err);
                         return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when updating product"
@@ -122,7 +122,7 @@ pub async fn update_product(
                 {
                     Ok(c) => c,
                     Err(err) => {
-                        warn!("(update_product) Could not get class data: {:?}", err);
+                        error!("(update_product) Could not get class data: {:?}", err);
                         return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when updating product"
@@ -150,7 +150,7 @@ pub async fn update_product(
                                 {
                                     Ok(img) => img,
                                     Err(err) => {
-                                        warn!(
+                                        error!(
                                             "(update_product) Could not get brand image: {:?}",
                                             err
                                         );
@@ -163,7 +163,10 @@ pub async fn update_product(
                             }
                             Ok(None) => None,
                             Err(err) => {
-                                warn!("(update_product) Could not get brand/image bind: {:?}", err);
+                                error!(
+                                    "(update_product) Could not get brand/image bind: {:?}",
+                                    err
+                                );
                                 return HttpResponse::InternalServerError().json(json!({
                                     "status": "Internal Server Error",
                                     "message": "Something went wrong when updating product"
@@ -175,7 +178,7 @@ pub async fn update_product(
                     }
                     Ok(None) => (None, None),
                     Err(err) => {
-                        warn!("(update_product) Could not get brand data: {:?}", err);
+                        error!("(update_product) Could not get brand data: {:?}", err);
                         return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when updating product"

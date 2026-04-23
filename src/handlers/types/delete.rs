@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{DatabaseConnection, EntityTrait, ModelTrait};
 use serde_json::json;
 use uuid::Uuid;
@@ -14,6 +14,7 @@ pub async fn delete_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
     let delete_type = match existing_type {
         Ok(Some(found_type)) => found_type,
         Ok(None) => {
+            warn!("(delete_type) Type not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Type not found"

@@ -1,6 +1,6 @@
 use actix_multipart::form::{MultipartForm, tempfile::TempFile};
 use actix_web::{HttpResponse, Responder, web};
-use log::{error, info};
+use log::{error, info, warn};
 use mime::IMAGE;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, DatabaseConnection};
 use serde_json::json;
@@ -23,6 +23,7 @@ pub async fn save_file(
     let allowed = ["brands", "users", "products"];
 
     if !allowed.contains(&entity.as_str()) {
+        warn!("(save_file) Wrong selected entity");
         return HttpResponse::BadRequest().json(json!({
             "status": "Bad Request",
             "message": format!("'{}' is not a valid entity", entity)
@@ -30,6 +31,7 @@ pub async fn save_file(
     }
 
     if form.files.is_empty() {
+        warn!("(save_file) No file provided");
         return HttpResponse::BadRequest().json(json!({
             "status": "Bad Request",
             "message": "No file provided"
@@ -44,6 +46,7 @@ pub async fn save_file(
             .unwrap_or(false);
 
         if !is_image {
+            warn!("(save_file) File different from image sent");
             return HttpResponse::BadRequest().json(json!({
                 "status": "Bad Request",
                 "message": "Only images are acceptable"

@@ -1,6 +1,6 @@
 use crate::entities::users;
 use actix_web::{HttpResponse, Responder, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, ModelTrait, QueryFilter};
 use serde_json::json;
 use uuid::Uuid;
@@ -25,10 +25,13 @@ pub async fn delete_user(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                 }))
             }
         },
-        Ok(None) => HttpResponse::NotFound().json(json!({
-            "status": "Not Found",
-            "message": "User not found"
-        })),
+        Ok(None) => {
+            warn!("(delete_user) User not found");
+            HttpResponse::NotFound().json(json!({
+                "status": "Not Found",
+                "message": "User not found"
+            }))
+        }
         Err(err) => {
             error!("(delete_user) Could not find user: {:?}", err);
             HttpResponse::InternalServerError().json(json!({

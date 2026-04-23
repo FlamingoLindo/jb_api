@@ -2,7 +2,7 @@ use std::fs;
 use std::path::Path;
 
 use actix_web::{HttpResponse, Responder, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, DatabaseConnection, EntityTrait, prelude::Decimal,
 };
@@ -29,6 +29,7 @@ pub async fn create_budget(
     {
         Ok(Some(client)) => client,
         Ok(None) => {
+            warn!("(create_budget) Client not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Client not found"

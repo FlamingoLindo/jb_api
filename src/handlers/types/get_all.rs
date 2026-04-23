@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
-use log::warn;
+use log::error;
 use sea_orm::sea_query::Expr;
 use sea_orm::{
     Condition, DatabaseConnection, EntityTrait, Order, PaginatorTrait, QueryFilter, QueryOrder,
@@ -57,7 +57,7 @@ pub async fn get_types(
     let total = match paginator.num_items_and_pages().await {
         Ok(n) => n,
         Err(err) => {
-            warn!("(get_types) Could not count types: {:?}", err);
+            error!("(get_types) Could not count types: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving types data"
@@ -74,7 +74,7 @@ pub async fn get_types(
             "total_pages": total.number_of_pages,
         })),
         Err(err) => {
-            warn!("(get_types) Could not get types data: {:?}", err);
+            error!("(get_types) Could not get types data: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving types data"

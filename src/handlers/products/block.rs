@@ -4,7 +4,7 @@ use serde::Serialize;
 use serde_json::json;
 use uuid::Uuid;
 
-use log::error;
+use log::{error, warn};
 
 use crate::entities::products;
 
@@ -26,6 +26,7 @@ pub async fn block_product(
     let blocked_product = match existing_product {
         Ok(Some(blocked_product)) => blocked_product,
         Ok(None) => {
+            warn!("(block_product) Product not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Product not found"

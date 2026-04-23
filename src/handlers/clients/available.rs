@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
-use log::warn;
+use log::error;
 use sea_orm::sea_query::Expr;
 use sea_orm::{
     ColumnTrait, Condition, DatabaseConnection, EntityTrait, QueryFilter, QueryOrder, QuerySelect,
@@ -39,7 +39,7 @@ pub async fn available_clients(
     match available_clients {
         Ok(clients) => HttpResponse::Ok().json(clients),
         Err(err) => {
-            warn!("(available_clients) Could not get clients data: {:?}", err);
+            error!("(available_clients) Could not get clients data: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving clients data"

@@ -17,6 +17,7 @@ pub async fn delete_image(
     let image = match existing_image {
         Ok(Some(image)) => image,
         Ok(None) => {
+            warn!("(delete_image) Could not delete image from database");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Image not found"
@@ -32,7 +33,7 @@ pub async fn delete_image(
     };
 
     if let Err(err) = std::fs::remove_file(&image.path) {
-        warn!("Could not delete file from disk: {:?}", err);
+        error!("Could not delete file from disk: {:?}", err);
         return HttpResponse::InternalServerError().json(json!({
             "status": "Internal Server Error",
             "message": "Something went wrong when deleting image"

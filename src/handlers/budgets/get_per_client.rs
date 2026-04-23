@@ -27,6 +27,7 @@ pub async fn get_all_budgets_per_client(
     let client = match existing_client {
         Ok(Some(client)) => client,
         Ok(None) => {
+            warn!("(get_all_budgets_per_client) Client not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Client not found"
@@ -104,7 +105,7 @@ pub async fn get_all_budgets_per_client(
     let total = match paginator.num_items_and_pages().await {
         Ok(n) => n,
         Err(err) => {
-            warn!(
+            error!(
                 "(get_all_budgets_per_client) Could not count budgets: {:?}",
                 err
             );
@@ -124,7 +125,7 @@ pub async fn get_all_budgets_per_client(
             "total_pages": total.number_of_pages,
         })),
         Err(err) => {
-            warn!("(get_budgets) Could not get budgets data: {:?}", err);
+            error!("(get_budgets) Could not get budgets data: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving budgets data"

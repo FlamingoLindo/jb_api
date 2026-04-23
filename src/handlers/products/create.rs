@@ -21,6 +21,7 @@ pub async fn create_product(
 
     match existing_product {
         Ok(Some(_)) => {
+            warn!("(create_product) Product with same code");
             return Ok(HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
                 "message": "Product with same code already exists"
@@ -75,7 +76,7 @@ pub async fn create_product(
                 match types::Entity::find_by_id(type_id).one(db.get_ref()).await {
                     Ok(t) => t,
                     Err(err) => {
-                        warn!("(create_product) Could not get type data: {:?}", err);
+                        error!("(create_product) Could not get type data: {:?}", err);
                         return Ok(HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when creating product"
@@ -94,7 +95,7 @@ pub async fn create_product(
                 {
                     Ok(c) => c,
                     Err(err) => {
-                        warn!("(create_product) Could not get class data: {:?}", err);
+                        error!("(create_product) Could not get class data: {:?}", err);
                         return Ok(HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when creating product"
@@ -122,7 +123,7 @@ pub async fn create_product(
                                 {
                                     Ok(img) => img,
                                     Err(err) => {
-                                        warn!(
+                                        error!(
                                             "(create_product) Could not get brand image: {:?}",
                                             err
                                         );
@@ -135,7 +136,10 @@ pub async fn create_product(
                             }
                             Ok(None) => None,
                             Err(err) => {
-                                warn!("(create_product) Could not get brand/image bind: {:?}", err);
+                                error!(
+                                    "(create_product) Could not get brand/image bind: {:?}",
+                                    err
+                                );
                                 return Ok(HttpResponse::InternalServerError().json(json!({
                                     "status": "Internal Server Error",
                                     "message": "Something went wrong when creating product"
@@ -147,7 +151,7 @@ pub async fn create_product(
                     }
                     Ok(None) => (None, None),
                     Err(err) => {
-                        warn!("(create_product) Could not get brand data: {:?}", err);
+                        error!("(create_product) Could not get brand data: {:?}", err);
                         return Ok(HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when creating product"

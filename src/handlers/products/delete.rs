@@ -18,6 +18,7 @@ pub async fn delete_product(
     let delete_product = match existing_product {
         Ok(Some(found_product)) => found_product,
         Ok(None) => {
+            warn!("(delete_product) Product not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Product not found"
@@ -47,7 +48,7 @@ pub async fn delete_product(
                 match image {
                     Ok(Some(img)) => {
                         if let Err(err) = std::fs::remove_file(&img.path) {
-                            warn!("Could not delete file from disk: {:?}", err);
+                            error!("Could not delete file from disk: {:?}", err);
                             return HttpResponse::InternalServerError().json(json!({
                                 "status": "Internal Server Error",
                                 "message": "Something went wrong when deleting image"
@@ -57,6 +58,7 @@ pub async fn delete_product(
                         let _ = img.delete(db.get_ref()).await;
                     }
                     Ok(None) => {
+                        warn!("(delete_product) Image not found");
                         return HttpResponse::NotFound().json(json!({
                             "status": "Not Found",
                             "message": "Image not found"

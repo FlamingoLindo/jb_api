@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, error::ErrorInternalServerError, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde_json::json;
 use uuid::Uuid;
@@ -27,9 +27,10 @@ pub async fn create_user(
 
     match existing_user {
         Ok(Some(_)) => {
+            warn!("(create_user) User not found");
             return Ok(HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
-                "message": "Username already taken"
+                "message": "Invalid data"
             })));
         }
         Err(err) => {

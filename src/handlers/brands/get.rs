@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
-use log::warn;
+use log::error;
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
 use serde_json::json;
 use uuid::Uuid;
@@ -27,7 +27,7 @@ pub async fn get_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -
                     {
                         Ok(img) => img,
                         Err(err) => {
-                            warn!("(get_brand) Could not get image data: {:?}", err);
+                            error!("(get_brand) Could not get image data: {:?}", err);
                             return HttpResponse::InternalServerError().json(json!({
                                 "status": "Internal Server Error",
                                 "message": "Something went wrong when retrieving brand data"
@@ -37,7 +37,7 @@ pub async fn get_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -
                 }
                 Ok(None) => None,
                 Err(err) => {
-                    warn!("(get_brand) Could not get brand/image bind: {:?}", err);
+                    error!("(get_brand) Could not get brand/image bind: {:?}", err);
                     return HttpResponse::InternalServerError().json(json!({
                         "status": "Internal Server Error",
                         "message": "Something went wrong when retrieving brand data"
@@ -53,7 +53,7 @@ pub async fn get_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -
             "message": "Brand not found"
         })),
         Err(err) => {
-            warn!("(get_brand) Could not get brand data: {:?}", err);
+            error!("(get_brand) Could not get brand data: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving brand data"

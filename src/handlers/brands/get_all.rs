@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
-use log::warn;
+use log::error;
 use sea_orm::sea_query::Expr;
 use sea_orm::{
     Condition, DatabaseConnection, EntityTrait, JoinType, Order, PaginatorTrait, QueryFilter,
@@ -60,7 +60,7 @@ pub async fn get_brands(
     let total = match paginator.num_items_and_pages().await {
         Ok(n) => n,
         Err(err) => {
-            warn!("(get_brands) Could not count brands: {:?}", err);
+            error!("(get_brands) Could not count brands: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving brands data"
@@ -77,7 +77,7 @@ pub async fn get_brands(
             "total_pages": total.number_of_pages,
         })),
         Err(err) => {
-            warn!("(get_brands) Could not get brands data: {:?}", err);
+            error!("(get_brands) Could not get brands data: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving brands data"

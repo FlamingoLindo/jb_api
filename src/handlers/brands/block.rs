@@ -1,6 +1,6 @@
 use crate::entities::brands;
 use actix_web::{HttpResponse, Responder, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde::Serialize;
 use serde_json::json;
@@ -21,6 +21,7 @@ pub async fn block_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
     let brand = match existing_brand {
         Ok(Some(brand)) => brand,
         Ok(None) => {
+            warn!("(block_brand) Brand not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Brand not found"
@@ -44,7 +45,10 @@ pub async fn block_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
             blocked: updated_brand.blocked,
         }),
         Err(err) => {
-            error!("(block_brand) Could not update brand block status: {:?}", err);
+            error!(
+                "(block_brand) Could not update brand block status: {:?}",
+                err
+            );
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when updating brand, please try again"

@@ -11,7 +11,7 @@ use crate::{
     dto::products::get_all::{GetProductsDTO, ProductsQueryParams, ProductsSortOrder},
     entities::{brands, brands_images, classes, images, products, products_images, types},
 };
-use log::warn;
+use log::error;
 
 pub async fn get_products(
     db: web::Data<DatabaseConnection>,
@@ -117,7 +117,7 @@ pub async fn get_products(
     let total = match paginator.num_items_and_pages().await {
         Ok(n) => n,
         Err(err) => {
-            warn!("(get_products) Could not count products: {:?}", err);
+            error!("(get_products) Could not count products: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when counting products"
@@ -134,7 +134,7 @@ pub async fn get_products(
             "total_pages": total.number_of_pages,
         })),
         Err(err) => {
-            warn!("(get_products) Could not get products data: {:?}", err);
+            error!("(get_products) Could not get products data: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when retrieving products data"

@@ -7,7 +7,7 @@ use crate::{
     dto::products::get::ProductResponse,
     entities::{brands, brands_images, classes, images, products, products_images, types},
 };
-use log::warn;
+use log::{error, warn};
 
 pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let id = id.into_inner();
@@ -21,7 +21,7 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                 match types::Entity::find_by_id(type_id).one(db.get_ref()).await {
                     Ok(t) => t,
                     Err(err) => {
-                        warn!("(get_product) Could not get type data: {:?}", err);
+                        error!("(get_product) Could not get type data: {:?}", err);
                         return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when retrieving product"
@@ -39,7 +39,7 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                 {
                     Ok(c) => c,
                     Err(err) => {
-                        warn!("(get_product) Could not get class data: {:?}", err);
+                        error!("(get_product) Could not get class data: {:?}", err);
                         return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when retrieving product"
@@ -66,17 +66,20 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                                 {
                                     Ok(img) => img,
                                     Err(err) => {
-                                        warn!("(get_product) Could not get brand image: {:?}", err);
+                                        error!(
+                                            "(get_product) Could not get brand image: {:?}",
+                                            err
+                                        );
                                         return HttpResponse::InternalServerError().json(json!({
-                                "status": "Internal Server Error",
-                                "message": "Something went wrong when retrieving product"
-                            }));
+                                            "status": "Internal Server Error",
+                                            "message": "Something went wrong when retrieving product"
+                                        }));
                                     }
                                 }
                             }
                             Ok(None) => None,
                             Err(err) => {
-                                warn!("(get_product) Could not get brand/image bind: {:?}", err);
+                                error!("(get_product) Could not get brand/image bind: {:?}", err);
                                 return HttpResponse::InternalServerError().json(json!({
                                     "status": "Internal Server Error",
                                     "message": "Something went wrong when retrieving product"
@@ -88,7 +91,7 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                     }
                     Ok(None) => (None, None),
                     Err(err) => {
-                        warn!("(get_product) Could not get brand data: {:?}", err);
+                        error!("(get_product) Could not get brand data: {:?}", err);
                         return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when retrieving product"
@@ -116,7 +119,7 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                                 Ok(Some(img)) => imgs.push(img),
                                 Ok(None) => {}
                                 Err(err) => {
-                                    warn!("(get_product) Could not get product image: {:?}", err);
+                                    error!("(get_product) Could not get product image: {:?}", err);
                                     return HttpResponse::InternalServerError().json(json!({
                                         "status": "Internal Server Error",
                                         "message": "Something went wrong when retrieving product"
@@ -127,7 +130,7 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                         imgs
                     }
                     Err(err) => {
-                        warn!("(get_product) Could not get product images: {:?}", err);
+                        error!("(get_product) Could not get product images: {:?}", err);
                         return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong when retrieving product"
@@ -145,10 +148,13 @@ pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>)
                 product_images,
             )))
         }
-        Ok(None) => HttpResponse::NotFound().json(json!({
-            "status": "Not Found",
-            "message": "Product not found"
-        })),
+        Ok(None) => {
+            warn!("(get_product) Product not found");
+            HttpResponse::NotFound().json(json!({
+                "status": "Not Found",
+                "message": "Product not found"
+            }))
+        }
         Err(err) => {
             warn!("(get_product) Could not get product data: {:?}", err);
             HttpResponse::InternalServerError().json(json!({

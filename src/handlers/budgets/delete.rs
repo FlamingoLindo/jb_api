@@ -15,6 +15,7 @@ pub async fn delete_budget(
     let budget = match exiting_budget {
         Ok(Some(budget)) => budget,
         Ok(None) => {
+            warn!("(delete_budget) Budget not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Budget not found"
@@ -30,7 +31,7 @@ pub async fn delete_budget(
     };
 
     if let Err(err) = std::fs::remove_file(&budget.path) {
-        warn!("Could not delete file from disk: {:?}", err);
+        error!("Could not delete file from disk: {:?}", err);
         return HttpResponse::InternalServerError().json(json!({
             "status": "Internal Server Error",
             "message": "Something went wrong when deleting budget"

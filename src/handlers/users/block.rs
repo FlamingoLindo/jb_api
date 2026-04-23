@@ -1,6 +1,6 @@
 use crate::entities::users;
 use actix_web::{HttpResponse, Responder, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde::Serialize;
 use serde_json::json;
@@ -21,6 +21,7 @@ pub async fn block_user(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) 
     let user = match existing_user {
         Ok(Some(user)) => user,
         Ok(None) => {
+            warn!("(block_user) User not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "User not found"

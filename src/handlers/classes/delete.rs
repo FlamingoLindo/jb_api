@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{DatabaseConnection, EntityTrait, ModelTrait};
 use serde_json::json;
 use uuid::Uuid;
@@ -17,6 +17,7 @@ pub async fn delete_class(
     let class = match existing_class {
         Ok(Some(class)) => class,
         Ok(None) => {
+            warn!("(delete_class) Class not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Class not found"

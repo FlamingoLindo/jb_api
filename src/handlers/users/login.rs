@@ -7,7 +7,7 @@ use argon2::password_hash::PasswordHash;
 use argon2::{Argon2, PasswordVerifier};
 use chrono::{Duration, Utc};
 use jsonwebtoken::{Algorithm, EncodingKey, Header, encode};
-use log::error;
+use log::{error, warn};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
 };
@@ -63,6 +63,7 @@ pub async fn login(
     match existing_user {
         Ok(Some((user, role))) => {
             if user.blocked {
+                warn!("(login) Unauthorized login attempt");
                 return Ok(HttpResponse::Unauthorized().json(json!({
                     "status": "Unauthorized",
                     "message": "Your account has been blocked by an administrator"

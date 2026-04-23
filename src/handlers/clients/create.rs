@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
 };
@@ -27,13 +27,14 @@ pub async fn create_client(
         .await
     {
         Ok(Some(_)) => {
+            warn!("(create_client) Name already in use");
             return HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
                 "message": "Invalid data"
             }));
         }
         Err(err) => {
-            error!("Could not check client name: {:?}", err);
+            error!("(create_client) Could not check client name: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong"
@@ -49,13 +50,14 @@ pub async fn create_client(
         .await
     {
         Ok(Some(_)) => {
+            warn!("(create_client) Phone already in use");
             return HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
                 "message": "Invalid data"
             }));
         }
         Err(err) => {
-            error!("Could not check client phone: {:?}", err);
+            error!("(create_client) Could not check client phone: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong"
@@ -74,13 +76,14 @@ pub async fn create_client(
                     .await
                 {
                     Ok(Some(_)) => {
+                        warn!("(create_client) CPF already in use");
                         return HttpResponse::Conflict().json(json!({
                             "status": "Conflict",
                             "message": "Invalid data"
                         }));
                     }
                     Err(err) => {
-                        error!("Could not check client CPF: {:?}", err);
+                        error!("(create_client) Could not check client CPF: {:?}", err);
                         return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong"
@@ -89,6 +92,7 @@ pub async fn create_client(
                     Ok(None) => {}
                 }
             } else {
+                warn!("(create_client) Missing CPF");
                 return HttpResponse::BadRequest().json(json!({
                     "status": "Bad Request",
                     "message": "CPF is required for PF clients"
@@ -103,13 +107,14 @@ pub async fn create_client(
                     .await
                 {
                     Ok(Some(_)) => {
+                        warn!("(create_client) CPNJ already in use");
                         return HttpResponse::Conflict().json(json!({
                             "status": "Conflict",
                             "message": "Invalid data"
                         }));
                     }
                     Err(err) => {
-                        error!("Could not check client CNPJ: {:?}", err);
+                        error!("(create_client) Could not check client CNPJ: {:?}", err);
                         return HttpResponse::InternalServerError().json(json!({
                             "status": "Internal Server Error",
                             "message": "Something went wrong"
@@ -118,6 +123,7 @@ pub async fn create_client(
                     Ok(None) => {}
                 }
             } else {
+                warn!("(create_client) Missing CPNJ");
                 return HttpResponse::BadRequest().json(json!({
                     "status": "Bad Request",
                     "message": "CNPJ is required for PJ clients"

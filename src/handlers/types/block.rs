@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde::Serialize;
 use serde_json::json;
@@ -22,6 +22,7 @@ pub async fn block_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) 
     let blocked_type = match existing_type {
         Ok(Some(blocked_type)) => blocked_type,
         Ok(None) => {
+            warn!("(block_type) Type not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Type not found"

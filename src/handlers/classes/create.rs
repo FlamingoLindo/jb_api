@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, error::ErrorInternalServerError, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
 };
@@ -23,6 +23,7 @@ pub async fn create_class(
 
     match existing_class {
         Ok(Some(_)) => {
+            warn!("(create_class) Class name already in use");
             return Ok(HttpResponse::Conflict().json(json!({
                 "status": "Conflict",
                 "message": "Class name already in use"

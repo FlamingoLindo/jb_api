@@ -17,16 +17,17 @@ pub async fn count_client_budgets(
     let client = match existing_client {
         Ok(Some(client)) => client,
         Ok(None) => {
+            warn!("(count_client_budgets) Client not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Client not found"
             }));
         }
         Err(err) => {
-            error!("(delete_image) Could not find image: {:?}", err);
+            error!("(count_client_budgets) Could not find client: {:?}", err);
             return HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
-                "message": "There has been an error when finding image, please try again"
+                "message": "There has been an error when finding client, please try again"
             }));
         }
     };
@@ -40,7 +41,7 @@ pub async fn count_client_budgets(
     match count {
         Ok(c) => HttpResponse::Ok().json(c),
         Err(err) => {
-            warn!("(count_client_budgets) Could not count budgets: {:?}", err);
+            error!("(count_client_budgets) Could not count budgets: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when counting budgets"

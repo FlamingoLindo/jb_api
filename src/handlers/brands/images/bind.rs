@@ -22,6 +22,7 @@ pub async fn bind_brand_to_image(
     let brand = match found_brand {
         Ok(Some(brand)) => brand,
         Ok(None) => {
+            warn!("(bind_brand_to_image) Brand not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Brand not found"
@@ -43,6 +44,7 @@ pub async fn bind_brand_to_image(
     let image = match found_image {
         Ok(Some(image)) => image,
         Ok(None) => {
+            warn!("(bind_brand_to_image) Image not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Image not found"
@@ -72,7 +74,7 @@ pub async fn bind_brand_to_image(
             "message": "Brand/Image bind created"
         })),
         Err(err) => {
-            warn!("(bind_brand_to_image) Could not create bind: {:?}", err);
+            error!("(bind_brand_to_image) Could not create bind: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when creating bind"

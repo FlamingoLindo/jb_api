@@ -10,15 +10,19 @@ ignorePaths:
 dictionaryDefinitions: []
 dictionaries: []
 words:
+  - Aços
   - actix
   - chrono
   - cnpj
+  - CPNJ
   - cust
   - dotenv
+  - Ferros
   - httpauth
   - ilike
   - intoval
   - jsonwebtoken
+  - luma
   - printpdf
   - serde
   - sqlx

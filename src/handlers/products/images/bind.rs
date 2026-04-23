@@ -21,6 +21,7 @@ pub async fn bind_product_to_image(
     {
         Ok(Some(_)) => {}
         Ok(None) => {
+            warn!("(bind_product_to_image) Product not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Product not found"
@@ -41,6 +42,7 @@ pub async fn bind_product_to_image(
     {
         Ok(Some(_)) => {}
         Ok(None) => {
+            warn!("(bind_product_to_image) Image not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Image not found"
@@ -70,7 +72,7 @@ pub async fn bind_product_to_image(
             "message": "Product/Image bind created"
         })),
         Err(err) => {
-            warn!("(bind_product_to_image) Could not create bind: {:?}", err);
+            error!("(bind_product_to_image) Could not create bind: {:?}", err);
             HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "Something went wrong when creating bind"

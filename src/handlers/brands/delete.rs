@@ -14,6 +14,7 @@ pub async fn delete_brand(
     let brand = match existing_brand {
         Ok(Some(brand)) => brand,
         Ok(None) => {
+            warn!("(delete_brand) Brand not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Brand not found"
@@ -44,7 +45,7 @@ pub async fn delete_brand(
                 match image {
                     Ok(Some(img)) => {
                         if let Err(err) = std::fs::remove_file(&img.path) {
-                            warn!("(delete_brand) Could not delete file from disk: {:?}", err);
+                            error!("(delete_brand) Could not delete file from disk: {:?}", err);
                             return HttpResponse::InternalServerError().json(json!({
                                 "status": "Internal Server Error",
                                 "message": "Something went wrong when deleting image"
@@ -53,6 +54,7 @@ pub async fn delete_brand(
                         let _ = img.delete(db.get_ref()).await;
                     }
                     Ok(None) => {
+                        warn!("(delete_brand) Could not find image");
                         return HttpResponse::NotFound().json(json!({
                             "status": "Not Found",
                             "message": "Image not found"

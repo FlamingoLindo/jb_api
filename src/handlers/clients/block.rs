@@ -1,5 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
-use log::error;
+use log::{error, warn};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde::Serialize;
 use serde_json::json;
@@ -25,6 +25,7 @@ pub async fn block_client(
     let client = match found_client {
         Ok(Some(client)) => client,
         Ok(None) => {
+            warn!("(block_client) Client not found");
             return HttpResponse::NotFound().json(json!({
                 "status": "Not Found",
                 "message": "Client not found"

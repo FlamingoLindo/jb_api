@@ -92,7 +92,7 @@ pub async fn update_brand(
                     {
                         Ok(img) => img,
                         Err(err) => {
-                            warn!("(update_brand) Could not get image data: {:?}", err);
+                            error!("(update_brand) Could not get image data: {:?}", err);
                             return HttpResponse::InternalServerError().json(json!({
                                 "status": "Internal Server Error",
                                 "message": "Something went wrong when retrieving brand data"
@@ -102,7 +102,7 @@ pub async fn update_brand(
                 }
                 Ok(None) => None,
                 Err(err) => {
-                    warn!("(update_brand) Could not get brand/image bind: {:?}", err);
+                    error!("(update_brand) Could not get brand/image bind: {:?}", err);
                     return HttpResponse::InternalServerError().json(json!({
                         "status": "Internal Server Error",
                         "message": "Something went wrong when retrieving brand data"
