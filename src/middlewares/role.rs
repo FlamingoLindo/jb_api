@@ -8,7 +8,7 @@ use futures::future::{LocalBoxFuture, Ready, ok};
 use serde_json::json;
 use std::rc::Rc;
 
-pub struct RoleGuard(pub &'static str);
+pub struct RoleGuard(pub &'static [&'static str]);
 
 impl<S, B> Transform<S, ServiceRequest> for RoleGuard
 where
@@ -23,14 +23,14 @@ where
     fn new_transform(&self, service: S) -> Self::Future {
         ok(RoleGuardMiddleware {
             service: Rc::new(service),
-            required_role: self.0,
+            required_roles: self.0,
         })
     }
 }
 
 pub struct RoleGuardMiddleware<S> {
     service: Rc<S>,
-    required_role: &'static str,
+    required_roles: &'static [&'static str],
 }
 
 impl<S, B> Service<ServiceRequest> for RoleGuardMiddleware<S>
@@ -45,12 +45,15 @@ where
 
     fn call(&self, req: ServiceRequest) -> Self::Future {
         let service = Rc::clone(&self.service);
-        let required_role = self.required_role;
+        let required_roles = self.required_roles;
 
         Box::pin(async move {
             let has_role = {
                 let extensions = req.extensions();
-                extensions.get::<Claims>().and_then(|c| c.role.as_deref()) == Some(required_role)
+                match extensions.get::<Claims>().and_then(|c| c.role.as_deref()) {
+                    Some(role) => required_roles.contains(&role),
+                    None => false,
+                }
             };
 
             if !has_role {
