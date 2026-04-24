@@ -28,7 +28,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"username\": \"{{$randomUserName}}\",\r\n    \"password\": \"Aa12345678!\",\r\n    \"blocked\": false\r\n}",
+									"raw": "{\r\n    \"username\": \"{{$randomUserName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"Aa12345678!\",\r\n    \"blocked\": false\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -93,6 +93,18 @@
 								"method": "POST",
 								"header": [],
 								"url": "{{base-url}}users/export"
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password",
+							"id": "cf1796a9-fb6a-4f31-b1cc-abfc1842defd",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": []
 							},
 							"response": []
 						}
