@@ -33,7 +33,7 @@ fn gen_jwt(
         .expect("valid timestamp")
         .timestamp();
     let claims = Claims {
-        sub: user.username.clone(),
+        sub: user.email.clone().expect("Missing user email on claim"),
         role: role_name,
         exp: exp as usize,
         iat: Utc::now().timestamp() as usize,
@@ -55,7 +55,7 @@ pub async fn login(
     }
 
     let existing_user = users::Entity::find()
-        .filter(users::Column::Username.eq(&credential.username.to_lowercase()))
+        .filter(users::Column::Email.eq(&credential.email.to_lowercase()))
         .find_also_related(roles::Entity)
         .one(db.get_ref())
         .await;

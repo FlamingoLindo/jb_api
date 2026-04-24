@@ -22,6 +22,7 @@ mod m20260422_125320_budget_table;
 mod m20260423_003553_brands_images;
 mod m20260423_174904_add_clients_email;
 mod m20260423_180701_delete_budget_cascade;
+mod m20260424_125643_add_users_email;
 
 pub struct Migrator;
 
@@ -51,6 +52,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260423_003553_brands_images::Migration),
             Box::new(m20260423_174904_add_clients_email::Migration),
             Box::new(m20260423_180701_delete_budget_cascade::Migration),
+            Box::new(m20260424_125643_add_users_email::Migration),
         ]
     }
 }

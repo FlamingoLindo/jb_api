@@ -30,6 +30,9 @@ pub struct CreateUserDTO {
     ))]
     pub username: String,
 
+    #[validate(email)]
+    pub email: String,
+
     #[validate(
         length(
             min = 8,

@@ -21,9 +21,10 @@ pub async fn export_users(db: web::Data<DatabaseConnection>) -> impl Responder {
     let worksheet = workbook.add_worksheet();
 
     worksheet.write(0, 0, "Username").unwrap();
-    worksheet.write(0, 1, "Blocked").unwrap();
-    worksheet.write(0, 2, "Created At").unwrap();
-    worksheet.write(0, 3, "Updated At").unwrap();
+    worksheet.write(0, 1, "Email").unwrap();
+    worksheet.write(0, 2, "Blocked").unwrap();
+    worksheet.write(0, 3, "Created At").unwrap();
+    worksheet.write(0, 4, "Updated At").unwrap();
 
     for (i, user) in users.iter().enumerate() {
         let row = (i + 1) as u32;
@@ -33,16 +34,19 @@ pub async fn export_users(db: web::Data<DatabaseConnection>) -> impl Responder {
             ExcelDateTime::from_timestamp(user.updated_at.and_utc().timestamp()).unwrap();
 
         worksheet.write(row, 0, &user.username).unwrap();
-        worksheet.write(row, 1, user.blocked).unwrap();
         worksheet
-            .write_with_format(row, 2, &created_at, &date_format)
+            .write(row, 1, user.email.as_deref().unwrap_or(""))
+            .unwrap();
+        worksheet.write(row, 2, user.blocked).unwrap();
+        worksheet
+            .write_with_format(row, 3, &created_at, &date_format)
             .unwrap();
         worksheet
-            .write_with_format(row, 3, &updated_at, &date_format)
+            .write_with_format(row, 4, &updated_at, &date_format)
             .unwrap();
     }
 
-    match workbook.save("exports/users.xlsx") {
+    match workbook.save("exports/excel/users.xlsx") {
         Ok(_) => HttpResponse::Ok().json(json!({
             "status": "Ok",
             "message": "Users exported successfully"

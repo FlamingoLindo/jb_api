@@ -12,16 +12,20 @@ use argon2::{
 
 use crate::{
     dto::users::create_user::{CreateUserDTO, CreateUserResponseDTO},
-    entities::users,
+    entities::{roles, users},
 };
 
 pub async fn create_user(
     db: web::Data<DatabaseConnection>,
     user: web::Json<CreateUserDTO>,
 ) -> impl Responder {
-    // Check if theres an existing user with the same username
+    if let Err(errors) = user.validate() {
+        return Ok(HttpResponse::BadRequest().json(errors));
+    }
+
+    // Check if theres an existing user with the same email
     let existing_user = users::Entity::find()
-        .filter(users::Column::Username.eq(&user.username))
+        .filter(users::Column::Email.eq(&user.email.to_lowercase()))
         .one(db.get_ref())
         .await;
 
@@ -34,17 +38,13 @@ pub async fn create_user(
             })));
         }
         Err(err) => {
-            error!("(create_user) Could not find user by username: {:?}", err);
+            error!("(create_user) Could not find user by email: {:?}", err);
             return Ok(HttpResponse::InternalServerError().json(json!({
                 "status": "Internal Server Error",
                 "message": "There has been an error when finding user, please try again"
             })));
         }
         Ok(None) => {}
-    }
-
-    if let Err(errors) = user.validate() {
-        return Ok(HttpResponse::BadRequest().json(errors));
     }
 
     // Hash user's password
@@ -61,16 +61,38 @@ pub async fn create_user(
         }
     };
 
-    // Remove case sensitivity for login
-    let lower_username = user.username.to_lowercase();
+    // Get role
+    let master_role = match roles::Entity::find()
+        .filter(roles::Column::Title.eq("User"))
+        .one(db.get_ref())
+        .await
+    {
+        Ok(Some(role)) => role,
+        Ok(None) => {
+            warn!("(create_user) Role not found");
+            return Ok(HttpResponse::NotFound().json(json!({
+                "status": "Not Found",
+                "message": "Role not found"
+            })));
+        }
+        Err(err) => {
+            error!("(create_user) Could not find master role: {:?}", err);
+            return Ok(HttpResponse::InternalServerError().json(json!({
+                "status": "Internal Server Error",
+                "message": "There has been an error when getting user's role, please try again"
+            })));
+        }
+    };
 
     // Create user
     let user_data = user.into_inner();
     let new_user = users::ActiveModel {
         id: Set(Uuid::new_v4()),
-        username: Set(lower_username),
+        username: Set(user_data.username),
+        email: Set(Some(user_data.email.to_lowercase())), // This should not need Some(), but since the migration came out wrong...
         password: Set(password_hash),
         blocked: Set(user_data.blocked),
+        role_id: Set(Some(master_role.id)),
         ..Default::default()
     }
     .insert(db.get_ref())

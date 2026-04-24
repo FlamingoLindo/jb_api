@@ -15,6 +15,8 @@ pub struct Model {
     pub created_at: DateTime,
     pub updated_at: DateTime,
     pub role_id: Option<Uuid>,
+    #[sea_orm(unique)]
+    pub email: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
