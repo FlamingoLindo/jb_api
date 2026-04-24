@@ -4,24 +4,48 @@ use actix_web::web::{self};
 use actix_web_httpauth::middleware::HttpAuthentication;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
-    let auth = HttpAuthentication::bearer(validator);
+    let auth = || HttpAuthentication::bearer(validator);
 
     cfg.service(
         web::scope("/users")
             .route("/login", web::post().to(handler::login::login))
+            // Master
             .service(
-                web::scope("").wrap(auth).service(
-                    web::scope("")
-                        .wrap(RoleGuard("user"))
-                        .route("/register", web::post().to(handler::create::create_user))
-                        .route(
-                            "/delete/{id}",
-                            web::delete().to(handler::delete::delete_user),
-                        )
-                        .route("/status/{id}", web::patch().to(handler::block::block_user))
-                        .route("/export", web::post().to(handler::export::export_users))
-                        .route("/{id}", web::patch().to(handler::update::update_user)),
-                ),
+                web::resource("/reset-password/{id}")
+                    .wrap(RoleGuard(&["Master"]))
+                    .wrap(auth())
+                    .route(web::patch().to(handler::reset_password::reset_password)),
+            )
+            .service(
+                web::resource("/register")
+                    .wrap(RoleGuard(&["Master"]))
+                    .wrap(auth())
+                    .route(web::post().to(handler::create::create_user)),
+            )
+            .service(
+                web::resource("/status/{id}")
+                    .wrap(RoleGuard(&["Master"]))
+                    .wrap(auth())
+                    .route(web::patch().to(handler::block::block_user)),
+            )
+            .service(
+                web::resource("/export")
+                    .wrap(RoleGuard(&["Master"]))
+                    .wrap(auth())
+                    .route(web::post().to(handler::export::export_users)),
+            )
+            .service(
+                web::resource("/delete/{id}")
+                    .wrap(RoleGuard(&["Master"]))
+                    .wrap(auth())
+                    .route(web::delete().to(handler::delete::delete_user)),
+            )
+            .service(
+                web::resource("/{id}")
+                    .wrap(RoleGuard(&["Master"]))
+                    .wrap(auth())
+                    .route(web::patch().to(handler::update::update_user)),
             ),
+        // User
     );
 }
