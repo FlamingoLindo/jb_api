@@ -1242,7 +1242,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"gabrielle.lindgren\",\r\n    \"password\": \"Aa12345678!\"\r\n}",
+							"raw": "{\r\n    \"email\": \"gabrielle.lindgren\",\r\n    \"password\": \"Aa12345678!\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
