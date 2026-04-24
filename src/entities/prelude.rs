@@ -10,6 +10,7 @@ pub use super::clients::Entity as Clients;
 pub use super::images::Entity as Images;
 pub use super::products::Entity as Products;
 pub use super::products_images::Entity as ProductsImages;
+pub use super::reset_password_tokens::Entity as ResetPasswordTokens;
 pub use super::roles::Entity as Roles;
 pub use super::types::Entity as Types;
 pub use super::users::Entity as Users;

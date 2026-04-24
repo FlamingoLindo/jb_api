@@ -23,6 +23,7 @@ mod m20260423_003553_brands_images;
 mod m20260423_174904_add_clients_email;
 mod m20260423_180701_delete_budget_cascade;
 mod m20260424_125643_add_users_email;
+mod m20260424_194432_password_reset_tokens;
 
 pub struct Migrator;
 
@@ -53,6 +54,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260423_174904_add_clients_email::Migration),
             Box::new(m20260423_180701_delete_budget_cascade::Migration),
             Box::new(m20260424_125643_add_users_email::Migration),
+            Box::new(m20260424_194432_password_reset_tokens::Migration),
         ]
     }
 }

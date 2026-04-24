@@ -9,6 +9,10 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("/users")
             .route("/login", web::post().to(handler::login::login))
+            .route(
+                "/send-password-email",
+                web::post().to(handler::send_forgot_password::send_forgot_password),
+            )
             // Master
             .service(
                 web::resource("/reset-password/{id}")

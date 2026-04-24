@@ -10,6 +10,7 @@ ignorePaths:
   - .env.dev
   - .dockerignore
   - assets/emails/budget.html
+  - assets/emails/password.html
 dictionaryDefinitions: []
 dictionaries: []
 words:
@@ -29,6 +30,8 @@ words:
   - luma
   - Orçamento
   - printpdf
+  - Redefinição
+  - Senha
   - serde
   - singlepart
   - sqlx

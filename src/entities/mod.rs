@@ -10,6 +10,7 @@ pub mod clients;
 pub mod images;
 pub mod products;
 pub mod products_images;
+pub mod reset_password_tokens;
 pub mod roles;
 pub mod sea_orm_active_enums;
 pub mod types;
