@@ -1,18 +1,5 @@
 # JB-API
 
-Save Budgets in DB
-
-- ~~Create a dir in `/exports` (also add a `.gitkeep`)~~
-- ~~Create budgets table in db~~
-- ~~Add client relations~~
-- ~~Fix create budget~~
-- Download budget
-- ~~Delete budget~~
-- ~~Add a budget counter for clients? (change when deleted)~~
-
-- Inside a client there will be a "budgets" segment, what will contain:
-  - filename
-  - amount
-  - created_at
-  - Option to delete
-  - Option to download (so in the GET, it needs to return the path)
+TODO
+Create route -> verify provided token with the one in the db, if ok, reset user`s password
+Cron that checks every 10 min, if passed delete the token from the db
