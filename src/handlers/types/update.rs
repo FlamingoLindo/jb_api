@@ -17,7 +17,7 @@ pub async fn update_type(
     id: web::Path<Uuid>,
     type_data: web::Json<UpdateTypeDTO>,
 ) -> impl Responder {
-    let id = id.into_inner();
+    let id: Uuid = id.into_inner();
 
     if let Err(errors) = type_data.validate() {
         return HttpResponse::BadRequest().json(errors);

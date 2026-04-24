@@ -9,7 +9,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("/images").service(
             web::scope("")
-                .wrap(RoleGuard("master"))
+                .wrap(RoleGuard("user"))
                 .wrap(auth)
                 .route(
                     "/delete/{id}",

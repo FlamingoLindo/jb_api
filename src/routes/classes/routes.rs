@@ -10,7 +10,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         web::scope("/classes").service(
             web::scope("").wrap(auth).service(
                 web::scope("")
-                    .wrap(RoleGuard("master"))
+                    .wrap(RoleGuard("user"))
                     .route("/create", web::post().to(handler::create::create_class))
                     .route("/{id}", web::get().to(handler::get::get_class))
                     .route("/{id}", web::patch().to(handler::update::update_class))

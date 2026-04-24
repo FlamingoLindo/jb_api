@@ -12,14 +12,15 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             .service(
                 web::scope("").wrap(auth).service(
                     web::scope("")
-                        .wrap(RoleGuard("master"))
+                        .wrap(RoleGuard("user"))
                         .route("/register", web::post().to(handler::create::create_user))
                         .route(
                             "/delete/{id}",
                             web::delete().to(handler::delete::delete_user),
                         )
                         .route("/status/{id}", web::patch().to(handler::block::block_user))
-                        .route("/export", web::post().to(handler::export::export_users)),
+                        .route("/export", web::post().to(handler::export::export_users))
+                        .route("/{id}", web::patch().to(handler::update::update_user)),
                 ),
             ),
     );

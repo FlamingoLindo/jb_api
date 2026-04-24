@@ -10,7 +10,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         web::scope("/products").service(
             web::scope("").wrap(auth).service(
                 web::scope("")
-                    .wrap(RoleGuard("master"))
+                    .wrap(RoleGuard("user"))
                     .route("/create", web::post().to(handler::create::create_product))
                     .route("", web::get().to(handler::get_all::get_products))
                     .route(

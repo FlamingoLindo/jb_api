@@ -10,7 +10,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         web::scope("/budgets").service(
             web::scope("").wrap(auth).service(
                 web::scope("")
-                    .wrap(RoleGuard("master"))
+                    .wrap(RoleGuard("user"))
                     .route("/create", web::post().to(handler::create::create_budget))
                     .route("/{id}", web::delete().to(handler::delete::delete_budget))
                     .route(
