@@ -1242,6 +1242,24 @@
 					"id": "80ae585e-cc3b-402b-b211-1474ccae59da"
 				},
 				{
+					"name": "Password",
+					"item": [
+						{
+							"name": "Send Email",
+							"id": "d5088f9a-fbd6-4788-b528-1aded7c6d933",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					],
+					"id": "16999e12-1aa9-4dcd-9f77-86bcc1d44513"
+				},
+				{
 					"name": "Login",
 					"event": [
 						{
