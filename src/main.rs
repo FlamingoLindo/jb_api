@@ -3,9 +3,12 @@ mod database;
 mod dto;
 mod entities;
 mod handlers;
+mod jobs;
 mod mailer;
 mod middlewares;
 mod routes;
+use std::sync::Arc;
+
 use actix_cors::Cors;
 use actix_multipart::form::tempfile::TempFileConfig;
 use actix_web::{
@@ -28,6 +31,9 @@ async fn main() -> std::io::Result<()> {
     let db_conn = connect_to_db()
         .await
         .expect("Failed to connect to database");
+
+    let db_arc = Arc::new(db_conn.clone());
+    tokio::spawn(jobs::scheduler::start(db_arc));
 
     HttpServer::new(move || {
         let cors = Cors::default()
