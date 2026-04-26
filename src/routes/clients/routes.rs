@@ -28,6 +28,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     .route(web::get().to(handler::available::available_clients)),
             )
             .service(
+                web::resource("/export")
+                    .wrap(RoleGuard(&["User", "Master"]))
+                    .wrap(auth())
+                    .route(web::post().to(handler::export::export_clients)),
+            )
+            .service(
                 web::resource("/block/{id}")
                     .wrap(RoleGuard(&["User", "Master"]))
                     .wrap(auth())

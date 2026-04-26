@@ -46,7 +46,7 @@ pub async fn export_users(db: web::Data<DatabaseConnection>) -> impl Responder {
             .unwrap();
     }
 
-    match workbook.save("exports/excel/users.xlsx") {
+    match workbook.save("exports/excel/users/users.xlsx") {
         Ok(_) => HttpResponse::Ok().json(json!({
             "status": "Ok",
             "message": "Users exported successfully"
