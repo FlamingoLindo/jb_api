@@ -1237,6 +1237,18 @@
 								"url": "{{base-url}}clients/caa970ef-6370-4f3a-a468-0ccaf12d118b"
 							},
 							"response": []
+						},
+						{
+							"name": "Export",
+							"id": "d2fac4fb-b96f-4a26-b7a1-8248bafb3a7e",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
 						}
 					],
 					"id": "80ae585e-cc3b-402b-b211-1474ccae59da"
