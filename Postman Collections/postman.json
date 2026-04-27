@@ -800,7 +800,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base-url}}products?page=0&page_size=10&search=TYPE",
+									"raw": "{{base-url}}products?page=0&page_size=10",
 									"host": [
 										"{{base-url}}products"
 									],
@@ -816,7 +816,7 @@
 										{
 											"key": "search",
 											"value": "TYPE",
-											"type": "text"
+											"disabled": true
 										},
 										{
 											"key": "sort",
