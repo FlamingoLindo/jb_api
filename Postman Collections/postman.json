@@ -921,6 +921,18 @@
 								"url": "{{base-url}}/products/readjust-prices"
 							},
 							"response": []
+						},
+						{
+							"name": "Export",
+							"id": "13195324-aca5-4558-843a-e958007bb193",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
 						}
 					],
 					"id": "06a294b9-c921-4bf3-9ea2-c6533150221c"
@@ -1245,8 +1257,15 @@
 								"disableBodyPruning": true
 							},
 							"request": {
-								"method": "GET",
-								"header": []
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"url": "{{base-url}}clients/export"
 							},
 							"response": []
 						}
