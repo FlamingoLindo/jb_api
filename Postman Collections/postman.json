@@ -201,7 +201,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"TEST\"\r\n}",
+									"raw": "{\r\n    \"name\": \"FERRAMENTAS X CORTE\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
