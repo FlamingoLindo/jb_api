@@ -65,38 +65,65 @@ pub async fn export_products(db: web::Data<DatabaseConnection>) -> impl Responde
         }
     };
 
+    // Group: brand -> (image_id, type -> Vec<row_index>)
     let mut brands_map: HashMap<String, (Option<Uuid>, HashMap<String, Vec<usize>>)> =
         HashMap::new();
     for (idx, row) in rows.iter().enumerate() {
         let brand = row.brand_name.clone().unwrap_or_else(|| "Unknown".into());
-        let class = row.class_name.clone().unwrap_or_else(|| "Unknown".into());
+        let type_key = row.type_name.clone().unwrap_or_else(|| "Unknown".into());
         let entry = brands_map
             .entry(brand)
             .or_insert_with(|| (row.brand_image_id, HashMap::new()));
-        entry.1.entry(class).or_default().push(idx);
+        entry.1.entry(type_key).or_default().push(idx);
     }
 
-    let _header_format = Format::new().set_bold();
-    let class_format = Format::new()
+    // Formats
+    let type_header_format = Format::new()
         .set_bold()
+        .set_font_color(rust_xlsxwriter::Color::Red)
         .set_font_size(11.0)
-        .set_background_color(0xD9E1F2)
+        .set_background_color(0xFFFF00)
         .set_border(FormatBorder::Thin);
+
     let col_header_format = Format::new()
         .set_bold()
         .set_align(FormatAlign::Center)
         .set_background_color(0xBDD7EE)
         .set_border(FormatBorder::Thin);
 
+    let data_format = Format::new().set_border(FormatBorder::Thin);
+
     let mut workbook = Workbook::new();
 
-    for (brand_name, (image_id, classes_map)) in &brands_map {
+    // Column definitions: (header label, width)
+    let columns: &[(&str, f64)] = &[
+        ("DESCRIÇÃO", 30.0),
+        ("PESO/MT", 10.0),
+        ("VALOR KG S/CORTE", 16.0),
+        ("VALOR P/MT", 12.0),
+        ("% DO CORTE", 10.0),
+        ("VALOR KG C/CORTE", 16.0),
+        ("PÇS", 8.0),
+        ("PESO/MM", 10.0),
+        ("COMPRIMENTO MM", 14.0),
+        ("VALOR C/CORTE", 13.0),
+        ("PESO KG", 10.0),
+        ("VALOR S/CORTE", 13.0),
+    ];
+
+    for (brand_name, (image_id, types_map)) in &brands_map {
         let worksheet = workbook.add_worksheet();
         let sheet_name = brand_name.chars().take(31).collect::<String>();
         worksheet.set_name(&sheet_name).unwrap();
 
         let mut current_row: u32 = 0;
 
+        // Set column widths
+        for (col_idx, (_, width)) in columns.iter().enumerate() {
+            worksheet.set_column_width(col_idx as u16, *width).unwrap();
+        }
+
+        // Brand image
         if let Some(image_id) = image_id {
             match images::Entity::find_by_id(*image_id)
                 .one(db.get_ref())
@@ -108,17 +135,14 @@ pub async fn export_products(db: web::Data<DatabaseConnection>) -> impl Responde
                     let target_height_px: f64 = 120.0;
                     let target_width_px: f64 = 200.0;
 
-                    let scale_h = target_height_px / orig_h as f64;
-                    let scale_w = target_width_px / orig_w as f64;
-                    let scale = scale_h.min(scale_w);
+                    let scale =
+                        (target_height_px / orig_h as f64).min(target_width_px / orig_w as f64);
 
                     match Image::new(&img.path) {
                         Ok(xlsx_image) => {
                             let xlsx_image =
                                 xlsx_image.set_scale_width(scale).set_scale_height(scale);
-
                             worksheet.insert_image(current_row, 0, &xlsx_image).unwrap();
-
                             let rows_needed = (target_height_px / 20.0).ceil() as u32;
                             current_row += rows_needed + 1;
                         }
@@ -143,121 +167,63 @@ pub async fn export_products(db: web::Data<DatabaseConnection>) -> impl Responde
             }
         }
 
-        for (class_name, product_indices) in classes_map {
-            worksheet
-                .write_with_format(current_row, 0, "Class", &class_format)
-                .unwrap();
-            worksheet
-                .write_with_format(current_row, 1, class_name.as_str(), &class_format)
-                .unwrap();
+        // Write each type block
+        for (type_name, product_indices) in types_map {
+            // Type header row (yellow, like "REDONDO" / "SEXTAVADO")
+            // Type header row — only col 0 gets the type name; rest are empty but styled
+            for (col_idx, _) in columns.iter().enumerate() {
+                let value = if col_idx == 0 { type_name.as_str() } else { "" };
+                worksheet
+                    .write_with_format(current_row, col_idx as u16, value, &type_header_format)
+                    .unwrap();
+            }
             current_row += 1;
 
-            worksheet
-                .write_with_format(current_row, 0, "Type", &col_header_format)
-                .unwrap();
-            worksheet
-                .write_with_format(current_row, 1, "Price/kg", &col_header_format)
-                .unwrap();
-            worksheet
-                .write_with_format(current_row, 2, "Price/kg no cut", &col_header_format)
-                .unwrap();
-            worksheet
-                .write_with_format(current_row, 3, "Price/kg cut", &col_header_format)
-                .unwrap();
-            worksheet
-                .write_with_format(current_row, 4, "Price 3mt", &col_header_format)
-                .unwrap();
-            worksheet
-                .write_with_format(current_row, 5, "Price BR", &col_header_format)
-                .unwrap();
-            worksheet
-                .write_with_format(current_row, 6, "Price Rod", &col_header_format)
-                .unwrap();
+            // Column sub-header row (blue)
+            for (col_idx, (label, _)) in columns.iter().enumerate() {
+                worksheet
+                    .write_with_format(current_row, col_idx as u16, *label, &col_header_format)
+                    .unwrap();
+            }
             current_row += 1;
 
+            // Product rows
             for &idx in product_indices {
-                let product = &rows[idx];
-                let type_name = product.type_name.as_deref().unwrap_or("-");
-                worksheet.write(current_row, 0, type_name).unwrap();
-                worksheet
-                    .write(
-                        current_row,
-                        1,
-                        product
-                            .price_kg
-                            .map(|d| d.to_string())
-                            .as_deref()
-                            .unwrap_or("-"),
-                    )
-                    .unwrap();
-                worksheet
-                    .write(
-                        current_row,
-                        2,
-                        product
-                            .price_kg_no_cut
-                            .map(|d| d.to_string())
-                            .as_deref()
-                            .unwrap_or("-"),
-                    )
-                    .unwrap();
-                worksheet
-                    .write(
-                        current_row,
-                        3,
-                        product
-                            .price_kg_cut
-                            .map(|d| d.to_string())
-                            .as_deref()
-                            .unwrap_or("-"),
-                    )
-                    .unwrap();
-                worksheet
-                    .write(
-                        current_row,
-                        4,
-                        product
-                            .price_3mt
-                            .map(|d| d.to_string())
-                            .as_deref()
-                            .unwrap_or("-"),
-                    )
-                    .unwrap();
-                worksheet
-                    .write(
-                        current_row,
-                        5,
-                        product
-                            .price_br
-                            .map(|d| d.to_string())
-                            .as_deref()
-                            .unwrap_or("-"),
-                    )
-                    .unwrap();
-                worksheet
-                    .write(
-                        current_row,
-                        6,
-                        product
-                            .price_rod
-                            .map(|d| d.to_string())
-                            .as_deref()
-                            .unwrap_or("-"),
-                    )
-                    .unwrap();
+                let p = &rows[idx];
+
+                let dec = |v: Option<Decimal>| -> String {
+                    v.map(|d| d.to_string()).unwrap_or_else(|| "-".into())
+                };
+
+                let values: &[String] = &[
+                    p.description.clone(),
+                    dec(p.weight),
+                    dec(p.price_kg),
+                    dec(p.price_p_mt),
+                    p.cut_percentage
+                        .map(|d| format!("{}%", d))
+                        .unwrap_or_else(|| "-".into()),
+                    dec(p.price_kg_cut),
+                    "-".into(), // PÇS — no field for this yet
+                    dec(p.weight_p_mm),
+                    "-".into(),             // COMPRIMENTO MM — no field for this yet
+                    dec(p.price_kg_cut),    // VALOR C/CORTE
+                    dec(p.weight),          // PESO KG
+                    dec(p.price_kg_no_cut), // VALOR S/CORTE
+                ];
+
+                for (col_idx, val) in values.iter().enumerate() {
+                    worksheet
+                        .write_with_format(current_row, col_idx as u16, val.as_str(), &data_format)
+                        .unwrap();
+                }
+
                 current_row += 1;
             }
 
+            // Blank row between type blocks
             current_row += 1;
         }
-
-        worksheet.set_column_width(0, 20).unwrap();
-        worksheet.set_column_width(1, 15).unwrap();
-        worksheet.set_column_width(2, 18).unwrap();
-        worksheet.set_column_width(3, 15).unwrap();
-        worksheet.set_column_width(4, 12).unwrap();
-        worksheet.set_column_width(5, 12).unwrap();
-        worksheet.set_column_width(6, 12).unwrap();
     }
 
     std::fs::create_dir_all("exports/excel/products").ok();
