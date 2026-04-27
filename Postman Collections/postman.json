@@ -526,7 +526,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Test\"\r\n}",
+									"raw": "{\r\n  \"name\": \"RETANGULAR CINZENTO\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
