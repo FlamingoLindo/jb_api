@@ -35,6 +35,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                     .route(web::patch().to(handler::readjust_price::readjust_price)),
             )
             .service(
+                web::resource("/export")
+                    .wrap(RoleGuard(&["User", "Master"]))
+                    .wrap(auth())
+                    .route(web::post().to(handler::export::export_products)),
+            )
+            .service(
                 web::resource("/block/{id}")
                     .wrap(RoleGuard(&["User", "Master"]))
                     .wrap(auth())

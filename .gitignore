@@ -26,3 +26,5 @@ exports/**
 !exports/excel/clients/.gitkeep
 !exports/excel/users/
 !exports/excel/users/.gitkeep
+!exports/excel/products/
+!exports/excel/products/.gitkeep

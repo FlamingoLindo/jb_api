@@ -57,7 +57,7 @@ pub async fn save_file(
     let dir = format!("./uploads/{entity}");
     std::fs::create_dir_all(&dir).unwrap();
 
-    let mut saved_paths: Vec<String> = Vec::new();
+    let mut saved: Vec<serde_json::Value> = Vec::new();
 
     for f in form.files {
         let file_name = f.file_name.unwrap();
@@ -83,8 +83,11 @@ pub async fn save_file(
         .await;
 
         match new_image {
-            Ok(_) => {
-                saved_paths.push(dest);
+            Ok(inserted) => {
+                saved.push(json!({
+                    "id": inserted.id,
+                    "path": dest
+                }));
             }
             Err(err) => {
                 error!("Failed to insert image: {:?}", err);
@@ -98,6 +101,6 @@ pub async fn save_file(
 
     HttpResponse::Ok().json(json!({
         "status": "Ok",
-        "paths": saved_paths
+        "files": saved,
     }))
 }

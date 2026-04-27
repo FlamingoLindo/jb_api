@@ -38,3 +38,4 @@ typst-as-lib = "0.15.4"
 typst-pdf = "0.14.2"
 lettre = "0.11.21"
 tokio-cron-scheduler = { version = "*", features = ["signal"] }
+image = "0.25.10"
