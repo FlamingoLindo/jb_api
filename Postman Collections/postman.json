@@ -363,7 +363,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    // \"name\": \"05-FERROS TREFILADOS 1020\"\r\n    \"name\": \"{{$randomProductName}}\"\r\n}",
+									"raw": "{\r\n  \"name\": \"18-TUBOS TREFILADOS\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
