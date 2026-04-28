@@ -2,6 +2,7 @@ pub mod block;
 pub mod create;
 pub mod delete;
 pub mod export;
+pub mod forgot_password;
 pub mod login;
 pub mod reset_password;
 pub mod send_forgot_password;

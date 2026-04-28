@@ -13,6 +13,10 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 "/send-password-email",
                 web::post().to(handler::send_forgot_password::send_forgot_password),
             )
+            .route(
+                "/forgot-password/{token}",
+                web::patch().to(handler::forgot_password::forgot_password),
+            )
             // Master
             .service(
                 web::resource("/reset-password/{id}")

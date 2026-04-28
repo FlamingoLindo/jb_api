@@ -1,4 +1,5 @@
 pub mod create_user;
+pub mod forgot_password;
 pub mod login_user;
 pub mod reset_password;
 pub mod send_forgot_password;
