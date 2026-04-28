@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title>Dump do Banco de Dados - Ferros e Aços JB</title>
+
+    <style>
+      body,
+      table,
+      td,
+      p,
+      a {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      table {
+        border-collapse: collapse;
+      }
+
+      img {
+        border: 0;
+        outline: none;
+        text-decoration: none;
+        display: block;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      @media only screen and (max-width: 620px) {
+        .container {
+          width: 100% !important;
+        }
+
+        .mobile-padding {
+          padding-left: 24px !important;
+          padding-right: 24px !important;
+        }
+
+        .stack {
+          display: block !important;
+          width: 100% !important;
+        }
+
+        .text-center-mobile {
+          text-align: center !important;
+        }
+
+        .fluid {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+
+        .mobile-spacer {
+          height: 16px !important;
+          line-height: 16px !important;
+          font-size: 16px !important;
+        }
+
+        h1 {
+          font-size: 24px !important;
+          line-height: 32px !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      min-width: 100%;
+      background-color: #f4f4f4;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    "
+  >
+    <!-- Preheader -->
+    <div
+      style="
+        display: none;
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        font-size: 1px;
+        line-height: 1px;
+        color: #f4f4f4;
+      "
+    >
+      O dump do banco de dados foi gerado com sucesso. Confira o arquivo em
+      anexo.
+    </div>
+
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="width: 100%; background-color: #f4f4f4"
+    >
+      <tr>
+        <td align="center" style="padding: 40px 16px">
+          <table
+            role="presentation"
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            class="container"
+            style="
+              width: 100%;
+              max-width: 600px;
+              background-color: #ffffff;
+              border-radius: 8px;
+              overflow: hidden;
+            "
+          >
+            <!-- Header -->
+            <tr>
+              <td
+                align="center"
+                class="mobile-padding"
+                style="background-color: #1a1a2e; padding: 32px 32px 28px 32px"
+              >
+                <h1
+                  style="
+                    margin: 0;
+                    font-size: 28px;
+                    line-height: 36px;
+                    font-weight: bold;
+                    color: #ffffff;
+                  "
+                >
+                  Ferros e Aços JB
+                </h1>
+                <p
+                  style="
+                    margin: 8px 0 0 0;
+                    font-size: 15px;
+                    line-height: 22px;
+                    color: #c7c7d1;
+                  "
+                >
+                  Dump do banco de dados disponível
+                </p>
+              </td>
+            </tr>
+
+            <!-- Body -->
+            <tr>
+              <td class="mobile-padding" style="padding: 40px 32px 32px 32px">
+                <p
+                  style="
+                    margin: 0 0 16px 0;
+                    font-size: 16px;
+                    line-height: 24px;
+                    color: #333333;
+                  "
+                >
+                  Olá, <strong>{{recipient_name}}</strong>!
+                </p>
+
+                <p
+                  style="
+                    margin: 0 0 24px 0;
+                    font-size: 15px;
+                    line-height: 24px;
+                    color: #555555;
+                  "
+                >
+                  Um dump do banco de dados foi solicitado e gerado com sucesso.
+                  O arquivo está disponível em anexo a este e-mail.
+                </p>
+
+                <!-- Summary Box -->
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="
+                    width: 100%;
+                    background-color: #f9f9f9;
+                    border: 1px solid #e6e6e6;
+                    border-radius: 6px;
+                  "
+                >
+                  <tr>
+                    <td style="padding: 20px 20px 8px 20px">
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 14px;
+                          line-height: 22px;
+                          color: #555555;
+                        "
+                      >
+                        <strong>Banco de dados:</strong> {{database_name}}
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 0 20px 8px 20px">
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 14px;
+                          line-height: 22px;
+                          color: #555555;
+                        "
+                      >
+                        <strong>Solicitado por:</strong> {{requested_by}}
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 0 20px 20px 20px">
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 14px;
+                          line-height: 22px;
+                          color: #555555;
+                        "
+                      >
+                        <strong>Data:</strong> {{date}}
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                >
+                  <tr>
+                    <td
+                      style="height: 24px; line-height: 24px; font-size: 24px"
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
+                </table>
+
+                <p
+                  style="
+                    margin: 0;
+                    font-size: 15px;
+                    line-height: 24px;
+                    color: #555555;
+                  "
+                >
+                  Mantenha o arquivo em local seguro. Qualquer dúvida, entre em
+                  contato conosco.
+                </p>
+              </td>
+            </tr>
+
+            <!-- Divider -->
+            <tr>
+              <td style="padding: 0 32px">
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                >
+                  <tr>
+                    <td
+                      style="
+                        border-top: 1px solid #e6e6e6;
+                        font-size: 1px;
+                        line-height: 1px;
+                      "
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td
+                align="center"
+                class="mobile-padding"
+                style="background-color: #ffffff; padding: 20px 32px 28px 32px"
+              >
+                <p
+                  style="
+                    margin: 0;
+                    font-size: 13px;
+                    line-height: 20px;
+                    color: #999999;
+                  "
+                >
+                  © 2026 Ferros e Aços JB. Todos os direitos reservados.
+                </p>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Outer spacing note -->
+          <table
+            role="presentation"
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            class="container"
+            style="width: 100%; max-width: 600px"
+          >
+            <tr>
+              <td align="center" style="padding: 16px 8px 0 8px">
+                <p
+                  style="
+                    margin: 0;
+                    font-size: 12px;
+                    line-height: 18px;
+                    color: #aaaaaa;
+                  "
+                >
+                  Esta é uma mensagem automática. Caso precise de atendimento,
+                  responda este e-mail ou utilize nossos canais oficiais.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

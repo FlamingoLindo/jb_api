@@ -3,6 +3,7 @@ pub mod budgets;
 pub mod classes;
 pub mod clients;
 pub mod config;
+pub mod database;
 pub mod images;
 pub mod products;
 pub mod types;

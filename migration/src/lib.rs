@@ -47,7 +47,6 @@ impl MigratorTrait for Migrator {
             Box::new(m20260316_184710_products_weight_to_decimal::Migration),
             Box::new(m20260319_134858_products_new_fields::Migration),
             Box::new(m20260418_151752_auto_add_roles::Migration),
-            Box::new(m20260418_152857_auto_add_master_user::Migration),
             Box::new(m20260420_164641_clients::Migration),
             Box::new(m20260422_125320_budget_table::Migration),
             Box::new(m20260423_003553_brands_images::Migration),
@@ -55,6 +54,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260423_180701_delete_budget_cascade::Migration),
             Box::new(m20260424_125643_add_users_email::Migration),
             Box::new(m20260424_194432_password_reset_tokens::Migration),
+            Box::new(m20260418_152857_auto_add_master_user::Migration),
         ]
     }
 }

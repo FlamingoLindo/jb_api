@@ -21,10 +21,16 @@ uploads/*/*
 !uploads/**/.gitkeep
 
 exports/**
+
+!exports/dumps/
+!exports/dumps/.gitkeep 
+
 !exports/excel/
 !exports/excel/clients/
 !exports/excel/clients/.gitkeep
+
 !exports/excel/users/
 !exports/excel/users/.gitkeep
+
 !exports/excel/products/
 !exports/excel/products/.gitkeep

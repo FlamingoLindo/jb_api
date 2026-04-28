@@ -49,6 +49,20 @@ impl Mailer {
             .replace("{{token}}", token))
     }
 
+    fn load_dump_template(
+        recipient_name: &str,
+        database_name: &str,
+        requested_by: &str,
+    ) -> Result<String, std::io::Error> {
+        let template = fs::read_to_string("assets/emails/dump.html")?;
+        let now = chrono::Local::now().format("%d/%m/%Y").to_string();
+        Ok(template
+            .replace("{{recipient_name}}", recipient_name)
+            .replace("{{database_name}}", database_name)
+            .replace("{{requested_by}}", requested_by)
+            .replace("{{date}}", &now))
+    }
+
     pub fn send_budget(
         recipient: &str,
         client_name: &str,
@@ -110,6 +124,48 @@ impl Mailer {
         mailer.send(&email)?;
 
         info!("Password reset email sent to: {}", recipient);
+        Ok(())
+    }
+
+    pub fn send_dump(
+        recipient_email: &str,
+        recipient_name: &str,
+        database_name: &str,
+        requester_email: &str,
+        file_path: &str,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let (smtp_host, smtp_username, smtp_password) = Self::smtp_credentials();
+
+        let body = Self::load_dump_template(recipient_name, database_name, requester_email)?;
+
+        let html_part = SinglePart::builder()
+            .header(ContentType::TEXT_HTML)
+            .body(body);
+
+        let file_bytes = fs::read(file_path)?;
+        let file_name = std::path::Path::new(file_path)
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("dump.sql")
+            .to_owned();
+
+        let attachment =
+            Attachment::new(file_name).body(file_bytes, "application/octet-stream".parse()?);
+
+        let multipart = MultiPart::mixed()
+            .singlepart(html_part)
+            .singlepart(attachment);
+
+        let email = Message::builder()
+            .from(Self::smtp_from(&smtp_username)?)
+            .to(Mailbox::new(None, recipient_email.parse()?))
+            .subject("Dump Banco de Dados - Ferros e Aços JB")
+            .multipart(multipart)?;
+
+        let mailer = Self::build_mailer(&smtp_host, &smtp_username, &smtp_password)?;
+        mailer.send(&email)?;
+
+        info!("DB dump email sent to: {}", recipient_email);
         Ok(())
     }
 }

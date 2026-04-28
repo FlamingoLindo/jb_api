@@ -12,6 +12,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             .configure(routes::types::routes::config)
             .configure(routes::products::routes::config)
             .configure(routes::budgets::routes::config)
-            .configure(routes::clients::routes::config),
+            .configure(routes::clients::routes::config)
+            .configure(routes::database::routes::config),
     );
 }

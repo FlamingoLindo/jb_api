@@ -10,6 +10,7 @@ impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let username =
             std::env::var("MASTER_USERNAME").expect("MASTER_USERNAME must be set in env");
+        let email = std::env::var("MASTER_EMAIL").expect("MASTER_EMAIL must be set in env");
         let password =
             std::env::var("MASTER_PASSWORD").expect("MASTER_PASSWORD must be set in env");
 
@@ -23,10 +24,11 @@ impl MigrationTrait for Migration {
 
         db.execute_unprepared(&format!(
             r#"
-            INSERT INTO users (id, username, blocked, password, role_id)
+            INSERT INTO users (id, username, email, blocked, password, role_id)
             VALUES (
                 gen_random_uuid(),
                 '{username}',
+                '{email}',
                 'false',
                 '{hashed}',
                 (SELECT id FROM roles WHERE title = 'Master' LIMIT 1)

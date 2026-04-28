@@ -13,7 +13,8 @@ impl MigrationTrait for Migration {
             INSERT INTO roles (id, title, description)
             VALUES 
                 (gen_random_uuid(), 'Master', 'Master Role'),
-                (gen_random_uuid(), 'User', 'User Role');
+                (gen_random_uuid(), 'User', 'User Role'),
+                (gen_random_uuid(), 'DPO', 'DPO Role;
             "#,
         )
         .await?;

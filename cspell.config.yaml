@@ -11,6 +11,7 @@ ignorePaths:
   - .dockerignore
   - assets/emails/budget.html
   - assets/emails/password.html
+  - assets/emails/dump.html
   - src/handlers/products/export.rs
 dictionaryDefinitions: []
 dictionaries: []
@@ -30,6 +31,7 @@ words:
   - lettre
   - luma
   - Orçamento
+  - PGPASSWORD
   - printpdf
   - Redefinição
   - Senha
