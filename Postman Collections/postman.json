@@ -1365,6 +1365,18 @@
 						"url": "{{base-url}}users/login"
 					},
 					"response": []
+				},
+				{
+					"name": "Create DB Dump",
+					"id": "a143723f-c342-4fe3-8b90-0cf4f2b1908a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			],
 			"id": "342067e3-2b5b-46fa-83f4-e255d41bbea8"
