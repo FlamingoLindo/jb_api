@@ -14,7 +14,7 @@ impl MigrationTrait for Migration {
             VALUES 
                 (gen_random_uuid(), 'Master', 'Master Role'),
                 (gen_random_uuid(), 'User', 'User Role'),
-                (gen_random_uuid(), 'DPO', 'DPO Role;
+                (gen_random_uuid(), 'DPO', 'DPO Role');
             "#,
         )
         .await?;
