@@ -1303,6 +1303,18 @@
 								"url": "{{base-url}}users/send-password-email"
 							},
 							"response": []
+						},
+						{
+							"name": "Change Password",
+							"id": "c9610d77-cfde-40e2-80d5-0399ef690362",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
 						}
 					],
 					"id": "16999e12-1aa9-4dcd-9f77-86bcc1d44513"
