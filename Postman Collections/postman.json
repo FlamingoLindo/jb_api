@@ -771,15 +771,6 @@
 								},
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"products\": [\r\n        {\r\n            \"prod1\": \"1\",\r\n            \"amount\": \"2\",\r\n            \"size\": \"3\",\r\n            \"weight\": \"4\",\r\n            \"price\": \"5\"\r\n        },\r\n        {\r\n            \"prod1\": \"1\",\r\n            \"amount\": \"2\",\r\n            \"size\": \"3\",\r\n            \"weight\": \"4\",\r\n            \"price\": \"5\"\r\n        }\r\n    ],\r\n    \"total\": \"R$ 10.00\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": "{{base-url}}products/7b83c253-afd4-4ed7-a0cb-88dfeaec86b2"
 							},
 							"response": []
@@ -1311,8 +1302,24 @@
 								"disableBodyPruning": true
 							},
 							"request": {
-								"method": "GET",
-								"header": []
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"new_password\": \"Aa12345678!\",\r\n    \"confirm_password\": \"Aa12345678!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}users/forgot-password/1640caf1-b2e6-4ffd-9c41-63e85eccf7aa"
 							},
 							"response": []
 						}
