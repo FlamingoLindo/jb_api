@@ -10,9 +10,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./exports:/app/exports
+      - ./uploads:/app/uploads
+      - ./assets:/app/assets
 
   db:
-    image: postgres:alpine
+    image: postgres:15-alpine
     restart: always
     user: postgres
     volumes:

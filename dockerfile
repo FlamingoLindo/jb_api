@@ -22,6 +22,9 @@ RUN --mount=type=bind,source=src,target=src \
 FROM alpine:3.18 AS final
 
 ARG UID=10001
+
+RUN apk add --no-cache postgresql-client
+
 RUN adduser \
     --disabled-password \
     --gecos "" \
@@ -31,11 +34,16 @@ RUN adduser \
     --uid "${UID}" \
     appuser
 
+RUN mkdir -p /app/exports /app/uploads /app/assets \
+    && chown -R appuser:appuser /app
+
 USER appuser
 
 COPY --from=build /bin/server /bin/
 
 COPY .env.prod .env.prod 
+
+WORKDIR /app 
 
 EXPOSE 8080
 
