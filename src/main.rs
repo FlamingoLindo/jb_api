@@ -2,6 +2,7 @@ mod config;
 mod database;
 mod dto;
 mod entities;
+mod governors;
 mod handlers;
 mod jobs;
 mod mailer;
@@ -19,7 +20,7 @@ use actix_web::{
 };
 use routes::config::config;
 
-use crate::database::connect_to_db::connect_to_db;
+use crate::{database::connect_to_db::connect_to_db, governors::registry::Governors};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -34,6 +35,8 @@ async fn main() -> std::io::Result<()> {
 
     let db_arc = Arc::new(db_conn.clone());
     tokio::spawn(jobs::scheduler::start(db_arc));
+
+    let governors = Governors::init();
 
     HttpServer::new(move || {
         let cors = Cors::default()
@@ -54,7 +57,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::NormalizePath::new(
                 middleware::TrailingSlash::Trim,
             ))
-            .configure(config)
+            .configure(|cfg| config(cfg, &governors))
     })
     .bind(port)?
     .run()

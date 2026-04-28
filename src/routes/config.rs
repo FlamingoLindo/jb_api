@@ -1,8 +1,8 @@
 use actix_web::web;
 
-use crate::routes;
+use crate::{governors::registry::Governors, routes};
 
-pub fn config(cfg: &mut web::ServiceConfig) {
+pub fn config(cfg: &mut web::ServiceConfig, governors: &Governors) {
     cfg.service(
         web::scope("/api/v1")
             .configure(routes::users::routes::config)
@@ -13,6 +13,6 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             .configure(routes::products::routes::config)
             .configure(routes::budgets::routes::config)
             .configure(routes::clients::routes::config)
-            .configure(routes::database::routes::config),
+            .configure(|c| routes::database::routes::config(c, &governors.dump)),
     );
 }
