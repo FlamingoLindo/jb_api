@@ -40,3 +40,8 @@ lettre = "0.11.21"
 tokio-cron-scheduler = { version = "*", features = ["signal"] }
 image = "0.25.10"
 actix-governor = "0.10.0"
+actix-web-static-files = { version = "4.1", features = ["static-files-03"] }
+static-files = "0.3.1"
+
+[build-dependencies]
+static-files = "0.3.1"

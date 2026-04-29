@@ -18,9 +18,12 @@ use actix_web::{
     middleware::{self, Logger},
     web,
 };
+use actix_web_static_files::ResourceFiles;
 use routes::config::config;
 
 use crate::{database::connect_to_db::connect_to_db, governors::registry::Governors};
+
+include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -39,6 +42,7 @@ async fn main() -> std::io::Result<()> {
     let governors = Governors::init();
 
     HttpServer::new(move || {
+        let generated = generate();
         let cors = Cors::default()
             .allowed_origin("http://localhost:3000")
             .allowed_methods(vec!["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
@@ -49,6 +53,7 @@ async fn main() -> std::io::Result<()> {
             ])
             .supports_credentials();
         App::new()
+            .service(ResourceFiles::new("/", generated))
             .app_data(web::Data::new(db_conn.clone()))
             .app_data(TempFileConfig::default().directory("./uploads/.temp"))
             .wrap(cors)

@@ -12,6 +12,7 @@ ignorePaths:
   - assets/emails/budget.html
   - assets/emails/password.html
   - assets/emails/dump.html
+  - static/index.html
   - src/handlers/products/export.rs
 dictionaryDefinitions: []
 dictionaries: []

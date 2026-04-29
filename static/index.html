@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JB Ferros — API</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0c0c0c;
+        --surface: #141414;
+        --border: #2a2a2a;
+        --accent: #1a78e8;
+        --accent-dim: #0d3a7a;
+        --text: #f0ede8;
+        --text-muted: #6b6860;
+        --text-mid: #9e9b96;
+        --mono: "DM Mono", monospace;
+        --display: "Bebas Neue", sans-serif;
+        --body: "DM Sans", sans-serif;
+      }
+
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--body);
+        overflow-x: hidden;
+      }
+
+      /* ── NOISE OVERLAY ── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+        opacity: 0.035;
+        pointer-events: none;
+        z-index: 100;
+      }
+
+      /* ── GRID BG ── */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(var(--border) 1px, transparent 1px),
+          linear-gradient(90deg, var(--border) 1px, transparent 1px);
+        background-size: 60px 60px;
+        opacity: 0.4;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ── GLOW ── */
+      .glow {
+        position: fixed;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(26, 120, 232, 0.12) 0%,
+          transparent 70%
+        );
+        top: -150px;
+        right: -100px;
+        pointer-events: none;
+        z-index: 1;
+        animation: drift 8s ease-in-out infinite alternate;
+      }
+      @keyframes drift {
+        from {
+          transform: translate(0, 0);
+        }
+        to {
+          transform: translate(-40px, 60px);
+        }
+      }
+
+      /* ── LAYOUT ── */
+      .page {
+        position: relative;
+        z-index: 2;
+        min-height: 100vh;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 40px;
+      }
+
+      /* ── HEADER ── */
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 32px 0;
+        border-bottom: 1px solid var(--border);
+        animation: fadeDown 0.7s ease both;
+      }
+      .logo {
+        font-family: var(--display);
+        font-size: 2rem;
+        letter-spacing: 0.05em;
+        color: var(--text);
+      }
+      .logo span {
+        color: var(--accent);
+      }
+      .badge {
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+        background: rgba(26, 120, 232, 0.1);
+        border: 1px solid var(--accent-dim);
+        padding: 5px 12px;
+        border-radius: 2px;
+      }
+
+      /* ── MAIN ── */
+      main {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 80px 0;
+        gap: 64px;
+      }
+
+      /* ── STATUS ROW ── */
+      .status-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        letter-spacing: 0.1em;
+        animation: fadeUp 0.6s 0.1s ease both;
+      }
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #3ddc84;
+        box-shadow: 0 0 8px #3ddc84;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      /* ── HERO ── */
+      .hero {
+        animation: fadeUp 0.7s 0.15s ease both;
+      }
+      .hero h1 {
+        font-family: var(--display);
+        font-size: clamp(4rem, 10vw, 8rem);
+        line-height: 0.92;
+        letter-spacing: 0.02em;
+        color: var(--text);
+      }
+      .hero h1 em {
+        font-style: normal;
+        color: var(--accent);
+        display: block;
+      }
+
+      /* ── DESCRIPTION ── */
+      .desc {
+        max-width: 560px;
+        animation: fadeUp 0.7s 0.25s ease both;
+      }
+      .desc p {
+        font-size: 1.05rem;
+        font-weight: 300;
+        color: var(--text-mid);
+        line-height: 1.7;
+      }
+      .desc code {
+        font-family: var(--mono);
+        font-size: 0.85em;
+        color: var(--accent);
+        background: rgba(232, 80, 26, 0.08);
+        padding: 2px 6px;
+        border-radius: 2px;
+        border: 1px solid var(--accent-dim);
+      }
+
+      /* ── ENDPOINT BOX ── */
+      .endpoint-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        padding: 20px 24px;
+        max-width: 560px;
+        animation: fadeUp 0.7s 0.3s ease both;
+      }
+      .endpoint-label {
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        letter-spacing: 0.14em;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .endpoint-url {
+        font-family: var(--mono);
+        font-size: 0.88rem;
+        color: var(--text-mid);
+        word-break: break-all;
+      }
+      .endpoint-url strong {
+        color: var(--text);
+      }
+
+      /* ── LINKS ── */
+      .links {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeUp 0.7s 0.38s ease both;
+      }
+      .link-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 18px 24px;
+        text-decoration: none;
+        color: var(--text);
+        transition:
+          border-color 0.2s,
+          background 0.2s,
+          transform 0.2s;
+        min-width: 240px;
+        flex: 1;
+        max-width: 320px;
+        position: relative;
+        overflow: hidden;
+      }
+      .link-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(26, 120, 232, 0.06) 0%,
+          transparent 60%
+        );
+        opacity: 0;
+        transition: opacity 0.25s;
+      }
+      .link-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-3px);
+      }
+      .link-card:hover::before {
+        opacity: 1;
+      }
+      .link-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(26, 120, 232, 0.1);
+        border: 1px solid var(--accent-dim);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 2px;
+      }
+      .link-icon svg {
+        width: 18px;
+        height: 18px;
+        fill: var(--accent);
+      }
+      .link-info {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .link-type {
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        letter-spacing: 0.12em;
+        color: var(--text-muted);
+        text-transform: uppercase;
+      }
+      .link-name {
+        font-size: 0.92rem;
+        font-weight: 400;
+        color: var(--text);
+      }
+      .link-arrow {
+        margin-left: auto;
+        color: var(--text-muted);
+        transition:
+          transform 0.2s,
+          color 0.2s;
+        font-size: 1rem;
+      }
+      .link-card:hover .link-arrow {
+        transform: translate(4px, -4px);
+        color: var(--accent);
+      }
+
+      /* ── FOOTER ── */
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 24px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeUp 0.7s 0.45s ease both;
+      }
+      .footer-copy {
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 0.08em;
+      }
+      .footer-version {
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 0.08em;
+      }
+
+      /* ── ANIMATIONS ── */
+      @keyframes fadeDown {
+        from {
+          opacity: 0;
+          transform: translateY(-16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 600px) {
+        .page {
+          padding: 0 20px;
+        }
+        .hero h1 {
+          font-size: clamp(3rem, 14vw, 5rem);
+        }
+        .link-card {
+          min-width: 100%;
+          max-width: 100%;
+        }
+        footer {
+          justify-content: center;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="glow"></div>
+
+    <div class="page">
+      <header>
+        <div class="logo">Ferros e Aços JB</div>
+      </header>
+
+      <main>
+        <div class="hero">
+          <h1>Você<br />acessou<br /><em>uma API</em></h1>
+        </div>
+
+        <div class="links">
+          <!-- Website -->
+          <a
+            class="link-card"
+            href="https://jbferros.com.br/"
+            target="_blank"
+            rel="noopener"
+          >
+            <div class="link-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+                />
+              </svg>
+            </div>
+            <div class="link-info">
+              <span class="link-type">Site oficial</span>
+              <span class="link-name">jbferros.com.br</span>
+            </div>
+            <span class="link-arrow">↗</span>
+          </a>
+
+          <!-- Instagram -->
+          <a
+            class="link-card"
+            href="https://www.instagram.com/ferroseacosjb/"
+            target="_blank"
+            rel="noopener"
+          >
+            <div class="link-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"
+                />
+              </svg>
+            </div>
+            <div class="link-info">
+              <span class="link-type">Instagram</span>
+              <span class="link-name">@ferroseacosjb</span>
+            </div>
+            <span class="link-arrow">↗</span>
+          </a>
+        </div>
+      </main>
+
+      <footer>
+        <span class="footer-copy"
+          >© 2025 JB Ferros e Aços. Todos os direitos reservados.</span
+        >
+        <span class="footer-version">API v1.0 · Status: Online</span>
+      </footer>
+    </div>
+  </body>
+</html>
