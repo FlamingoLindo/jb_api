@@ -1,12 +1,22 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::{error, warn};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, ModelTrait, QueryFilter};
 use serde_json::json;
 use uuid::Uuid;
 
 use crate::entities::{images, products, products_images};
 
-use log::{error, warn};
-
+#[utoipa::path(
+    delete,
+    path = "/api/v1/products/{id}",
+    tag = "Products",
+    params(("id" = Uuid, Path, description = "Product ID")),
+    responses(
+        (status = 200, description = "Product deleted successfully", body = serde_json::Value),
+        (status = 404, description = "Product not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn delete_product(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

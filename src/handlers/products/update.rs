@@ -10,6 +10,20 @@ use crate::{
     entities::{brands, brands_images, classes, images, products, types},
 };
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/products/{id}",
+    tag = "Products",
+    params(("id" = Uuid, Path, description = "Product ID")),
+    request_body = UpdateProductDTO,
+    responses(
+        (status = 200, description = "Product updated successfully", body = UpdateProductResponse),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 404, description = "Product not found", body = serde_json::Value),
+        (status = 409, description = "Product code already in use", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn update_product(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

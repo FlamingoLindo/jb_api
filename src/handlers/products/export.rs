@@ -40,6 +40,15 @@ pub struct ProductExportRow {
     pub brand_image_id: Option<Uuid>,
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/products/export",
+    tag = "Products",
+    responses(
+        (status = 200, description = "Products exported successfully", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn export_products(db: web::Data<DatabaseConnection>) -> impl Responder {
     let rows = match products::Entity::find()
         .columns(products::Column::iter())

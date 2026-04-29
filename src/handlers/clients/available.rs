@@ -11,6 +11,16 @@ use crate::{
     entities::clients,
 };
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/clients/available",
+    tag = "Clients",
+    params(AvailableQueryParams),
+    responses(
+        (status = 200, description = "Available clients retrieved", body = Vec<AvailableDTO>),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn available_clients(
     db: web::Data<DatabaseConnection>,
     query: web::Query<AvailableQueryParams>,

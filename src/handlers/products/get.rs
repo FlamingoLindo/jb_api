@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::{error, warn};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
 use serde_json::json;
 use uuid::Uuid;
@@ -7,8 +8,18 @@ use crate::{
     dto::products::get::ProductResponse,
     entities::{brands, brands_images, classes, images, products, products_images, types},
 };
-use log::{error, warn};
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/products/{id}",
+    tag = "Products",
+    params(("id" = Uuid, Path, description = "Product ID")),
+    responses(
+        (status = 200, description = "Product found", body = ProductResponse),
+        (status = 404, description = "Product not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn get_product(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let id = id.into_inner();
 

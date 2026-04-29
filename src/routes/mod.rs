@@ -5,6 +5,7 @@ pub mod clients;
 pub mod config;
 pub mod database;
 pub mod images;
+pub mod openapi;
 pub mod products;
 pub mod types;
 pub mod users;

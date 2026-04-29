@@ -1,10 +1,11 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
+use utoipa::ToSchema;
 
 use crate::entities::users::Model;
 
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Serialize, Deserialize, Validate, ToSchema)]
 pub struct UpdateUserDTO {
     #[validate(email)]
     pub email: String,
@@ -17,7 +18,7 @@ pub struct UpdateUserDTO {
     pub username: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct UpdateUserResponse {
     pub name: String,
     pub updated_at: NaiveDateTime,

@@ -12,6 +12,18 @@ use crate::{
     entities::types,
 };
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/types/create",
+    tag = "Types",
+    request_body = CreateTypeDTO,
+    responses(
+        (status = 201, description = "Type created successfully", body = CreateTypeResponse),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 409, description = "Type name already exists", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn create_type(
     db: web::Data<DatabaseConnection>,
     type_data: web::Json<CreateTypeDTO>,

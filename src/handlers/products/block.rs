@@ -1,19 +1,30 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::{error, warn};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde::Serialize;
 use serde_json::json;
 use uuid::Uuid;
-
-use log::{error, warn};
+use utoipa::ToSchema;
 
 use crate::entities::products;
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct BlockProductResponse {
     pub code: String,
     pub blocked: bool,
 }
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/products/block/{id}",
+    tag = "Products",
+    params(("id" = Uuid, Path, description = "Product ID")),
+    responses(
+        (status = 200, description = "Product block status toggled", body = BlockProductResponse),
+        (status = 404, description = "Product not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn block_product(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

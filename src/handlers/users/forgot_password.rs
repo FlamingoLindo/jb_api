@@ -16,6 +16,19 @@ use crate::{
     entities::{reset_password_tokens, users},
 };
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/users/forgot-password/{token}",
+    tag = "Users",
+    params(("token" = String, Path, description = "Password reset token")),
+    request_body = ForgotPasswordDTO,
+    responses(
+        (status = 200, description = "Password reset successfully", body = serde_json::Value),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 404, description = "Token not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn forgot_password(
     db: web::Data<DatabaseConnection>,
     token: web::Path<Uuid>,

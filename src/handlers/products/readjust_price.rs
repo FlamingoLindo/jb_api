@@ -6,6 +6,18 @@ use validator::Validate;
 
 use crate::{dto::products::readjust_price::ReadjustPriceDTO, entities::products};
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/products/readjust-prices",
+    tag = "Products",
+    request_body = ReadjustPriceDTO,
+    responses(
+        (status = 200, description = "Prices adjusted successfully", body = serde_json::Value),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 404, description = "Product not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn readjust_price(
     db: web::Data<DatabaseConnection>,
     body: web::Json<ReadjustPriceDTO>,

@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use validator::{Validate, ValidationError};
+use utoipa::ToSchema;
 
 fn validate_password(password: &str) -> Result<(), ValidationError> {
     let has_digit = password.chars().any(|c| c.is_ascii_digit());
@@ -28,7 +29,7 @@ fn validate_passwords_match(dto: &ForgotPasswordDTO) -> Result<(), ValidationErr
     Ok(())
 }
 
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Serialize, Deserialize, Validate, ToSchema)]
 #[validate(schema(function = "validate_passwords_match", skip_on_field_errors = false))]
 pub struct ForgotPasswordDTO {
     #[validate(

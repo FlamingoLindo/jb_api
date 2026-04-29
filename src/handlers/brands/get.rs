@@ -9,6 +9,18 @@ use crate::{
     entities::{brands, brands_images, images},
 };
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/brands/{id}",
+    tag = "Brand",
+    params(("id" = Uuid, Path, description = "Brand id")),
+    responses(
+        (status = 200, description = "Brand found successfully", body = BrandResponse),
+        (status = 404, description = "Brand not found"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
+
 pub async fn get_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let found_brand = brands::Entity::find_by_id(*id).one(db.get_ref()).await;
 

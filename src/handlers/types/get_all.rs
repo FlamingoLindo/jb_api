@@ -12,6 +12,16 @@ use crate::{
     entities::types,
 };
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/types",
+    tag = "Types",
+    params(TypesQueryParams),
+    responses(
+        (status = 200, description = "Types retrieved successfully", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn get_types(
     db: web::Data<DatabaseConnection>,
     query: web::Query<TypesQueryParams>,

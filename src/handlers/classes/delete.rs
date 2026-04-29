@@ -6,6 +6,18 @@ use uuid::Uuid;
 
 use crate::entities::classes;
 
+#[utoipa::path(
+    delete,
+    path = "/api/v1/classes/{id}",
+    tag = "Class",
+    params(("id" = Uuid, Path, description = "Class id")),
+    responses(
+        (status = 200, description = "Class deleted successfully", body = serde_json::Value),
+        (status = 404, description = "Class not found"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
+
 pub async fn delete_class(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

@@ -6,6 +6,17 @@ use uuid::Uuid;
 
 use crate::{dto::types::get::TypeResponse, entities::types};
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/types/{id}",
+    tag = "Types",
+    params(("id" = Uuid, Path, description = "Type ID")),
+    responses(
+        (status = 200, description = "Type found", body = TypeResponse),
+        (status = 404, description = "Type not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn get_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let id = id.into_inner();
 

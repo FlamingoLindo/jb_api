@@ -6,6 +6,17 @@ use uuid::Uuid;
 
 use crate::{dto::clients::get::ClientResponse, entities::clients};
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/clients/{id}",
+    tag = "Clients",
+    params(("id" = Uuid, Path, description = "Client ID")),
+    responses(
+        (status = 200, description = "Client found", body = ClientResponse),
+        (status = 404, description = "Client not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn get_client(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let client = clients::Entity::find_by_id(id.into_inner())
         .one(db.get_ref())

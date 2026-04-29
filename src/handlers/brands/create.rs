@@ -10,6 +10,18 @@ use crate::{
     entities::brands,
 };
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/brands/register",
+    tag = "Brand",
+    request_body = CreateBrandDTO,
+    responses(
+        (status = 201, description = "Brand created successfully", body = CreateBrandResponse),
+        (status = 400, description = "Validation error"),
+        (status = 409, description = "Brand name already taken"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 pub async fn create_brand(
     db: web::Data<DatabaseConnection>,
     brand: web::Json<CreateBrandDTO>,

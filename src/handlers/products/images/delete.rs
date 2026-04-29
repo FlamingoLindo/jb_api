@@ -6,7 +6,17 @@ use uuid::Uuid;
 
 use crate::entities::products_images;
 
-pub async fn delete_bind(
+#[utoipa::path(
+    delete,
+    path = "/api/v1/products/image-bind/{id}",
+    tag = "Products",
+    params(("id" = Uuid, Path, description = "Product ID")),
+    responses(
+        (status = 200, description = "Product images unbound successfully", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
+pub async fn delete_product_bind(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>, // Product ID
 ) -> impl Responder {
@@ -23,7 +33,7 @@ pub async fn delete_bind(
         }
         Err(err) => {
             error!(
-                "(delete_bind) Could not image with this product ID: {:?}",
+                "(delete_product_bind) Could not image with this product ID: {:?}",
                 err
             );
             return HttpResponse::InternalServerError().json(json!({

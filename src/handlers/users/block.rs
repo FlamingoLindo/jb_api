@@ -5,13 +5,25 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, Qu
 use serde::Serialize;
 use serde_json::json;
 use uuid::Uuid;
+use utoipa::ToSchema;
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct BlockUserResponse {
     pub username: String,
     pub blocked: bool,
 }
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/users/status/{id}",
+    tag = "Users",
+    params(("id" = Uuid, Path, description = "User ID")),
+    responses(
+        (status = 200, description = "User block status toggled", body = BlockUserResponse),
+        (status = 404, description = "User not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn block_user(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let existing_user = users::Entity::find()
         .filter(users::Column::Id.eq(*id))

@@ -4,14 +4,27 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, Qu
 use serde::Serialize;
 use serde_json::json;
 use uuid::Uuid;
+use utoipa::ToSchema;
 
 use crate::entities::classes;
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct BlockClassResponse {
     pub name: String,
     pub blocked: bool,
 }
+
+#[utoipa::path(
+    patch,
+    path = "/api/v1/classes/status/{id}",
+    tag = "Class",
+    params(("id" = Uuid, Path, description = "Class id")),
+    responses(
+        (status = 200, description = "Class block status toggled", body = BlockClassResponse),
+        (status = 404, description = "Class not found"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 
 pub async fn block_class(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let existing_class = classes::Entity::find()

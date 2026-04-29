@@ -12,6 +12,21 @@ use crate::{
     entities::{brands, brands_images, images},
 };
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/brands/{id}",
+    tag = "Brand",
+    params(("id" = Uuid, Path, description = "Brand id")),
+    request_body = UpdateBrandDTO,
+    responses(
+        (status = 200, description = "Brand updated successfully", body = UpdateBrandResponse),
+        (status = 400, description = "Validation error"),
+        (status = 404, description = "Brand not found"),
+        (status = 409, description = "Brand name already in use"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
+
 pub async fn update_brand(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

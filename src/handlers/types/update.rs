@@ -12,6 +12,20 @@ use crate::{
     entities::types,
 };
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/types/{id}",
+    tag = "Types",
+    params(("id" = Uuid, Path, description = "Type ID")),
+    request_body = UpdateTypeDTO,
+    responses(
+        (status = 200, description = "Type updated successfully", body = UpdateTypeResponse),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 404, description = "Type not found", body = serde_json::Value),
+        (status = 409, description = "Type name already in use", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn update_type(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

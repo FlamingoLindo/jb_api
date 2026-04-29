@@ -12,6 +12,17 @@ use crate::{
     entities::classes,
 };
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/classes",
+    tag = "Class",
+    params(ClassesQueryParams),
+    responses(
+        (status = 200, description = "Classes found successfully", body = serde_json::Value),
+        (status = 500, description = "Internal server error"),
+    )
+)]
+
 pub async fn get_classes(
     db: web::Data<DatabaseConnection>,
     query: web::Query<ClassesQueryParams>,

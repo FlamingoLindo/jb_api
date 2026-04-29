@@ -19,6 +19,7 @@ use actix_web::{
     web,
 };
 use actix_web_static_files::ResourceFiles;
+
 use routes::config::config;
 
 use crate::{database::connect_to_db::connect_to_db, governors::registry::Governors};
@@ -43,6 +44,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         let generated = generate();
+
         let cors = Cors::default()
             .allowed_origin("http://localhost:3000")
             .allowed_methods(vec!["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
@@ -53,6 +55,7 @@ async fn main() -> std::io::Result<()> {
             ])
             .supports_credentials();
         App::new()
+            .configure(|cfg| config(cfg, &governors))
             .service(ResourceFiles::new("/", generated))
             .app_data(web::Data::new(db_conn.clone()))
             .app_data(TempFileConfig::default().directory("./uploads/.temp"))
@@ -62,7 +65,6 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::NormalizePath::new(
                 middleware::TrailingSlash::Trim,
             ))
-            .configure(|cfg| config(cfg, &governors))
     })
     .bind(port)?
     .run()

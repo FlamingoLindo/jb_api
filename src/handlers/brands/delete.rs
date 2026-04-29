@@ -5,6 +5,18 @@ use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, ModelTrait, QueryFil
 use serde_json::json;
 use uuid::Uuid;
 
+#[utoipa::path(
+    delete,
+    path = "/api/v1/brands/{id}",
+    tag = "Brand",
+    params(("id" = Uuid, Path, description = "Brand id")),
+    responses(
+        (status = 200, description = "Brand deleted successfully", body = serde_json::Value),
+        (status = 404, description = "Brand not found"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
+
 pub async fn delete_brand(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

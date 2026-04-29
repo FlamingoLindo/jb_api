@@ -41,6 +41,7 @@ words:
   - sqlx
   - typst
   - unaccent
+  - utoipa
   - xlsxwriter
 ignoreWords: []
 import: []

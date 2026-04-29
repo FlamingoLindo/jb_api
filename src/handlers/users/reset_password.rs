@@ -11,6 +11,20 @@ use validator::Validate;
 
 use crate::{dto::users::reset_password::ResetPasswordDTO, entities::users};
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/users/reset-password/{id}",
+    tag = "Users",
+    params(("id" = Uuid, Path, description = "User ID")),
+    request_body = ResetPasswordDTO,
+    responses(
+        (status = 200, description = "Password reset successfully", body = serde_json::Value),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 401, description = "Old password incorrect", body = serde_json::Value),
+        (status = 404, description = "User not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn reset_password(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

@@ -1,8 +1,9 @@
 use crate::entities::types;
 use chrono::NaiveDateTime;
 use serde::Serialize;
+use utoipa::ToSchema;
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct TypeResponse {
     pub name: String,
     pub blocked: bool,

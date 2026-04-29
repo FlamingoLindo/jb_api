@@ -4,15 +4,27 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, Qu
 use serde::Serialize;
 use serde_json::json;
 use uuid::Uuid;
+use utoipa::ToSchema;
 
 use crate::entities::clients;
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct BlockClientResponse {
     pub name: String,
     pub blocked: bool,
 }
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/clients/block/{id}",
+    tag = "Clients",
+    params(("id" = Uuid, Path, description = "Client ID")),
+    responses(
+        (status = 200, description = "Client block status toggled", body = BlockClientResponse),
+        (status = 404, description = "Client not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn block_client(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

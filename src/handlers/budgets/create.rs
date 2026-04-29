@@ -18,6 +18,17 @@ use crate::{
     mailer::mailer::Mailer,
 };
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/budgets/create",
+    tag = "Budgets",
+    request_body = CreateBudgetDTO,
+    responses(
+        (status = 201, description = "Budget created successfully", body = serde_json::Value),
+        (status = 404, description = "Client not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn create_budget(
     db: web::Data<DatabaseConnection>,
     data: web::Json<CreateBudgetDTO>,

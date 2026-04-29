@@ -4,15 +4,27 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, Qu
 use serde::Serialize;
 use serde_json::json;
 use uuid::Uuid;
+use utoipa::ToSchema;
 
 use crate::entities::types;
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct BlockTypeResponse {
     pub name: String,
     pub blocked: bool,
 }
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/types/block/{id}",
+    tag = "Types",
+    params(("id" = Uuid, Path, description = "Type ID")),
+    responses(
+        (status = 200, description = "Type block status toggled", body = BlockTypeResponse),
+        (status = 404, description = "Type not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn block_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let existing_type = types::Entity::find()
         .filter(types::Column::Id.eq(*id))

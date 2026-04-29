@@ -6,6 +6,18 @@ use uuid::Uuid;
 
 use crate::{dto::classes::get::ClassResponse, entities::classes};
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/classes/{id}",
+    tag = "Class",
+    params(("id" = Uuid, Path, description = "Class id")),
+    responses(
+        (status = 200, description = "Class found successfully", body = ClassResponse),
+        (status = 404, description = "Class not found"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
+
 pub async fn get_class(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let found_class = classes::Entity::find_by_id(id.into_inner())
         .one(db.get_ref())

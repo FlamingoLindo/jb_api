@@ -6,6 +6,17 @@ use uuid::Uuid;
 
 use crate::entities::types;
 
+#[utoipa::path(
+    delete,
+    path = "/api/v1/types/{id}",
+    tag = "Types",
+    params(("id" = Uuid, Path, description = "Type ID")),
+    responses(
+        (status = 200, description = "Type deleted successfully", body = serde_json::Value),
+        (status = 404, description = "Type not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn delete_type(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let id = id.into_inner();
 

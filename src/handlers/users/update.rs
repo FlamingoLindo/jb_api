@@ -10,6 +10,20 @@ use crate::{
     entities::users,
 };
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/users/{id}",
+    tag = "Users",
+    params(("id" = Uuid, Path, description = "User ID")),
+    request_body = UpdateUserDTO,
+    responses(
+        (status = 200, description = "User updated successfully", body = UpdateUserResponse),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 404, description = "User not found", body = serde_json::Value),
+        (status = 409, description = "Email already in use", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn update_user(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

@@ -3,7 +3,7 @@ use actix_web::web;
 use crate::{governors::registry::Governors, routes};
 
 pub fn config(cfg: &mut web::ServiceConfig, governors: &Governors) {
-    cfg.service(
+    cfg.configure(routes::openapi::routes::config).service(
         web::scope("/api/v1")
             .configure(routes::users::routes::config)
             .configure(routes::brands::routes::config)

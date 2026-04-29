@@ -12,6 +12,21 @@ use crate::{
     entities::classes,
 };
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/classes/{id}",
+    tag = "Class",
+    params(("id" = Uuid, Path, description = "Class id")),
+    request_body = UpdateClassDTO,
+    responses(
+        (status = 200, description = "Class updated successfully", body = UpdateClassResponse),
+        (status = 400, description = "Validation error"),
+        (status = 404, description = "Class not found"),
+        (status = 409, description = "Class name already in use"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
+
 pub async fn update_class(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

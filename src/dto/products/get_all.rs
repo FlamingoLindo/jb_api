@@ -2,10 +2,11 @@ use chrono::NaiveDateTime;
 use sea_orm::FromQueryResult;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+use utoipa::{IntoParams, ToSchema};
 
 use crate::dto::shared::responses::{SharedBrandResponse, SharedClassResponse, SharedTypeResponse};
 
-#[derive(Serialize, Deserialize, FromQueryResult)]
+#[derive(Serialize, Deserialize, FromQueryResult, ToSchema)]
 pub struct GetProductsDTO {
     pub id: Uuid,
     pub code: String,
@@ -23,7 +24,7 @@ pub struct GetProductsDTO {
     pub product_image: Option<String>,
 }
 
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Default, ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ProductsSortOrder {
     #[default]
@@ -41,7 +42,7 @@ pub enum ProductsSortOrder {
     BrandDesc,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, IntoParams, ToSchema)]
 pub struct ProductsQueryParams {
     pub page: Option<u64>,
     pub page_size: Option<u64>,

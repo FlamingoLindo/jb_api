@@ -50,7 +50,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
                 web::resource("/image-bind/{id}")
                     .wrap(RoleGuard(&["User", "Master"]))
                     .wrap(auth())
-                    .route(web::delete().to(handler::images::delete::delete_bind)),
+                    .route(web::delete().to(handler::images::delete::delete_product_bind)),
             )
             // Wildcard /{id} routes
             .service(

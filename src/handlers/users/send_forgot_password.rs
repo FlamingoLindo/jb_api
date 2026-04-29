@@ -10,6 +10,18 @@ use serde_json::json;
 use uuid::Uuid;
 use validator::Validate;
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/users/send-password-email",
+    tag = "Users",
+    request_body = SendForgotPasswordDTO,
+    responses(
+        (status = 200, description = "Password reset email sent", body = serde_json::Value),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 404, description = "User not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn send_forgot_password(
     db: web::Data<DatabaseConnection>,
     data: web::Json<SendForgotPasswordDTO>,

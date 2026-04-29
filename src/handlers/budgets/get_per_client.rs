@@ -17,6 +17,20 @@ use crate::{
     entities::budgets,
 };
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/budgets/{id}",
+    tag = "Budgets",
+    params(
+        ("id" = Uuid, Path, description = "Client ID"),
+        GetAllBudgetsPerClientQueryParams
+    ),
+    responses(
+        (status = 200, description = "Budgets retrieved successfully", body = serde_json::Value),
+        (status = 404, description = "Client not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn get_all_budgets_per_client(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

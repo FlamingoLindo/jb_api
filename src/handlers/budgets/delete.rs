@@ -6,6 +6,17 @@ use uuid::Uuid;
 
 use crate::entities::budgets;
 
+#[utoipa::path(
+    delete,
+    path = "/api/v1/budgets/{id}",
+    tag = "Budgets",
+    params(("id" = Uuid, Path, description = "Budget ID")),
+    responses(
+        (status = 200, description = "Budget deleted successfully", body = serde_json::Value),
+        (status = 404, description = "Budget not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn delete_budget(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

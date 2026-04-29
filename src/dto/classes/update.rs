@@ -1,10 +1,11 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
+use utoipa::ToSchema;
 
 use crate::entities::classes::Model;
 
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Serialize, Deserialize, Validate, ToSchema)]
 pub struct UpdateClassDTO {
     #[validate(length(
         min = 3,
@@ -14,7 +15,7 @@ pub struct UpdateClassDTO {
     pub name: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct UpdateClassResponse {
     pub name: String,
     pub blocked: bool,

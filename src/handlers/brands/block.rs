@@ -5,12 +5,25 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, Qu
 use serde::Serialize;
 use serde_json::json;
 use uuid::Uuid;
+use utoipa::ToSchema;
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct BlockBrandResponse {
     pub name: String,
     pub blocked: bool,
 }
+
+#[utoipa::path(
+    patch,
+    path = "/api/v1/brands/block/{id}",
+    tag = "Brand",
+    params(("id" = Uuid, Path, description = "Brand id")),
+    responses(
+        (status = 200, description = "Brand block status toggled", body = BlockBrandResponse),
+        (status = 404, description = "Brand not found"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 
 pub async fn block_brand(db: web::Data<DatabaseConnection>, id: web::Path<Uuid>) -> impl Responder {
     let existing_brand = brands::Entity::find()

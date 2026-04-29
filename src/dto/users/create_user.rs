@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use validator::{Validate, ValidationError};
+use utoipa::ToSchema;
 
 use crate::entities::users::Model;
 
@@ -21,7 +22,7 @@ fn validate_password(password: &str) -> Result<(), ValidationError> {
     Ok(())
 }
 
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Serialize, Deserialize, Validate, ToSchema)]
 pub struct CreateUserDTO {
     #[validate(length(
         min = 3,
@@ -47,7 +48,7 @@ pub struct CreateUserDTO {
     pub blocked: bool,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct CreateUserResponseDTO {
     pub username: String,
     pub blocked: bool,

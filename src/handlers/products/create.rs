@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::{error, warn};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde_json::json;
 use uuid::Uuid;
@@ -8,8 +9,18 @@ use crate::{
     entities::{brands, brands_images, classes, images, products, types},
 };
 
-use log::{error, warn};
-
+#[utoipa::path(
+    post,
+    path = "/api/v1/products/create",
+    tag = "Products",
+    request_body = CreateProductDTO,
+    responses(
+        (status = 201, description = "Product created successfully", body = CreateProductResponse),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 409, description = "Product code already exists", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn create_product(
     db: web::Data<DatabaseConnection>,
     product: web::Json<CreateProductDTO>,

@@ -1,20 +1,31 @@
 use actix_web::{HttpResponse, Responder, error::ErrorInternalServerError, web};
+use argon2::{
+    Argon2,
+    password_hash::{PasswordHasher, SaltString, rand_core::OsRng},
+};
 use log::{error, warn};
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde_json::json;
 use uuid::Uuid;
 use validator::Validate;
 
-use argon2::{
-    Argon2,
-    password_hash::{PasswordHasher, SaltString, rand_core::OsRng},
-};
-
 use crate::{
     dto::users::create_user::{CreateUserDTO, CreateUserResponseDTO},
     entities::{roles, users},
 };
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/users/register",
+    tag = "Users",
+    request_body = CreateUserDTO,
+    responses(
+        (status = 201, description = "User created successfully", body = CreateUserResponseDTO),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 409, description = "Email or CPF already in use", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn create_user(
     db: web::Data<DatabaseConnection>,
     user: web::Json<CreateUserDTO>,

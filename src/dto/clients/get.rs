@@ -1,8 +1,9 @@
 use crate::entities::clients;
 use chrono::NaiveDateTime;
 use serde::Serialize;
+use utoipa::ToSchema;
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct ClientResponse {
     pub name: String,
     pub email: String,

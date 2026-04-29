@@ -1,10 +1,11 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
+use utoipa::ToSchema;
 
 use crate::entities::{brands, images};
 
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Serialize, Deserialize, Validate, ToSchema)]
 pub struct UpdateBrandDTO {
     #[validate(length(
         min = 3,
@@ -14,7 +15,7 @@ pub struct UpdateBrandDTO {
     pub name: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct UpdateBrandResponse {
     pub name: String,
     pub image: Option<String>,

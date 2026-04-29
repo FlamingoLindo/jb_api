@@ -6,6 +6,15 @@ use serde_json::json;
 
 use crate::entities::clients;
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/clients/export",
+    tag = "Clients",
+    responses(
+        (status = 200, description = "Clients exported successfully", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn export_clients(db: web::Data<DatabaseConnection>) -> impl Responder {
     let clients = match clients::Entity::find().all(db.get_ref()).await {
         Ok(clients) => clients,

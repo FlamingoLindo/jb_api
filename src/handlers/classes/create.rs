@@ -12,6 +12,19 @@ use crate::{
     entities::classes,
 };
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/classes/create",
+    tag = "Class",
+    request_body = CreateClassDTO,
+    responses(
+        (status = 201, description = "Class created successfully", body = CreateClassResponse),
+        (status = 400, description = "Validation error"),
+        (status = 409, description = "Class name already in use"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
+
 pub async fn create_class(
     db: web::Data<DatabaseConnection>,
     class: web::Json<CreateClassDTO>,

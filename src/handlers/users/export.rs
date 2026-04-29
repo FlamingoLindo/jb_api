@@ -5,6 +5,15 @@ use rust_xlsxwriter::{ExcelDateTime, Format, Workbook};
 use sea_orm::{DatabaseConnection, EntityTrait};
 use serde_json::json;
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/users/export",
+    tag = "Users",
+    responses(
+        (status = 200, description = "Users exported successfully", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn export_users(db: web::Data<DatabaseConnection>) -> impl Responder {
     let users = match users::Entity::find().all(db.get_ref()).await {
         Ok(users) => users,

@@ -1,11 +1,12 @@
 use crate::entities::sea_orm_active_enums::ClientType;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 use validator::Validate;
 
 use crate::entities::clients::Model;
 
-#[derive(Deserialize, Validate)]
+#[derive(Deserialize, Validate, ToSchema)]
 pub struct CreateClientDTO {
     #[validate(length(min = 1, max = 255))]
     pub name: String,
@@ -16,6 +17,7 @@ pub struct CreateClientDTO {
     #[validate(length(min = 14, max = 15))]
     pub phone: String,
 
+    #[schema(value_type = String, example = "pf")]
     pub client_type: ClientType,
 
     #[validate(length(min = 14, max = 14))]
@@ -37,7 +39,7 @@ pub struct CreateClientDTO {
     pub number: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct CreateClientResponse {
     pub name: String,
     pub created_at: NaiveDateTime,

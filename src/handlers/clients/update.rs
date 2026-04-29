@@ -11,6 +11,20 @@ use serde_json::json;
 use uuid::Uuid;
 use validator::Validate;
 
+#[utoipa::path(
+    patch,
+    path = "/api/v1/clients/{id}",
+    tag = "Clients",
+    params(("id" = Uuid, Path, description = "Client ID")),
+    request_body = UpdateClientDTO,
+    responses(
+        (status = 200, description = "Client updated successfully", body = UpdateClientResponse),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 404, description = "Client not found", body = serde_json::Value),
+        (status = 409, description = "Email already in use", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn update_client(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

@@ -12,6 +12,18 @@ use crate::{
     entities::{clients, sea_orm_active_enums::ClientType},
 };
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/clients/register",
+    tag = "Clients",
+    request_body = CreateClientDTO,
+    responses(
+        (status = 201, description = "Client created successfully", body = CreateClientResponse),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 409, description = "Email, name, phone, or CPF/CNPJ already in use", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn create_client(
     db: web::Data<DatabaseConnection>,
     client: web::Json<CreateClientDTO>,

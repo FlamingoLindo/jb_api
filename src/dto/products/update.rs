@@ -2,13 +2,14 @@ use sea_orm::prelude::Decimal;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use validator::Validate;
+use utoipa::ToSchema;
 
 use crate::{
     dto::shared::responses::{SharedBrandResponse, SharedClassResponse, SharedTypeResponse},
     entities::{brands, classes, images, products, types},
 };
 
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Serialize, Deserialize, Validate, ToSchema)]
 pub struct UpdateProductDTO {
     #[validate(length(
         min = 3,
@@ -25,24 +26,38 @@ pub struct UpdateProductDTO {
     pub type_id: Option<Uuid>,
     pub class_id: Option<Uuid>,
     pub brand_id: Option<Uuid>,
+    #[schema(value_type = Option<f64>)]
     pub price_kg: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub price_kg_no_cut: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub price_kg_cut: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub price_3mt: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub price_br: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub price_rod: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub weight_3mts: Option<Decimal>,
 
+    #[schema(value_type = Option<f64>)]
     pub price_p_mt: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub cut_percentage: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub weight_p_mm: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub weight: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub weight_esp: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub weight_p_br: Option<Decimal>,
+    #[schema(value_type = Option<f64>)]
     pub br_price: Option<Decimal>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct UpdateProductResponse {
     pub code: String,
     pub description: String,

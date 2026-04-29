@@ -13,6 +13,16 @@ use crate::{
     middlewares::auth::Claims,
 };
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/database/dump",
+    tag = "Database",
+    responses(
+        (status = 200, description = "Database dump created successfully", body = serde_json::Value),
+        (status = 401, description = "Unauthorized", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn create_db_dump(req: HttpRequest, db: web::Data<DatabaseConnection>) -> impl Responder {
     let claims = match req.extensions().get::<Claims>().cloned() {
         Some(c) => c,

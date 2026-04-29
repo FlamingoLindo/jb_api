@@ -46,6 +46,18 @@ fn gen_jwt(
     )
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/users/login",
+    tag = "Users",
+    request_body = LoginDTO,
+    responses(
+        (status = 200, description = "Login successful", body = serde_json::Value),
+        (status = 400, description = "Validation error", body = serde_json::Value),
+        (status = 401, description = "Invalid credentials", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn login(
     db: web::Data<DatabaseConnection>,
     credential: web::Json<LoginDTO>,

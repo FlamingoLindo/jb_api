@@ -14,6 +14,17 @@ pub struct UploadForm {
     files: Vec<TempFile>,
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/images/upload/{entity}",
+    tag = "Images",
+    params(("entity" = String, Path, description = "Entity type (brands, products, users)")),
+    responses(
+        (status = 200, description = "Images uploaded successfully", body = serde_json::Value),
+        (status = 400, description = "Invalid file format", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn save_file(
     db: web::Data<DatabaseConnection>,
     path: web::Path<String>,

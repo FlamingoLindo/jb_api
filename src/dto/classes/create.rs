@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
+use utoipa::ToSchema;
 
 use crate::entities::classes::Model;
 
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Serialize, Deserialize, Validate, ToSchema)]
 pub struct CreateClassDTO {
     #[validate(length(
         min = 3,
@@ -14,7 +15,7 @@ pub struct CreateClassDTO {
     // pub blocked: bool,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct CreateClassResponse {
     pub name: String,
     pub blocked: bool,

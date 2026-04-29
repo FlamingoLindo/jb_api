@@ -1,9 +1,10 @@
 use crate::entities::{clients::Model, sea_orm_active_enums::ClientType};
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 use validator::Validate;
 
-#[derive(Deserialize, Validate)]
+#[derive(Deserialize, Validate, ToSchema)]
 pub struct UpdateClientDTO {
     #[validate(length(min = 1, max = 255))]
     pub name: String,
@@ -14,6 +15,7 @@ pub struct UpdateClientDTO {
     #[validate(length(min = 14, max = 15))]
     pub phone: String,
 
+    #[schema(value_type = String, example = "pf")]
     pub client_type: ClientType,
 
     #[validate(length(min = 14, max = 14))]
@@ -32,7 +34,7 @@ pub struct UpdateClientDTO {
     pub number: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct UpdateClientResponse {
     pub name: String,
     pub updated_at: NaiveDateTime,

@@ -6,6 +6,17 @@ use uuid::Uuid;
 
 use crate::entities::clients;
 
+#[utoipa::path(
+    delete,
+    path = "/api/v1/clients/{id}",
+    tag = "Clients",
+    params(("id" = Uuid, Path, description = "Client ID")),
+    responses(
+        (status = 200, description = "Client deleted successfully", body = serde_json::Value),
+        (status = 404, description = "Client not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn delete_client(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,

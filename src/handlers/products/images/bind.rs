@@ -9,6 +9,18 @@ use crate::{
     entities::{images, products, products_images},
 };
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/products/image-bind",
+    tag = "Products",
+    request_body = BindImageProductDTO,
+    responses(
+        (status = 201, description = "Image bound to product successfully", body = serde_json::Value),
+        (status = 404, description = "Product or image not found", body = serde_json::Value),
+        (status = 409, description = "Image already bound to product", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn bind_product_to_image(
     db: web::Data<DatabaseConnection>,
     data: web::Json<BindImageProductDTO>,

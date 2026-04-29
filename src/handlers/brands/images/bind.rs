@@ -9,6 +9,18 @@ use crate::{
     entities::{brands, brands_images, images},
 };
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/brands/image-bind",
+    tag = "Brand",
+    request_body = BindImageBrandDTO,
+    responses(
+        (status = 201, description = "Brand/image bind created", body = serde_json::Value),
+        (status = 404, description = "Brand or image not found"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
+
 pub async fn bind_brand_to_image(
     db: web::Data<DatabaseConnection>,
     data: web::Json<BindImageBrandDTO>,

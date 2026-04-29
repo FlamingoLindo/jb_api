@@ -13,6 +13,16 @@ use crate::{
     entities::clients,
 };
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/clients",
+    tag = "Clients",
+    params(ClientsQueryParams),
+    responses(
+        (status = 200, description = "Clients retrieved successfully", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn get_clients(
     db: web::Data<DatabaseConnection>,
     query: web::Query<ClientsQueryParams>,

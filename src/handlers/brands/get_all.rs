@@ -12,6 +12,17 @@ use crate::{
     entities::{brands, brands_images, images},
 };
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/brands",
+    tag = "Brand",
+    params(BrandsQueryParams),
+    responses(
+        (status = 200, description = "Brands found successfully", body = serde_json::Value),
+        (status = 500, description = "Internal server error"),
+    )
+)]
+
 pub async fn get_brands(
     db: web::Data<DatabaseConnection>,
     query: web::Query<BrandsQueryParams>,

@@ -1,8 +1,9 @@
 use crate::entities::{brands, images};
 use chrono::NaiveDateTime;
 use serde::Serialize;
+use utoipa::ToSchema;
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct BrandResponse {
     pub name: String,
     pub image: Option<String>,

@@ -1,4 +1,5 @@
 use actix_web::{HttpResponse, Responder, web};
+use log::error;
 use migration::Alias; // UNDO HERE IF ERROR
 use sea_orm::sea_query::Expr;
 use sea_orm::{
@@ -11,8 +12,17 @@ use crate::{
     dto::products::get_all::{GetProductsDTO, ProductsQueryParams, ProductsSortOrder},
     entities::{brands, brands_images, classes, images, products, products_images, types},
 };
-use log::error;
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/products",
+    tag = "Products",
+    params(ProductsQueryParams),
+    responses(
+        (status = 200, description = "Products retrieved successfully", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn get_products(
     db: web::Data<DatabaseConnection>,
     query: web::Query<ProductsQueryParams>,

@@ -6,6 +6,17 @@ use uuid::Uuid;
 
 use crate::entities::brands_images;
 
+#[utoipa::path(
+    delete,
+    path = "/api/v1/brands/image-bind/{id}",
+    tag = "Brand",
+    params(("id" = Uuid, Path, description = "Brand id")),
+    responses(
+        (status = 200, description = "Brand/image bind deleted", body = serde_json::Value),
+        (status = 500, description = "Internal server error"),
+    )
+)]
+
 pub async fn delete_brand_bind(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>, // Brands Id

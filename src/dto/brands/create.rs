@@ -1,10 +1,11 @@
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 use uuid::Uuid;
 use validator::Validate;
 
 use crate::entities::brands::Model;
 
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Serialize, Deserialize, Validate, ToSchema)]
 pub struct CreateBrandDTO {
     #[validate(length(
         min = 3,
@@ -13,11 +14,10 @@ pub struct CreateBrandDTO {
     ))]
     pub name: String,
 
-    pub image_id: Option<Uuid>, // pub blocked: bool,
-                                // pub created_at: DateTime<Utc>,
+    pub image_id: Option<Uuid>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct CreateBrandResponse {
     pub name: String,
     pub blocked: bool,

@@ -8,6 +8,17 @@ use uuid::Uuid;
 
 use crate::entities::{budgets, clients};
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/budgets/count/{id}",
+    tag = "Budgets",
+    params(("id" = Uuid, Path, description = "Client ID")),
+    responses(
+        (status = 200, description = "Budget count retrieved", body = serde_json::Value),
+        (status = 404, description = "Client not found", body = serde_json::Value),
+        (status = 500, description = "Internal server error", body = serde_json::Value)
+    )
+)]
 pub async fn count_client_budgets(
     db: web::Data<DatabaseConnection>,
     id: web::Path<Uuid>,
