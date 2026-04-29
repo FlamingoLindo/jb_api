@@ -1,0 +1,1448 @@
+{
+	"info": {
+		"_postman_id": "f4825645-cc04-4aa3-9b12-30fe689364b1",
+		"name": "Routes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Master",
+			"item": [
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "Create",
+							"id": "daa9313f-07bd-4716-8cde-2e23fef83719",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{$randomUserName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"Aa12345678!\",\r\n    \"blocked\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}users/register"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"id": "4827d803-07bf-4433-b027-4fc24e9b7cb8",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": "{{base-url}}users/delete/{{id}}"
+							},
+							"response": []
+						},
+						{
+							"name": "Status",
+							"id": "d9090494-5d5d-436c-bbb8-e7315c1c039c",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": "{{base-url}}users/status/{{id}}"
+							},
+							"response": []
+						},
+						{
+							"name": "Export",
+							"id": "1d71bcf4-92ee-4821-b30a-8cb8639d5b1b",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"url": "{{base-url}}users/export"
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password",
+							"id": "cf1796a9-fb6a-4f31-b1cc-abfc1842defd",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"new_password\": \"Aa12345678!\",\r\n    \"confirm_password\": \"Aa12345678!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}users/reset-password/9fb30ce4-1d60-4414-a103-a5a443c26e5b"
+							},
+							"response": []
+						}
+					],
+					"id": "72a180a6-0d45-40a5-9f1d-539bf9b648d1"
+				},
+				{
+					"name": "Brands",
+					"item": [
+						{
+							"name": "Images",
+							"item": [
+								{
+									"name": "Bind Image",
+									"id": "66f13054-55a0-4656-8168-19001a007af6",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": {
+												"token": "{{token}}"
+											}
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"brand_id\": \"5a5382eb-2917-4791-a168-4519d0bd9712\",\r\n    \"img_id\": \"59fbecf3-40ed-4428-ba4d-08b8997aa537\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{base-url}}brands/image-bind"
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Bind",
+									"id": "c6b4ceff-4765-41d2-b0ac-fd39af6fbdd4",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": {
+												"token": "{{token}}"
+											}
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": "{{base-url}}brands/image-bind/02fe3105-7dba-4fe1-bd21-9cb6445dc5b0",
+										"description": "Uuid needs to be from the product"
+									},
+									"response": []
+								}
+							],
+							"id": "30ea7a15-4b1b-4af3-abb3-1769eedd3aea"
+						},
+						{
+							"name": "Create",
+							"id": "3fd932a5-d5d2-4b73-9a8f-7b775f0ee3bf",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"FERRAMENTAS X CORTE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}brands/register"
+							},
+							"response": []
+						},
+						{
+							"name": "Get",
+							"id": "ffd55df2-1e60-4de7-a03e-ebf56525d008",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "{{base-url}}/brands/e85ed5be-a676-402b-91a8-bf682c572a3a"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All",
+							"id": "ff3bcd7a-cdaa-414a-8790-43f308999e1e",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base-url}}brands?page=0&page_size=10&sort=name_asc",
+									"host": [
+										"{{base-url}}brands"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "page_size",
+											"value": "10"
+										},
+										{
+											"key": "search",
+											"value": "nor",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "name_asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"id": "4124ffca-4327-442a-ada2-fbe1e50c6acd",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"NORTON\",\r\n    \"image_id\": \"015adfd0-249d-4f93-9382-ff46b7edb6e2\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}/brands/e85ed5be-a676-402b-91a8-bf682c572a3a"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"id": "5af2fe44-5ebc-460c-8e6f-8b7da8a4d041",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": "{{base-url}}brands/7953b779-6e73-4b9a-974d-48d40c72bb42"
+							},
+							"response": []
+						},
+						{
+							"name": "Block",
+							"id": "b45efbe0-5288-4c41-924f-0c17f641ca6b",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": "{{base-url}}brands/block/e85ed5be-a676-402b-91a8-bf682c572a3a"
+							},
+							"response": []
+						}
+					],
+					"id": "ed71b66b-e8ad-466b-a26f-46a57a64a63c"
+				},
+				{
+					"name": "Classes",
+					"item": [
+						{
+							"name": "Create",
+							"id": "9d21c0bb-2bb7-446c-b4ab-26b2bfd2e989",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"18-TUBOS TREFILADOS\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}classes/create"
+							},
+							"response": []
+						},
+						{
+							"name": "Get",
+							"id": "d493fa79-557e-4d2a-aeb0-8fd34d9b4665",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "{{base-url}}classes/2a1b56df-983a-438c-a4a0-3517b0e49326"
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"id": "4ad3657f-3828-4e9b-a625-f8a11513261e",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"updated\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}classes/2a1b56df-983a-438c-a4a0-3517b0e49326"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"id": "728e4039-034f-4268-8bb8-128891598787",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": "{{base-url}}classes/2a1b56df-983a-438c-a4a0-3517b0e49326"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All",
+							"id": "4cad4643-e1bc-40c0-9382-d5ad9544a62c",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base-url}}classes?page=0&page_size=20&search=&sort=name_asc",
+									"host": [
+										"{{base-url}}classes"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "page_size",
+											"value": "20"
+										},
+										{
+											"key": "search",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "sort",
+											"value": "name_asc",
+											"type": "text"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Status",
+							"id": "4467c188-9b82-43d8-9ceb-cac6bb316c0f",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": "{{base-url}}classes/status/af1e63d5-9144-4135-91da-954682d842ef"
+							},
+							"response": []
+						}
+					],
+					"id": "01b5afb7-a52a-4d6d-878c-813df6e2f2ef"
+				},
+				{
+					"name": "Types",
+					"item": [
+						{
+							"name": "Create",
+							"id": "a0246cc8-b4ac-4052-ab56-65bf8a15c152",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"RETANGULAR CINZENTO\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}types/create"
+							},
+							"response": []
+						},
+						{
+							"name": "Get",
+							"id": "8b3dea43-aa8c-4523-85c5-1a132830bb6e",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "{{base-url}}types/d9f22ce9-3474-4724-81f3-a5a830d37d3d"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All",
+							"id": "810079f9-1610-4073-a80a-a19aa1673f23",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base-url}}types?page=0&page_size=10&search&sort=name_asc",
+									"host": [
+										"{{base-url}}types"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0",
+											"type": "text"
+										},
+										{
+											"key": "page_size",
+											"value": "10",
+											"type": "text"
+										},
+										{
+											"key": "search",
+											"value": null,
+											"type": "text"
+										},
+										{
+											"key": "sort",
+											"value": "name_asc",
+											"type": "text"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"id": "02c33f06-f7eb-44d0-9aee-6948f0508eaa",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"aaab\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}/types/d9f22ce9-3474-4724-81f3-a5a830d37d3d"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"id": "7f5a510f-7c5a-42ac-84e5-9c90847f200c",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": "{{base-url}}types/d9f22ce9-3474-4724-81f3-a5a830d37d3d"
+							},
+							"response": []
+						},
+						{
+							"name": "Status",
+							"id": "738c9ddc-60bb-4b88-9ca0-9237b6e8de27",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": "{{base-url}}types/block/b0ea44be-d91c-4ce9-b11a-df63644606f8"
+							},
+							"response": []
+						}
+					],
+					"id": "5757fdd2-7167-4e47-97fd-caef51d77f94"
+				},
+				{
+					"name": "Products",
+					"item": [
+						{
+							"name": "Images",
+							"item": [
+								{
+									"name": "Bind Image",
+									"id": "08ce1c28-90fe-4401-ac37-14e15cc636eb",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": {
+												"token": "{{token}}"
+											}
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"prod_id\": \"5a5382eb-2917-4791-a168-4519d0bd9712\",\r\n    \"img_id\": \"59fbecf3-40ed-4428-ba4d-08b8997aa537\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{base-url}}products/image-bind"
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Bind",
+									"id": "1e11e5d6-4360-4eba-8bda-7c368b1caa42",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": {
+												"token": "{{token}}"
+											}
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": "{{base-url}}products/image-bind/02fe3105-7dba-4fe1-bd21-9cb6445dc5b0",
+										"description": "Uuid needs to be from the product"
+									},
+									"response": []
+								}
+							],
+							"id": "bb60e33d-baaa-430b-919f-3301323ca092"
+						},
+						{
+							"name": "Create",
+							"id": "ebfb844a-5162-400f-ad40-612c1e0e90f3",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"code\": \"{{$randomLongitude}}\",\r\n    \"description\": \"{{$randomLoremSentence}}\",\r\n    \"type_id\": \"b0ea44be-d91c-4ce9-b11a-df63644606f8\", // Optional\r\n    \"class_id\": \"af1e63d5-9144-4135-91da-954682d842ef\", // Optional\r\n    \"brand_id\": \"e85ed5be-a676-402b-91a8-bf682c572a3a\", // Optional\r\n    \"price_kg\": {{$randomInt}}, // Optional\r\n    \"price_kg_no_cut\": {{$randomInt}}, // Optional\r\n    \"price_kg_cut\": {{$randomInt}}, // Optional\r\n    \"price_3mt\": {{$randomInt}}, // Optional\r\n    \"price_br\": {{$randomInt}}, // Optional\r\n    \"price_rod\": {{$randomInt}}, // Optional\r\n    \"weight_3mts\": {{$randomInt}}, // Optional\r\n    //\r\n    \"price_p_mt\": 2.634, // Optional\r\n    \"cut_percentage\": 25, // Optional\r\n    \"weight_p_mm\": 0.000342, // Optional\r\n    \"weight\": 27.14, // Optional\r\n    \"weight_esp\": 7.8, // Optional\r\n    \"weight_p_br\": 2.33, // Optional\r\n    \"br_price\": 5449.45//45 dps .  // Optional\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}products/create"
+							},
+							"response": []
+						},
+						{
+							"name": "Get",
+							"id": "884f04a8-6631-413d-8d5f-0267dc56fba7",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "{{base-url}}products/7b83c253-afd4-4ed7-a0cb-88dfeaec86b2"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All",
+							"id": "63e29f3d-2b30-4722-9bec-98f4f546668b",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base-url}}products?page=0&page_size=10",
+									"host": [
+										"{{base-url}}products"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "page_size",
+											"value": "10"
+										},
+										{
+											"key": "search",
+											"value": "TYPE",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "brand_desc",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"id": "7500c392-8917-43e2-8cad-873956c0c58b",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"code\": \"EDITED\",\r\n    \"description\": \"EDITED\",\r\n    \"type_id\": \"b0ea44be-d91c-4ce9-b11a-df63644606f8\", // Optional\r\n    \"class_id\": \"af1e63d5-9144-4135-91da-954682d842ef\", // Optional\r\n    \"brand_id\": \"e85ed5be-a676-402b-91a8-bf682c572a3a\", // Optional\r\n    \"price_kg\": 1, // Optional\r\n    \"price_kg_no_cut\": 2, // Optional\r\n    \"price_kg_cut\": 3, // Optional\r\n    \"price_3mt\": 4, // Optional\r\n    \"price_br\": 5, // Optional\r\n    \"price_rod\": 6, // Optional\r\n    \"weight_3mts\": 7 // Optional\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}/products/0fb27fcf-e741-4f3c-a14b-6b667b9b4252"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"id": "822d99ae-34a5-4459-b1e6-a67efac9619f",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": "{{base-url}}products/5a5382eb-2917-4791-a168-4519d0bd9712"
+							},
+							"response": []
+						},
+						{
+							"name": "Status",
+							"id": "91d94b27-f7db-4e4d-aec8-979c5e3164fe",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": "{{base-url}}products/block/2b28d4f0-9930-4eff-a16d-1fdc839b78c4"
+							},
+							"response": []
+						},
+						{
+							"name": "Readjust Prices",
+							"id": "b0b1ac4c-fc29-4a1b-ae14-60dfebd3ae11",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"ids\": [\r\n        \"02fe3105-7dba-4fe1-bd21-9cb6445dc5b1\"\r\n    ],\r\n    \"percentage\": 99\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}/products/readjust-prices"
+							},
+							"response": []
+						},
+						{
+							"name": "Export",
+							"id": "13195324-aca5-4558-843a-e958007bb193",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"url": "{{base-url}}products/export"
+							},
+							"response": []
+						}
+					],
+					"id": "06a294b9-c921-4bf3-9ea2-c6533150221c"
+				},
+				{
+					"name": "Budget",
+					"item": [
+						{
+							"name": "Create",
+							"id": "6fd99d4f-941b-4b20-ad9c-aa8f5ee09408",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"client\": \"8aa93731-beff-4267-9034-834ac1355e33\",\r\n    \"products\": [\r\n        {\r\n            \"product\": \"FERRO QUADRADO 3/4\",\r\n            \"amount\": 1,\r\n            \"size\": 2,\r\n            \"weight\": 3,\r\n            \"price\": 4\r\n        },\r\n        {\r\n            \"product\": \"FERRO QUADRADO 2 1/2  SAE 1045\",\r\n            \"amount\": 1,\r\n            \"size\": 2,\r\n            \"weight\": 3,\r\n            \"price\": 4\r\n        }\r\n    ],\r\n    \"total_price\": 10\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}budgets/create"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"id": "d6cf02e2-b705-43ec-8a92-a3e2fa06d83b",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": "{{base-url}}budgets/f374270f-74e7-4af2-b4e4-8349919fc722"
+							},
+							"response": []
+						},
+						{
+							"name": "Count",
+							"id": "912a78e8-6c8c-4114-aff8-a6bc3576d075",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "{{base-url}}budgets/count/caa970ef-6370-4f3a-a468-0ccaf12d118b"
+							},
+							"response": []
+						},
+						{
+							"name": "Client's Budgtes",
+							"id": "00599e16-eeaa-41eb-a888-b9f82a8b5f78",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base-url}}budgets/caa970ef-6370-4f3a-a468-0ccaf12d118b?page=0&page_size=10&search&sort=created_at_desc",
+									"host": [
+										"{{base-url}}budgets"
+									],
+									"path": [
+										"caa970ef-6370-4f3a-a468-0ccaf12d118b"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0",
+											"type": "text"
+										},
+										{
+											"key": "page_size",
+											"value": "10",
+											"type": "text"
+										},
+										{
+											"key": "search",
+											"value": null,
+											"type": "text"
+										},
+										{
+											"key": "sort",
+											"value": "created_at_desc",
+											"type": "text"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "ac15c2cf-2b8b-403c-87f8-61688627b5e0"
+				},
+				{
+					"name": "Clients",
+					"item": [
+						{
+							"name": "Create",
+							"id": "c99d1a93-38b7-4494-be75-20fba1c4c439",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"AAAA\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"phone\": \"(12) 3456-7890\",\r\n    \"client_type\": \"Pj\",\r\n    \"cnpj\": \"13.345.678/0001-99\",\r\n    \"observation\": null,\r\n    \"zipcode\": \"04538-133\",\r\n    \"state\": \"SP\",\r\n    \"city\": \"São Paulo\",\r\n    \"street\": \"Rua Funchal\",\r\n    \"complement\": null,\r\n    \"neighborhood\": \"Vila Olímpia\",\r\n    \"number\": \"418\"\r\n}\r\n// {\r\n//     \"name\": \"João da Silva\",\r\n//     \"email\": \"{{$randomEmail}}\",\r\n//     \"phone\": \"(11) 91234-5678\",\r\n//     \"client_type\": \"Pf\",\r\n//     \"cpf\": \"123.456.789-09\",\r\n//     \"observation\": \"Cliente VIP\",\r\n//     \"zipcode\": \"01310-100\",\r\n//     \"state\": \"SP\",\r\n//     \"city\": \"São Paulo\",\r\n//     \"street\": \"Avenida Paulista\",\r\n//     \"complement\": \"Apto 42\",\r\n//     \"neighborhood\": \"Bela Vista\",\r\n//     \"number\": \"1000\"\r\n// }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}clients/register"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All",
+							"id": "e72a733b-2246-403f-b6fb-d9bb045597d1",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base-url}}clients?page=0&page_size=20&search=&sort=name_asc",
+									"host": [
+										"{{base-url}}clients"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "page_size",
+											"value": "20"
+										},
+										{
+											"key": "search",
+											"value": ""
+										},
+										{
+											"key": "sort",
+											"value": "name_asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get",
+							"id": "e899c087-114e-4746-8e02-f1f5888bd63c",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "{{base-url}}clients/5a9d2ba0-554b-4e6f-8b10-6e48bf51a874"
+							},
+							"response": []
+						},
+						{
+							"name": "Status",
+							"id": "58d0672f-9ef0-478b-bead-211fdbf9822b",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": "{{base-url}}clients/block/5a9d2ba0-554b-4e6f-8b10-6e48bf51a874"
+							},
+							"response": []
+						},
+						{
+							"name": "Available",
+							"id": "b956c3c7-64bc-48f7-b97a-3bab1b7a3a12",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base-url}}clients/available",
+									"host": [
+										"{{base-url}}clients"
+									],
+									"path": [
+										"available"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "joao",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"id": "4ce1f19b-a5c7-4623-a42e-dc461dddf3e2",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": "{{base-url}}clients/5a9d2ba0-554b-4e6f-8b10-6e48bf51a874"
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"id": "819d90b1-3d92-4306-917a-a0be0dd67c96",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"João da Silva\",\r\n    \"phone\": \"11999999999999\",\r\n    \"cpf\": \"000.000.000-00\",\r\n    \"client_type\": \"Pf\", // Pf, Pj\r\n    \"cnpj\": null,\r\n    \"observation\": \"Test observation\",\r\n    \"zipcode\": \"00000-000\",\r\n    \"state\": \"SP\",\r\n    \"city\": \"São Paulo\",\r\n    \"street\": \"Rua Teste\",\r\n    \"complement\": \"Apto 1\",\r\n    \"neighborhood\": \"Centro\",\r\n    \"number\": \"123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}clients/caa970ef-6370-4f3a-a468-0ccaf12d118b"
+							},
+							"response": []
+						},
+						{
+							"name": "Export",
+							"id": "d2fac4fb-b96f-4a26-b7a1-8248bafb3a7e",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"url": "{{base-url}}clients/export"
+							},
+							"response": []
+						}
+					],
+					"id": "80ae585e-cc3b-402b-b211-1474ccae59da"
+				},
+				{
+					"name": "Password",
+					"item": [
+						{
+							"name": "Send Email",
+							"id": "d5088f9a-fbd6-4788-b528-1aded7c6d933",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"flamingolindo1@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}users/send-password-email"
+							},
+							"response": []
+						},
+						{
+							"name": "Change Password",
+							"id": "c9610d77-cfde-40e2-80d5-0399ef690362",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{token}}"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"new_password\": \"Aa12345678!\",\r\n    \"confirm_password\": \"Aa12345678!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base-url}}users/forgot-password/1640caf1-b2e6-4ffd-9c41-63e85eccf7aa"
+							},
+							"response": []
+						}
+					],
+					"id": "16999e12-1aa9-4dcd-9f77-86bcc1d44513"
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3ff708d4-2f50-48eb-a5b4-99cbee250a89",
+								"exec": [
+									"const res = JSON.parse(responseBody);\r",
+									"\r",
+									"const {token} = res;\r",
+									"\r",
+									"pm.environment.set('token', token); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"id": "50b2b702-9bfa-4cc9-8e8e-0fee2413729c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"master@gmail.com\",\r\n    // \"email\": \"user@gmail.com\",\r\n    \"password\": \"Aa12345678!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base-url}}users/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Create DB Dump",
+					"id": "a143723f-c342-4fe3-8b90-0cf4f2b1908a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": "{{base-url}}/database/dump"
+					},
+					"response": []
+				}
+			],
+			"id": "342067e3-2b5b-46fa-83f4-e255d41bbea8"
+		},
+		{
+			"name": "Images",
+			"item": [
+				{
+					"name": "Create",
+					"id": "af6b2cd0-f5d3-4e5e-bc4b-7277a11373bb",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"uuid": "4e3791cf-8276-4459-9ce5-fa367325f1fd",
+									"src": "/C:/Users/vitor/OneDrive/Imagens/Screenshots/Captura de tela 2026-03-01 231949.png"
+								}
+							]
+						},
+						"url": "{{base-url}}images/upload/products",
+						"description": "# ENTITY can be:\n\n- brands\n    \n- products\n    \n- users"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"id": "ed9791da-f1ef-406f-b88e-e4dbb5042507",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base-url}}images/delete/{{id}}"
+					},
+					"response": []
+				}
+			],
+			"id": "4eba656f-f032-4f1a-b327-fd267ee22163"
+		}
+	]
+}

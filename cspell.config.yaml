@@ -14,6 +14,7 @@ ignorePaths:
   - assets/emails/dump.html
   - static/index.html
   - src/handlers/products/export.rs
+  - Postman Collections/postman.json
 dictionaryDefinitions: []
 dictionaries: []
 words:
